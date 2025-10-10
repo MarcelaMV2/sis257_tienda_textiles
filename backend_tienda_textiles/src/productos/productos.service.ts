@@ -41,7 +41,10 @@ export class ProductosService {
   }
 
   async findOne(id: number): Promise<Producto> {
-    const producto = await this.productosRepository.findOne({ where: { id } });
+    const producto = await this.productosRepository.findOne({
+      where: { id },
+      relations: { categoria: true },
+    });
     if (!producto) throw new NotFoundException('El producto no existe');
     return producto;
   }
