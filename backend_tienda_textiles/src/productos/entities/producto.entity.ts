@@ -1,8 +1,11 @@
+import { Categoria } from 'src/categorias/entities/categoria.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,7 +30,7 @@ export class Producto {
   @Column()
   stock: number;
 
-  @Column({ name: 'imagen_url', type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'imagen_url', type: 'varchar', length: 500, nullable: true })
   imagenUrl: string;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
@@ -39,7 +42,7 @@ export class Producto {
   @DeleteDateColumn({ name: 'fecha_eliminacion' })
   fechaEliminacion: Date;
 
-  //@ManyToOne(() => Categoria, categoria => categoria.productos)
-  //@JoinColumn({ name: 'id_categoria', referencedColumnName: 'id' })
-  //categoria: Categoria;
+  @ManyToOne(() => Categoria, categoria => categoria.productos)
+  @JoinColumn({ name: 'id_categoria', referencedColumnName: 'id' })
+  categoria: Categoria;
 }
