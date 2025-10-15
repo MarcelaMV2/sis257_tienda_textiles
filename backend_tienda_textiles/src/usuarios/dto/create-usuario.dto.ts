@@ -7,9 +7,7 @@ export class CreateUsuarioDto {
   @MaxLength(50, {
     message: 'El campo nombre no debe ser mayor a 50 caracteres',
   })
-  @Transform(({ value }): string | undefined =>
-    typeof value === 'string' ? value.trim() : value,
-  )
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly nombre: string;
 
   @IsNotEmpty({ message: 'El campo apellidos es obligatorio' })
@@ -17,9 +15,7 @@ export class CreateUsuarioDto {
   @MaxLength(50, {
     message: 'El campo apellidos no debe ser mayor a 50 caracteres',
   })
-  @Transform(({ value }): string | undefined =>
-    typeof value === 'string' ? value.trim() : value,
-  )
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly apellidos: string;
 
   @IsNotEmpty({ message: 'El campo email es obligatorio' })
@@ -27,9 +23,7 @@ export class CreateUsuarioDto {
   @MaxLength(100, {
     message: 'El campo email no debe ser mayor a 30 caracteres',
   })
-  @Transform(({ value }): string | undefined =>
-    typeof value === 'string' ? value.trim() : value,
-  )
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly email: string;
 
   @IsNotEmpty({ message: 'El campo password es obligatorio' })
@@ -37,9 +31,7 @@ export class CreateUsuarioDto {
   @MaxLength(30, {
     message: 'El campo password no debe ser mayor a 30 caracteres',
   })
-  @Transform(({ value }): string | undefined =>
-    typeof value === 'string' ? value.trim() : value,
-  )
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly password: string;
 
   @IsNotEmpty({ message: 'El campo rol es obligatorio' })
@@ -47,8 +39,6 @@ export class CreateUsuarioDto {
   @MaxLength(20, {
     message: 'El campo rol no debe ser mayor a 30 caracteres',
   })
-  @Transform(({ value }): string | undefined =>
-    typeof value === 'string' ? value.trim() : value,
-  )
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly rol: string;
 }
