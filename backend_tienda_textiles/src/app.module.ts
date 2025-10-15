@@ -7,6 +7,7 @@ import { ProductosModule } from './productos/productos.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { CarritosModule } from './carritos/carritos.module';
+import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CarritosModule } from './carritos/carritos.module';
     CategoriasModule,
     UsuariosModule,
     CarritosModule,
+    CarritoProductosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

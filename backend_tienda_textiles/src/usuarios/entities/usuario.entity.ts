@@ -38,9 +38,6 @@ export class Usuario {
   @DeleteDateColumn({ name: 'fecha_eliminacion' })
   fechaEliminacion: Date;
 
-  @OneToMany(
-    () => Carrito,
-    (Carrito) => Carrito.usuario,
-  )
+  @OneToMany(() => Carrito, Carrito => Carrito.usuario)
   carritos: Carrito[];
 }

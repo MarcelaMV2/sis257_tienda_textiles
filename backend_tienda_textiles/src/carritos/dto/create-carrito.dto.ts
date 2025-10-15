@@ -8,7 +8,6 @@ export class CreateCarritoDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   estado: string;
 
-
   @IsDefined({ message: 'El campo id del Usuario debe estar definido' })
   @IsInt({ message: 'El campo id del Usuario debe ser numérico' })
   idUsuario: number;

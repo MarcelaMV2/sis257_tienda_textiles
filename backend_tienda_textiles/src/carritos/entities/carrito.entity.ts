@@ -1,3 +1,4 @@
+import { CarritoProductos } from 'src/carrito-productos/entities/carrito-producto.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -29,8 +31,11 @@ export class Carrito {
 
   @DeleteDateColumn({ name: 'fecha_eliminacion' })
   fechaEliminacion: Date;
-  
-  @ManyToOne(() => Usuario, (usuario) => usuario.carritos)
+
+  @ManyToOne(() => Usuario, usuario => usuario.carritos)
   @JoinColumn({ name: 'id_usuario', referencedColumnName: 'id' })
   usuario: Usuario;
+
+  @OneToMany(() => CarritoProductos, carritoProductos => carritoProductos.producto)
+  carritoProductos: CarritoProductos[];
 }

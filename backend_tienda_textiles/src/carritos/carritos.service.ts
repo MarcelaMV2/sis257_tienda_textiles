@@ -9,43 +9,36 @@ import { Repository } from 'typeorm';
 export class CarritosService {
   constructor(
     @InjectRepository(Carrito)
-    private listasRepository: Repository<Carrito>,
+    private carritoRepository: Repository<Carrito>,
   ) {}
 
-  async create(createListaDto: CreateCarritoDto): Promise<Carrito> {
-    // Validar que no exista ya una lista con el mismo nombre para el mismo usuario
-    let lista = await this.listasRepository.findOneBy({
-      idUsuario: createListaDto.idUsuario, 
-    });
-    if (lista) throw new ConflictException('La lista de reproducción ya existe');
+  async create(createCarritoDto: CreateCarritoDto): Promise<Carrito> {
+    // Crear una nueva instancia de Carrito con los datos del DTO
+    const carrito = new Carrito();
+    Object.assign(carrito, createCarritoDto);
 
-    lista = new Carrito();
-    Object.assign(lista, {
-      ...createListaDto,
-      idUsuario: createListaDto.idUsuario, 
-    });
-
-    return this.listasRepository.save(lista);
+    // Guardar en la base de datos y retornar
+    return this.carritoRepository.save(carrito);
   }
 
   async findAll(): Promise<Carrito[]> {
-    return this.listasRepository.find({
+    return this.carritoRepository.find({
       relations: { usuario: true },
       select: {
         id: true,
         estado: true,
-        usuario: { id: true, nombre: true, email: true }, 
+        usuario: { id: true, nombre: true, email: true },
       },
       order: { id: 'ASC' },
     });
   }
 
   async findOne(id: number): Promise<Carrito> {
-    const lista = await this.listasRepository.findOne({
+    const lista = await this.carritoRepository.findOne({
       where: { id },
       relations: { usuario: true },
     });
-    if (!lista) throw new NotFoundException('La lista de reproducción no existe');
+    if (!lista) throw new NotFoundException('El carrito no existe');
     return lista;
   }
 
@@ -58,11 +51,11 @@ export class CarritosService {
       lista.idUsuario = updateListaDto.idUsuario;
     }
 
-    return this.listasRepository.save(lista);
+    return this.carritoRepository.save(lista);
   }
 
   async remove(id: number): Promise<Carrito> {
     const lista = await this.findOne(id);
-    return this.listasRepository.softRemove(lista);
+    return this.carritoRepository.softRemove(lista);
   }
 }
