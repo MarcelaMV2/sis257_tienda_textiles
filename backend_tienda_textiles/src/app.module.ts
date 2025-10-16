@@ -6,14 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductosModule } from './productos/productos.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
-<<<<<<< HEAD
 import { PedidosModule } from './pedidos/pedidos.module';
 import { PedidoProductosModule } from './pedido_productos/pedido_productos.module';
 import { PagosModule } from './pagos/pagos.module';
-=======
 import { CarritosModule } from './carritos/carritos.module';
 import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
->>>>>>> develop
 
 @Module({
   imports: [
@@ -32,14 +29,11 @@ import { CarritoProductosModule } from './carrito-productos/carrito-productos.mo
     ProductosModule,
     CategoriasModule,
     UsuariosModule,
-<<<<<<< HEAD
     PedidosModule,
     PedidoProductosModule,
     PagosModule,
-=======
     CarritosModule,
     CarritoProductosModule,
->>>>>>> develop
   ],
   controllers: [AppController],
   providers: [AppService],
