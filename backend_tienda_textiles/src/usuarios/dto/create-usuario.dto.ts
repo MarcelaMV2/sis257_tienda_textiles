@@ -1,7 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateUsuarioDto {
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo nombre es obligatorio' })
   @IsString({ message: 'El campo nombre debe ser de tipo cadena' })
   @MaxLength(50, {
@@ -10,6 +12,7 @@ export class CreateUsuarioDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly nombre: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo apellidos es obligatorio' })
   @IsString({ message: 'El campo apellidos debe ser de tipo cadena' })
   @MaxLength(50, {
@@ -18,6 +21,7 @@ export class CreateUsuarioDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly apellidos: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo email es obligatorio' })
   @IsString({ message: 'El campo email debe ser de tipo cadena' })
   @MaxLength(100, {
@@ -26,6 +30,7 @@ export class CreateUsuarioDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly email: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo password es obligatorio' })
   @IsString({ message: 'El campo password debe ser de tipo cadena' })
   @MaxLength(30, {
@@ -34,6 +39,7 @@ export class CreateUsuarioDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly password: string;
 
+  @ApiProperty()
   @IsNotEmpty({ message: 'El campo rol es obligatorio' })
   @IsString({ message: 'El campo rol debe ser de tipo cadena' })
   @MaxLength(20, {
