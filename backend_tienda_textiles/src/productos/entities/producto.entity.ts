@@ -1,5 +1,6 @@
 import { CarritoProductos } from 'src/carrito-productos/entities/carrito-producto.entity';
 import { Categoria } from 'src/categorias/entities/categoria.entity';
+import { PedidoProducto } from 'src/pedido_productos/entities/pedido_producto.entity';
 import {
   Column,
   CreateDateColumn,
@@ -50,4 +51,7 @@ export class Producto {
 
   @OneToMany(() => CarritoProductos, carritoProductos => carritoProductos.producto)
   carritoProductos: CarritoProductos[];
+
+  @OneToMany(() => PedidoProducto, pedidoProducto => pedidoProducto.producto)
+  pedidosProductos: PedidoProducto[];
 }
