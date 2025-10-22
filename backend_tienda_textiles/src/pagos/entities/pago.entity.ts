@@ -28,7 +28,8 @@ export class Pago {
   @CreateDateColumn({ name: 'fecha_pago' })
   fechaPago: Date;
 
-  @ManyToOne(() => Pedido, { onDelete: 'CASCADE' })
+
+  @ManyToOne(() => Pedido, pedido => pedido.pagos)
   @JoinColumn({ name: 'id_pedido', referencedColumnName: 'id' })
   pedido: Pedido;
 }

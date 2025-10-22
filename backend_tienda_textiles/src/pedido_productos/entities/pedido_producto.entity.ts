@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { Pedido } from '../../pedidos/entities/pedido.entity';
 import { Producto } from '../../productos/entities/producto.entity';
 
@@ -19,11 +28,20 @@ export class PedidoProducto {
   @Column('decimal', { precision: 10, scale: 2, name: 'precio_unitario' })
   precioUnitario: number;
 
-  @ManyToOne(() => Pedido, pedido => pedido.id, { onDelete: 'CASCADE' })
+  @CreateDateColumn({ name: 'fecha_creacion' })
+  fechaCreacion: Date;
+
+  @UpdateDateColumn({ name: 'fecha_modificacion' })
+  fechaModificacion: Date;
+
+  @DeleteDateColumn({ name: 'fecha_eliminacion' })
+  fechaEliminacion: Date;
+
+  @ManyToOne(() => Pedido, pedido => pedido.pedidosProductos)
   @JoinColumn({ name: 'id_pedido', referencedColumnName: 'id' })
   pedido: Pedido;
 
-  @ManyToOne(() => Producto, producto => producto.id, { eager: true })
+  @ManyToOne(() => Producto, producto => producto.pedidosProductos)
   @JoinColumn({ name: 'id_producto', referencedColumnName: 'id' })
   producto: Producto;
 }

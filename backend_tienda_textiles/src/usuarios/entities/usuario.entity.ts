@@ -1,4 +1,5 @@
 import { Carrito } from 'src/carritos/entities/carrito.entity';
+import { Pedido } from 'src/pedidos/entities/pedido.entity';
 import {
   Column,
   PrimaryGeneratedColumn,
@@ -38,6 +39,9 @@ export class Usuario {
   @DeleteDateColumn({ name: 'fecha_eliminacion' })
   fechaEliminacion: Date;
 
-  @OneToMany(() => Carrito, Carrito => Carrito.usuario)
+  @OneToMany(() => Carrito, carrito => carrito.usuario)
   carritos: Carrito[];
+
+  @OneToMany(() => Pedido, pedido => pedido.usuario)
+  pedidos: Pedido[];
 }
