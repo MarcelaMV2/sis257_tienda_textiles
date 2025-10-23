@@ -11,6 +11,7 @@ import { PedidoProductosModule } from './pedido_productos/pedido_productos.modul
 import { PagosModule } from './pagos/pagos.module';
 import { CarritosModule } from './carritos/carritos.module';
 import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CarritoProductosModule } from './carrito-productos/carrito-productos.mo
     PagosModule,
     CarritosModule,
     CarritoProductosModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
