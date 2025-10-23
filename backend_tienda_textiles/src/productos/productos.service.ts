@@ -27,6 +27,7 @@ export class ProductosService {
   async findAll(parametro?: string): Promise<Producto[]> {
     return this.productosRepository.find({
       where: { nombre: ILike(`%${parametro ?? ''}%`) },
+      relations: { categoria: true },
       select: {
         id: true,
         idCategoria: true,
@@ -35,6 +36,7 @@ export class ProductosService {
         precio: true,
         stock: true,
         imagenUrl: true,
+        categoria: { id: true, nombre: true },
       },
       order: { nombre: 'ASC' },
     });
@@ -57,7 +59,9 @@ export class ProductosService {
   }
 
   async update(id: number, updateProductoDto: UpdateProductoDto): Promise<Producto> {
-    const producto = await this.findOne(id);
+    //const producto = await this.findOne(id);
+    const producto = await this.productosRepository.findOneBy({ id });
+    if (!producto) throw new NotFoundException('El producto no existe');
     Object.assign(producto, updateProductoDto);
     return this.productosRepository.save(producto);
   }

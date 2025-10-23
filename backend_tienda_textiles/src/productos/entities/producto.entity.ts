@@ -11,7 +11,14 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ValueTransformer,
 } from 'typeorm';
+
+// 👇 Transformer decimal → number
+const decimalToNumber: ValueTransformer = {
+  to: (value: number | null) => value,
+  from: (value: string | null) => (value == null ? null : parseFloat(value)),
+};
 
 @Entity('productos')
 export class Producto {
@@ -27,7 +34,7 @@ export class Producto {
   @Column('varchar', { length: 200 })
   descripcion: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, transformer: decimalToNumber })
   precio: number;
 
   @Column()
