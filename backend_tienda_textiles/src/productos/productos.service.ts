@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, IsNull, Repository } from 'typeorm';
 import { Producto } from './entities/producto.entity';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
@@ -69,5 +69,13 @@ export class ProductosService {
   async remove(id: number): Promise<Producto> {
     const producto = await this.findOne(id);
     return this.productosRepository.softRemove(producto);
+  }
+
+  async obtenerPorCategoria(idCategoria: number): Promise<Producto[]> {
+    return await this.productosRepository.find({
+      where: { idCategoria, fechaEliminacion: IsNull() },
+      relations: ['categoria'],
+      order: { nombre: 'ASC' },
+    });
   }
 }

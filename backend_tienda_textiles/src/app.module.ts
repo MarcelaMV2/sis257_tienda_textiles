@@ -12,10 +12,11 @@ import { PagosModule } from './pagos/pagos.module';
 import { CarritosModule } from './carritos/carritos.module';
 import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -36,6 +37,7 @@ import { UploadsModule } from './uploads/uploads.module';
     CarritosModule,
     CarritoProductosModule,
     UploadsModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

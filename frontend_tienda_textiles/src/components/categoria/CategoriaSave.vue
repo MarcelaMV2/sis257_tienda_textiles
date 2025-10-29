@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Categoria } from '@/models/categoria'
 import http from '@/plugins/axios'
-import { Button, Dialog, InputText } from 'primevue'
+import { Button, Dialog, InputText, Textarea } from 'primevue'
 import { computed, ref, watch } from 'vue'
 
 const ENDPOINT = 'categorias'
@@ -37,8 +37,11 @@ async function handleSave() {
       descripcion: categoria.value.descripcion,
     }
     if (props.modoEdicion) {
+      console.log('body enviado:', body)
+
       await http.patch(`${ENDPOINT}/${categoria.value.id}`, body)
     } else {
+      console.log('body enviadoFYTGHVGUV:', body)
       await http.post(ENDPOINT, body)
     }
     emit('guardar')

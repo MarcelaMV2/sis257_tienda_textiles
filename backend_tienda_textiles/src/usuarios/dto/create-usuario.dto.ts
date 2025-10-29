@@ -31,15 +31,6 @@ export class CreateUsuarioDto {
   readonly email: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'El campo password es obligatorio' })
-  @IsString({ message: 'El campo password debe ser de tipo cadena' })
-  @MaxLength(30, {
-    message: 'El campo password no debe ser mayor a 30 caracteres',
-  })
-  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
-  readonly password: string;
-
-  @ApiProperty()
   @IsNotEmpty({ message: 'El campo rol es obligatorio' })
   @IsString({ message: 'El campo rol debe ser de tipo cadena' })
   @MaxLength(20, {

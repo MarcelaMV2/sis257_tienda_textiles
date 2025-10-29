@@ -1,19 +1,19 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Pedido } from '../../pedidos/entities/pedido.entity';
-import { Producto } from '../../productos/entities/producto.entity';
+import { Pedido } from 'src/pedidos/entities/pedido.entity';
+import { Producto } from 'src/productos/entities/producto.entity';
 
 @Entity('pedido_productos')
 export class PedidoProducto {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('identity')
   id: number;
 
   @Column('integer', { name: 'id_pedido' })
@@ -22,10 +22,10 @@ export class PedidoProducto {
   @Column('integer', { name: 'id_producto' })
   idProducto: number;
 
-  @Column('int')
+  @Column('integer')
   cantidad: number;
 
-  @Column('decimal', { precision: 10, scale: 2, name: 'precio_unitario' })
+  @Column('decimal', { precision: 10, scale: 2 })
   precioUnitario: number;
 
   @CreateDateColumn({ name: 'fecha_creacion' })

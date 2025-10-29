@@ -12,6 +12,11 @@ export class PedidosController {
     return this.pedidosService.create(createPedidoDto);
   }
 
+  @Post(':id/enviar-correo')
+  enviarCorreo(@Param('id') id: string) {
+    return this.pedidosService.enviarCorreoConfirmacion(+id);
+  }
+
   @Get()
   findAll() {
     return this.pedidosService.findAll();
