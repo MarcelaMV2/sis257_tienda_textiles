@@ -41,10 +41,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="py-5 bg-light">
+  <section class="py-5" style="background-color: #84E6FC;">
     <div class="container">
       <h3 class="fw-bold text-center mb-4 text-dark">
-        Productos de la categoría “Bebidas naturales”
+        PRODUCTOS DESTACADOS
       </h3>
 
       <Swiper

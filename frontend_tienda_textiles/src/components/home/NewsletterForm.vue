@@ -1,5 +1,5 @@
 <template>
-  <section class="newsletter py-5 text-center">
+  <section class="newsletter py-5 text-center" style="background-color: #B3D7C6;">
     <div class="container">
       <h2 class="text-uppercase mb-3">Suscríbete a nuestro boletín</h2>
       <input

@@ -87,7 +87,7 @@ onMounted(obtenerProductos)
 
 /* Tarjeta de producto */
 .card-oferta {
-  background-color: #fff;
+  background-color: #FAF0E6;
   border-radius: 12px;
   overflow: hidden;
   transition:
@@ -96,10 +96,13 @@ onMounted(obtenerProductos)
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-color: #1a202c;
+  border: 1px solid;
 }
 .card-oferta:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background-color: white;
 }
 
 /* Imagen y overlay */

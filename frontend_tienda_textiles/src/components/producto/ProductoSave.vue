@@ -113,7 +113,7 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar' : 'Crear'"
-      style="width: 28rem"
+      style="width: 0.28m; background-color: #FABF13;"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="categoria" class="font-semibold w-3">Categoría</label>

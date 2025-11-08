@@ -13,7 +13,7 @@ function getImageUrl(nombreArchivo: string) {
 </script>
 
 <template>
-  <section class="products py-5">
+  <section class="products py-5" style="display: none;">
     <div class="container">
       <h2 class="text-center text-dark mb-4 text-uppercase">Productos destacados</h2>
       <div class="row">

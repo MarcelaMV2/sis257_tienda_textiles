@@ -70,7 +70,7 @@ onMounted(() => {
         >
           <div class="card-categoria shadow-sm">
             <div class="imagen-wrapper">
-              <img :src="categoria.imagen" :alt="categoria.nombre" />
+              <img :src="categoria.imagenUrl" :alt="categoria.nombre" />
             </div>
             <div class="info-box">
               <h5>{{ categoria.nombre }}</h5>

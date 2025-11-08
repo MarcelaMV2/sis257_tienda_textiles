@@ -10,12 +10,12 @@ const slides = ref([
   {
     titulo: 'Colección Andina 2025',
     texto: 'Textiles hechos a mano con amor y tradición',
-    imagen: new URL('@/assets/images/banner-image.png', import.meta.url).href,
+    imagen: new URL('@/assets/images/p1.png', import.meta.url).href,
   },
   {
-    titulo: 'Diseños únicos',
+    titulo: 'Diseños únicos pernalizados',
     texto: 'Cada prenda cuenta una historia artesanal',
-    imagen: new URL('@/assets/images/post-item2.jpg', import.meta.url).href,
+    imagen: new URL('@/assets/images/p2.png', import.meta.url).href,
   },
 ])
 </script>
@@ -34,8 +34,8 @@ const slides = ref([
         <div class="container">
           <div class="row align-items-center">
             <div class="col-md-6 text-section">
-              <h1 class="display-4 text-dark fw-bold">{{ slide.titulo }}</h1>
-              <p class="lead mb-4">{{ slide.texto }}</p>
+              <h1 class="display-4 text-white fw-bold" style="font-size: 70px;">{{ slide.titulo }}</h1>
+              <p class="lead mb-4" style="color: white; font-size: 36px;">{{ slide.texto }}</p>
               <RouterLink
                 to="/shop"
                 class="btn btn-primary text-uppercase rounded-pill"
@@ -57,6 +57,7 @@ const slides = ref([
 .hero-banner {
   background: var(--color-bg);
   padding: 4rem 0;
+  background-color: #4B0082;
 }
 .hero-swiper {
   width: 100%;
