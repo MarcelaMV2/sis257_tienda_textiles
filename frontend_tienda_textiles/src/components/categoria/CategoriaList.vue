@@ -59,6 +59,7 @@ defineExpose({ obtenerLista })
           <th>Nro.</th>
           <th>Nombre</th>
           <th>Descripción</th>
+          <th>Imagen</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -67,6 +68,7 @@ defineExpose({ obtenerLista })
           <td>{{ index + 1 }}</td>
           <td>{{ categoria.nombre }}</td>
           <td>{{ categoria.descripcion }}</td>
+          <td><img :src="categoria.imagenUrl" alt="foto" width="80" /></td>
           <td>
             <Button
               icon="pi pi-pencil"

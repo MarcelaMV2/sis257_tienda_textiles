@@ -24,6 +24,7 @@ const services = [
 </script>
 
 <template>
+  <div class="contenedor">
   <section class="services py-5">
     <div class="container">
       <div class="row text-center">
@@ -37,9 +38,13 @@ const services = [
       </div>
     </div>
   </section>
+  </div>
 </template>
 
 <style scoped>
+.contenedor {
+  background-color: #FEE3FE;
+}
 .service-box {
   background: var(--color-white);
   border-radius: 1rem;
