@@ -41,14 +41,14 @@ export class CreatePedidoDto {
   direccion?: string;
 
   @ApiProperty({
-    description: 'Ciudad de entrega del pedido',
+    description: 'Provincia de entrega del pedido',
     example: 'Sucre',
   })
   @IsOptional()
-  @IsString({ message: 'El campo ciudad debe ser una cadena' })
-  @MaxLength(100, { message: 'El campo ciudad no debe exceder los 100 caracteres' })
+  @IsString({ message: 'El campo provincia debe ser una cadena' })
+  @MaxLength(100, { message: 'El campo provincia no debe exceder los 100 caracteres' })
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
-  ciudad?: string;
+  provincia?: string;
 
   @ApiProperty({
     description: 'Departamento o región del pedido',
@@ -59,6 +59,20 @@ export class CreatePedidoDto {
   @MaxLength(100, { message: 'El campo departamento no debe exceder los 100 caracteres' })
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   departamento?: string;
+
+  @ApiProperty({ description: 'País', example: 'Bolivia' })
+  @IsOptional()
+  @IsString({ message: 'El campo país debe ser una cadena' })
+  @MaxLength(100, { message: 'El campo país no debe exceder 100 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  pais?: string;
+
+  @ApiProperty({ description: 'Referencia de la dirección', example: 'Casa verde, portón negro' })
+  @IsOptional()
+  @IsString({ message: 'El campo referencia debe ser una cadena' })
+  @MaxLength(255, { message: 'El campo referencia no debe exceder 255 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  referencia?: string;
 
   @ApiProperty({
     description: 'Tipo de envío seleccionado',

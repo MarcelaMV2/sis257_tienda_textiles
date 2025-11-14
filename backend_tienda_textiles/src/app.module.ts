@@ -13,6 +13,7 @@ import { CarritosModule } from './carritos/carritos.module';
 import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MailModule } from './mail/mail.module';
     CarritoProductosModule,
     UploadsModule,
     MailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

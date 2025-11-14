@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +25,7 @@ export class UsuariosService {
     if (usuario) throw new ConflictException('El usuario ya existe');
 
     usuario = new Usuario();
+    usuario.clave = process.env.DEFAULT_PASSWORD ?? '';
     Object.assign(usuario, createUsuarioDto);
     return this.usuariosRepository.save(usuario);
   }
@@ -43,5 +49,20 @@ export class UsuariosService {
   async remove(id: number): Promise<Usuario> {
     const usuario = await this.findOne(id);
     return this.usuariosRepository.softRemove(usuario);
+  }
+
+  async validate(email: string, clave: string): Promise<Usuario> {
+    const usuarioOk = await this.usuariosRepository.findOne({
+      where: { email },
+      select: ['id', 'nombre', 'apellidos', 'email', 'clave', 'rol', 'telefono'],
+    });
+
+    if (!usuarioOk) throw new NotFoundException('Usuario inexistente');
+
+    if (!(await usuarioOk?.validatePassword(clave))) {
+      throw new UnauthorizedException('Clave incorrecta');
+    }
+
+    return usuarioOk;
   }
 }

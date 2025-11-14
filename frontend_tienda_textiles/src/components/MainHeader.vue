@@ -42,7 +42,7 @@ onMounted(() => {
     <!-- 🔹 Top bar -->
     <div class="top-bar">
       <div class="container d-flex justify-content-between align-items-center">
-        <span>📞 + (591) 67399831</span>
+        <span>+ (591) 67399831</span>
         <div class="social-icons">
           <i class="pi pi-instagram"></i>
           <i class="pi pi-facebook"></i>
@@ -126,7 +126,7 @@ onMounted(() => {
             <RouterLink to="/carrito" class="nav-link">Carrito</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink to="/mi-cuenta" class="nav-link">Mi cuenta</RouterLink>
+            <RouterLink to="/perfil" class="nav-link">Mi cuenta</RouterLink>
           </li>
         </ul>
       </div>

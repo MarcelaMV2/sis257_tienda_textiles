@@ -3,11 +3,20 @@ import { usarCarrito } from '@/funciones/UsarCarrito'
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import http from '@/plugins/axios'
+import { getTokenFromLocalStorage } from '@/helpers'
 
 const { carrito, totalCarrito } = usarCarrito()
 const router = useRouter()
 
-const ENDPOINT = 'usuarios'
+const ENDPOINT = '/usuarios'
+const DEFAULT_PWD = import.meta.env.VITE_DEFAULT_PASSWORD || 'hola123'
+
+/* const login = http.post('/auth/login', {
+  email: body.email,
+  clave: DEFAULT_PWD,
+})
+localStorage.setItem('token', login.data.access_token)
+router.push('/checkout/envio') */
 
 const usuarioLogueado = ref(false)
 const usuario = ref<any>(null)
@@ -16,7 +25,7 @@ const datos = ref({
   nombre: '',
   apellidos: '',
   email: '',
-  password: '',
+  telefono: '',
   rol: 'cliente',
 })
 
@@ -24,38 +33,44 @@ const subtotal = computed(() => totalCarrito().toFixed(2))
 
 // 🔹 Si ya está logueado, ir directo al paso de envío
 onMounted(() => {
-  const usuarioGuardado = localStorage.getItem('usuario')
-  if (usuarioGuardado) {
-    usuario.value = JSON.parse(usuarioGuardado)
-    usuarioLogueado.value = true
-    router.push('/checkout/envio')
-  }
+  const token = getTokenFromLocalStorage()
+  if (token) router.push('/checkout/envio')
 })
 
 // 🔹 Registrar usuario (estilo “docente”)
+// Reemplaza tu registrarUsuario por:
 async function registrarUsuario() {
   try {
     const body = {
       nombre: datos.value.nombre,
       apellidos: datos.value.apellidos,
       email: datos.value.email,
-      password: datos.value.password,
+      telefono: datos.value.telefono,
       rol: datos.value.rol,
     }
 
-    console.log('body enviado:', body)
-    const { data } = await http.post(ENDPOINT, body)
+    // 1) Registrar usuario (el backend le pondrá DEFAULT_PASSWORD)
+    await http.post(ENDPOINT, body)
 
-    alert('Usuario registrado correctamente.')
-    localStorage.setItem('usuario', JSON.stringify(data))
-    /* router.push('/checkout/envio') */
+    // 2) Login inmediato con la contraseña por defecto
+    const { data: loginData } = await http.post('/auth/login', {
+      email: body.email,
+      clave: DEFAULT_PWD, // 👈 NO uses body.clave
+    })
+
+    localStorage.setItem('token', loginData.access_token)
+
+    // 3) Avanza al paso de envío
+    router.push('/checkout/envio')
   } catch (error: any) {
-    // 💬 Manejo del error de correo duplicado
-    if (error?.response?.data?.message?.includes('correo')) {
-      alert('El correo ya está registrado. Inicia sesión para continuar.')
+    const msg = error?.response?.data?.message
+    if (typeof msg === 'string' && msg.toLowerCase().includes('existe')) {
+      alert('Ese correo ya está registrado. Inicia sesión para continuar.')
       router.push('/login')
+    } else if (Array.isArray(msg)) {
+      alert(msg.join('\n'))
     } else {
-      alert(error?.response?.data?.message || 'Error al registrar usuario.')
+      alert(msg || 'Error al registrar usuario.')
     }
   }
 }
@@ -76,10 +91,10 @@ async function registrarUsuario() {
           <p class="texto">Si ya tienes cuenta, <a href="/login">inicia sesión aquí</a>.</p>
 
           <form @submit.prevent="registrarUsuario">
-            <div class="campo">
+            <!-- <div class="campo">
               <label>Correo electrónico</label>
               <input type="email" v-model="datos.email" required />
-            </div>
+            </div> -->
 
             <div class="campos-doble">
               <div class="campo">
@@ -92,9 +107,15 @@ async function registrarUsuario() {
               </div>
             </div>
 
-            <div class="campo">
-              <label>Contraseña</label>
-              <input type="password" v-model="datos.password" required />
+            <div class="campos-doble">
+              <div class="campo">
+                <label>Correo electrónico</label>
+                <input type="email" v-model="datos.email" required />
+              </div>
+              <div class="campo">
+                <label>Telefono</label>
+                <input type="text" v-model="datos.telefono" required />
+              </div>
             </div>
 
             <button class="btn-continuar" type="submit">Registrarme y continuar</button>

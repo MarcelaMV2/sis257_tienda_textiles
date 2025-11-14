@@ -39,6 +39,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 
 // layout admin
+import { getTokenFromLocalStorage } from '@/helpers'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = createRouter({
@@ -112,11 +113,29 @@ const router = createRouter({
       name: 'checkout-gracias',
       component: () => import('@/views/CheckoutGraciasView.vue'),
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+    },
+    {
+      path: '/mis-pedidos',
+      name: 'mis-pedidos',
+      component: () => import('@/views/MisPedidosView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/perfil',
+      name: 'perfil',
+      component: () => import('@/views/PerfilView.vue'),
+      meta: { requiresAuth: true },
+    },
     // ADMIN (layout + children)
     {
       path: '/admin',
       component: AdminLayout,
       // meta: { requiresAdmin: true }, // ← cuando quieras activar guard
+      meta: { requiresAuth: true },
       children: [
         { path: '', redirect: '/admin/productos' },
 
@@ -129,6 +148,11 @@ const router = createRouter({
           path: 'categorias',
           name: 'admin-categorias',
           component: () => import('@/views/admin/CategoriaView.vue'),
+        },
+        {
+          path: 'pedidos',
+          name: 'admin-pedidos',
+          component: () => import('@/views/admin/PedidosAdminView.vue'),
         },
 
         // Si ya creaste estas vistas, habilítalas.
@@ -160,5 +184,26 @@ router.beforeEach((to, _from, next) => {
   next()
 })
 */
+
+/* router.beforeEach(async (to) => {
+  const publicPages = ['/login']
+  const authRequired = !publicPages.includes(to.path)
+  const authStore = useAuthStore()
+
+  if (authRequired && !getTokenFromLocalStorage()) {
+    if (authStore) authStore.logout()
+    authStore.returnUrl = to.fullPath
+    return '/login'
+  }
+}) */
+router.beforeEach((to) => {
+  if (to.meta?.requiresAuth) {
+    const token = getTokenFromLocalStorage()
+    if (!token) {
+      // opcional: si quieres recordar a dónde iba
+      return { name: 'login', query: { returnUrl: to.fullPath } }
+    }
+  }
+})
 
 export default router
