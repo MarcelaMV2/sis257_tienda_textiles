@@ -129,7 +129,7 @@ onMounted(async () => {
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background-color: #FABF13;
+  background-color: #fabf13;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
@@ -189,7 +189,7 @@ onMounted(async () => {
 }
 
 .card-producto {
-  background-color: #FAF0E6;
+  background-color: #faf0e6;
   border-radius: 10px;
   overflow: hidden;
   transition: 0.3s ease;

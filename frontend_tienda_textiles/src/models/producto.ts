@@ -1,4 +1,4 @@
-import type { Categoria } from "./categoria"
+import type { Categoria } from './categoria'
 
 export interface Producto {
   id: number
@@ -8,5 +8,5 @@ export interface Producto {
   precio: number
   stock: number
   imagenUrl: string
-  categoria: Categoria
+  categoria: Categoria
 }

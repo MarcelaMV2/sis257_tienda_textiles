@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
@@ -11,7 +11,7 @@ export class PedidosService {
   constructor(
     @InjectRepository(Pedido)
     private readonly pedidosRepository: Repository<Pedido>,
-    private readonly mailService: MailService, // 👈 nuevo
+    private readonly mailService: MailService,
   ) {}
 
   async create(createPedidoDto: CreatePedidoDto): Promise<Pedido> {
@@ -21,7 +21,14 @@ export class PedidosService {
     const nuevoPedido = await this.pedidosRepository.save(pedido);
 
     // 👇 NUEVO: enviar correo de confirmación al cliente
-    await this.enviarCorreoConfirmacion(nuevoPedido.id);
+    /* await this.enviarCorreoConfirmacion(nuevoPedido.id); */
+    // después: el pedido se crea igual, y si el correo falla solo se registra el warning
+    try {
+      await this.enviarCorreoConfirmacion(nuevoPedido.id);
+    } catch (err) {
+      // usa tu logger si tienes; lo mantengo simple para no tocar más
+      console.warn('[mail] no se pudo enviar confirmación:', err?.message ?? err);
+    }
 
     return nuevoPedido;
   }
@@ -33,6 +40,8 @@ export class PedidosService {
         id: true,
         total: true,
         estado: true,
+        metodoPago: true,
+        fechaCreacion: true,
         usuario: { id: true, nombre: true, email: true },
       },
       order: { id: 'ASC' },
@@ -42,8 +51,19 @@ export class PedidosService {
   async findOne(id: number): Promise<Pedido> {
     const pedido = await this.pedidosRepository.findOne({
       where: { id },
-      relations: { usuario: true, pedidosProductos: true },
+      relations: {
+        usuario: true,
+        // trae los detalles + el producto (nombre, imagen, precio, etc.)
+        pedidosProductos: { producto: true },
+        // trae los pagos asociados (metodo, estado, comprobante, maskedCard…)
+        pagos: true,
+      },
+      order: {
+        pedidosProductos: { id: 'ASC' },
+        pagos: { id: 'ASC' },
+      },
     });
+
     if (!pedido) throw new NotFoundException('El pedido no existe');
     return pedido;
   }
@@ -66,6 +86,11 @@ export class PedidosService {
 
   // 🔹 Enviar correo de confirmación de pedido
   async enviarCorreoConfirmacion(id: number): Promise<void> {
+    const { SMTP_HOST, SMTP_USER, SMTP_PASS } = process.env;
+    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+      console.warn('[mail] SMTP no configurado; se omite envío');
+      return;
+    }
     const pedido = await this.pedidosRepository.findOne({
       where: { id },
       relations: { usuario: true, pedidosProductos: { producto: true } },
@@ -87,5 +112,23 @@ export class PedidosService {
         nombre: pedido.usuario.nombre,
       },
     });
+  }
+
+  async findByUser(idUsuario: number): Promise<Pedido[]> {
+    return this.pedidosRepository.find({
+      where: { idUsuario },
+      relations: { pedidosProductos: { producto: true }, pagos: true },
+      order: { id: 'DESC' },
+    });
+  }
+
+  async cambiarEstado(id: number, estado: string): Promise<Pedido> {
+    const permitidos = ['pendiente', 'confirmado', 'enviado', 'entregado', 'cancelado'];
+    if (!permitidos.includes(estado)) {
+      throw new BadRequestException('Estado inválido');
+    }
+    const pedido = await this.findOne(id);
+    pedido.estado = estado;
+    return this.pedidosRepository.save(pedido); // UpdateDateColumn se actualiza solo
   }
 }

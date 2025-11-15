@@ -27,19 +27,25 @@ export class Pedido {
   @Column('varchar', { length: 20, default: 'pendiente' })
   estado: string;
 
-  @Column('varchar', { length: 255, nullable: true })
-  direccion: string;
-
   @Column('varchar', { length: 100, nullable: true })
-  ciudad: string;
+  pais: string;
 
   @Column('varchar', { length: 100, nullable: true })
   departamento: string;
 
-  @Column('varchar', { length: 20, default: 'gratis' })
+  @Column('varchar', { length: 100, nullable: true })
+  provincia: string;
+
+  @Column('varchar', { length: 255, nullable: true })
+  direccion: string;
+
+  @Column('varchar', { length: 255, nullable: true })
+  referencia: string;
+
+  @Column('varchar', { length: 20, default: 'domicilio' })
   tipoEnvio: string;
 
-  @Column('varchar', { length: 20, default: 'efectivo' })
+  @Column('varchar', { length: 20 })
   metodoPago: string;
 
   @CreateDateColumn({ name: 'fecha_creacion' })

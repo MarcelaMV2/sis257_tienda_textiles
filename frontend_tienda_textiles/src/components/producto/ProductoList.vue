@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import type { Producto } from '@/models/producto'
 import http from '@/plugins/axios'
 import { Button, Dialog, InputGroup, InputGroupAddon, InputText } from 'primevue'

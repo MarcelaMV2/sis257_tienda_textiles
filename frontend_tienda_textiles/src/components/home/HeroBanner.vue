@@ -34,12 +34,11 @@ const slides = ref([
         <div class="container">
           <div class="row align-items-center">
             <div class="col-md-6 text-section">
-              <h1 class="display-4 text-white fw-bold" style="font-size: 70px;">{{ slide.titulo }}</h1>
-              <p class="lead mb-4" style="color: white; font-size: 36px;">{{ slide.texto }}</p>
-              <RouterLink
-                to="/shop"
-                class="btn btn-primary text-uppercase rounded-pill"
-              >
+              <h1 class="display-4 text-white fw-bold" style="font-size: 70px">
+                {{ slide.titulo }}
+              </h1>
+              <p class="lead mb-4" style="color: white; font-size: 36px">{{ slide.texto }}</p>
+              <RouterLink to="/shop" class="btn btn-primary text-uppercase rounded-pill">
                 Comprar ahora
               </RouterLink>
             </div>
@@ -57,7 +56,7 @@ const slides = ref([
 .hero-banner {
   background: var(--color-bg);
   padding: 4rem 0;
-  background-color: #4B0082;
+  background-color: #4b0082;
 }
 .hero-swiper {
   width: 100%;

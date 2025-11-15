@@ -1,3 +1,4 @@
+import { compare, genSalt, hash } from 'bcrypt';
 import { Carrito } from 'src/carritos/entities/carrito.entity';
 import { Pedido } from 'src/pedidos/entities/pedido.entity';
 import {
@@ -8,6 +9,8 @@ import {
   Entity,
   CreateDateColumn,
   OneToMany,
+  BeforeUpdate,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity('usuarios')
@@ -24,8 +27,11 @@ export class Usuario {
   @Column('varchar', { length: 100 })
   email: string;
 
-  @Column('varchar', { length: 30 })
-  password: string;
+  @Column('varchar', { length: 20 })
+  telefono: string;
+
+  @Column('varchar', { length: 200 })
+  clave: string;
 
   @Column('varchar', { length: 20 })
   rol: string;
@@ -44,4 +50,15 @@ export class Usuario {
 
   @OneToMany(() => Pedido, pedido => pedido.usuario)
   pedidos: Pedido[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    const salt = await genSalt();
+    this.clave = await hash(this.clave, salt);
+  }
+
+  async validatePassword(plainPassword: string): Promise<boolean> {
+    return compare(plainPassword, this.clave);
+  }
 }

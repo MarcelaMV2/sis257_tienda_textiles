@@ -47,6 +47,6 @@ function isActive(path: string) {
 <style scoped>
 .menu :deep(.p-button) {
   justify-content: flex-start;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 </style>

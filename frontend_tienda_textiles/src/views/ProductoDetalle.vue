@@ -73,7 +73,10 @@ const disminuir = () => {
           </div>
         </div>
 
-        <button class="btn btn-primary btn-lg w-100 mb-3 shadow-sm" @click="añadirAlCarrito(producto)">
+        <button
+          class="btn btn-primary btn-lg w-100 mb-3 shadow-sm"
+          @click="añadirAlCarrito(producto)"
+        >
           <i class="pi pi-shopping-cart me-2"></i> Agregar al Carrito
         </button>
 
@@ -122,4 +125,3 @@ const disminuir = () => {
     <p>Cargando producto...</p>
   </div>
 </template>
-

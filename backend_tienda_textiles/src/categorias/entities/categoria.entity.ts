@@ -20,9 +20,6 @@ export class Categoria {
   @Column('varchar', { length: 200 })
   descripcion: string;
 
-  @Column({ name: 'imagen_url', type: 'varchar', length: 500, nullable: true })
-  imagenUrl: string;
-
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 

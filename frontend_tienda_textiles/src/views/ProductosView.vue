@@ -87,7 +87,7 @@ onMounted(obtenerProductos)
 
 /* Tarjeta de producto */
 .card-oferta {
-  background-color: #FAF0E6;
+  background-color: #faf0e6;
   border-radius: 12px;
   overflow: hidden;
   transition:

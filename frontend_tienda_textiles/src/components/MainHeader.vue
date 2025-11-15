@@ -60,7 +60,7 @@ onMounted(() => {
       <div class="container d-flex justify-content-between align-items-center flex-wrap">
         <!-- Logo -->
         <RouterLink to="/" class="logo">
-          <img src="@/assets/images/logoSansa.png" alt="MiniStore"/>
+          <img src="@/assets/images/logoSansa.png" alt="MiniStore" />
           <span class="slogan">El arte de tejer sonrisas</span>
         </RouterLink>
 
@@ -164,7 +164,7 @@ onMounted(() => {
   opacity: 0.8;
 }
 .middle-bar {
-  background: #FAF0E6;
+  background: #faf0e6;
   padding: 0.3rem 0;
   border-bottom: 1px solid #e2e8f0;
 }

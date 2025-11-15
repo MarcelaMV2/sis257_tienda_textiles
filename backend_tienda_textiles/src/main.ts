@@ -19,6 +19,7 @@ async function bootstrap() {
     .setDescription('API Rest del proyecto de sis257 Tienda textiles')
     .setVersion('1.0')
     .addTag('usuarios, categorias, productos,carrito,pedidos,pagos')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('apidoc', app, documentFactory);
