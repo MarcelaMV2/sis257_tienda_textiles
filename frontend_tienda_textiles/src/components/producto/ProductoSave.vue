@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import type { Categoria } from '@/models/categoria'
 import type { Producto } from '@/models/producto'
 import http from '@/plugins/axios'
@@ -41,21 +40,51 @@ async function obtenerCategorias() {
   categorias.value = await http.get('categorias').then((r) => r.data)
 }
 
+/* async function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  console.log('Archivo seleccionado para producto:', file);  // Verifica el archivo
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file); // El archivo que se enviará al backend
+  try {
+    const { data } = await http.post('/uploads', fd, {  // Verifica la URL
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log('Respuesta del backend:', data);  // Verifica la respuesta
+    if (data?.url) {
+      producto.value.imagenUrl = data.url;  // Guarda la URL de la imagen
+    }
+  } catch (err: any) {
+    console.error('Error al subir imagen:', err);
+    alert('No se pudo subir la imagen');
+  }
+} */
+
 async function onFileChange(e: Event) {
   const input = e.target as HTMLInputElement
   const file = input.files?.[0]
+
+  console.log('Archivo seleccionado:', file)
+
   if (!file) return
+
   const fd = new FormData()
   fd.append('file', file)
+
   try {
-    const { data } = await http.post('/uploads', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-    if (data?.url) producto.value.imagenUrl = data.url // ← se guarda internamente
+    // ← NO especifiques Content-Type, Axios lo detectará automáticamente
+    const { data } = await http.post('uploads', fd)
+
+    console.log('Respuesta del backend:', data)
+
+    if (data?.url) {
+      producto.value.imagenUrl = data.url
+    }
   } catch (err: any) {
-    alert(err?.response?.data?.message || 'No se pudo subir la imagen')
-  } finally {
-    input.value = ''
+    console.error('Error al subir imagen:', err)
+    console.error('Detalles:', err.response?.data)
+    alert('No se pudo subir la imagen')
   }
 }
 
@@ -113,7 +142,7 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar' : 'Crear'"
-      style="width: 28rem"
+      style="width: 0.28m; background-color: #fabf13"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="categoria" class="font-semibold w-3">Categoría</label>

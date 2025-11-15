@@ -20,17 +20,24 @@ defineProps<{
 </script>
 
 <style scoped>
-.category-card { aspect-ratio: 4 / 3; }
+.category-card {
+  aspect-ratio: 4 / 3;
+}
 .category-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.0) 40%, rgba(0,0,0,0.55) 100%);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 100%);
   color: #fff;
   opacity: 0.95;
-  transition: transform .25s ease, opacity .25s ease;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 .category-card:hover .category-overlay {
   transform: scale(1.02);
   opacity: 1;
 }
-.object-fit-cover { object-fit: cover; }
+.object-fit-cover {
+  object-fit: cover;
+}
 </style>

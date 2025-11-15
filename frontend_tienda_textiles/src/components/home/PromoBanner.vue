@@ -41,11 +41,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="py-5 bg-light">
+  <section class="py-5" style="background-color: #84e6fc">
     <div class="container">
-      <h3 class="fw-bold text-center mb-4 text-dark">
-        Productos de la categoría “Bebidas naturales”
-      </h3>
+      <h3 class="fw-bold text-center mb-4 text-dark">PRODUCTOS DESTACADOS</h3>
 
       <Swiper
         :modules="[Navigation, Autoplay]"
@@ -76,7 +74,9 @@ onMounted(() => {
               <div class="precios">
                 <span class="precio-oferta">Bs. {{ producto.precio }}</span>
               </div>
-              <button class="btn-comprar" @click="añadirAlCarrito(producto)">Añadir al carrito</button>
+              <button class="btn-comprar" @click="añadirAlCarrito(producto)">
+                Añadir al carrito
+              </button>
             </div>
           </div>
         </SwiperSlide>

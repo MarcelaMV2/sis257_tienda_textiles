@@ -16,7 +16,7 @@ const categorias = ref<Categoria[]>([])
 const imagenesCategorias: Record<string, string> = {
   'postres-sanos': new URL('@/assets/images/insta-item2.jpg', import.meta.url).href,
   'bebidas-naturales': new URL('@/assets/images/insta-item2.jpg', import.meta.url).href,
-  'comidas': new URL('@/assets/images/comidas.jpg', import.meta.url).href,
+  comidas: new URL('@/assets/images/comidas.jpg', import.meta.url).href,
 }
 
 const obtenerLista = async () => {
@@ -34,7 +34,8 @@ const categoriasConImagen = computed(() =>
     return {
       ...c,
       slug,
-      imagen: imagenesCategorias[slug] || new URL('@/assets/images/default.jpg', import.meta.url).href,
+      imagen:
+        imagenesCategorias[slug] || new URL('@/assets/images/default.jpg', import.meta.url).href,
     }
   }),
 )
@@ -70,14 +71,12 @@ onMounted(() => {
         >
           <div class="card-categoria shadow-sm">
             <div class="imagen-wrapper">
-              <img :src="categoria.imagen" :alt="categoria.nombre" />
+              <img :src="categoria.imagenUrl" :alt="categoria.nombre" />
             </div>
             <div class="info-box">
               <h5>{{ categoria.nombre }}</h5>
               <p>{{ categoria.descripcion }}</p>
-              <button class="btn-ver" @click.stop="irATienda(categoria.slug)">
-                Ver productos
-              </button>
+              <button class="btn-ver" @click.stop="irATienda(categoria.slug)">Ver productos</button>
             </div>
           </div>
         </SwiperSlide>
@@ -99,7 +98,9 @@ onMounted(() => {
   background-color: var(--color-white, #fff);
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   height: 100%;
 }
@@ -152,4 +153,3 @@ onMounted(() => {
   background-color: #1a365d;
 }
 </style>
-

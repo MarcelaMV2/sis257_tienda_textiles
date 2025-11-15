@@ -12,7 +12,7 @@ const { carrito, totalCarrito, vaciarCarrito } = usarCarrito()
 const EP_PEDIDOS = '/pedidos'
 const EP_DETALLES = '/pedido-productos'
 const EP_PAGOS = '/pagos'
-const EP_UPLOADS = '/uploads' // si subes comprobantes (ya tienes UploadsController)
+//const EP_UPLOADS = '/uploads' // si subes comprobantes (ya tienes UploadsController)
 
 const subtotal = computed(() => totalCarrito().toFixed(2))
 
@@ -56,7 +56,7 @@ function last4(num: string) {
   return onlyDigits.slice(-4) || ''
 }
 
-async function uploadComprobante(file: File): Promise<string> {
+/* async function uploadComprobante(file: File): Promise<string> {
   const fd = new FormData()
   fd.append('file', file) // tu UploadsController recibe 'file'
   const { data } = await http.post(EP_UPLOADS, fd, {
@@ -64,7 +64,7 @@ async function uploadComprobante(file: File): Promise<string> {
   })
   // adapta según respuesta de tu backend: url, path, filename, etc.
   return data?.url || data?.path || ''
-}
+} */
 
 // ==== Submit principal ====
 
@@ -223,7 +223,7 @@ async function confirmarPedido() {
           </div>
 
           <!-- Transferencia -->
-          <div v-if="pago.metodo === 'transferencia'" class="box-metodo">
+          <!-- <div v-if="pago.metodo === 'transferencia'" class="box-metodo">
             <p><strong>Nro de cuenta:</strong> 123-456789-00 (Banco X)</p>
             <p>Sube tu comprobante:</p>
             <input
@@ -233,20 +233,20 @@ async function confirmarPedido() {
                 (e) => (pago.comprobanteFile = (e.target as HTMLInputElement).files?.[0] || null)
               "
             />
-          </div>
+          </div> -->
 
           <!-- QR -->
-          <div v-if="pago.metodo === 'qr'" class="box-metodo">
-            <p>Escanea el QR y sube tu comprobante:</p>
-            <!-- <img src="/qr.png" alt="QR" style="max-width: 200px" /> -->
-            <input
+          <!--  <div v-if="pago.metodo === 'qr'" class="box-metodo">
+            <p>Escanea el QR y sube tu comprobante:</p> -->
+          <!-- <img src="/qr.png" alt="QR" style="max-width: 200px" /> -->
+          <!-- <input
               type="file"
               accept="image/*,.pdf"
               @change="
                 (e) => (pago.comprobanteFile = (e.target as HTMLInputElement).files?.[0] || null)
               "
             />
-          </div>
+          </div> -->
 
           <!-- Tarjeta (mock) -->
           <div v-if="pago.metodo === 'tarjeta'" class="grid-tarjeta">

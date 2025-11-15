@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import MainFooter from './components/MainFooter.vue';
-import MainHeader from './components/MainHeader.vue';
+import { RouterView } from 'vue-router'
+import MainFooter from './components/MainFooter.vue'
+import MainHeader from './components/MainHeader.vue'
 /* import MainFooter from './components/MainFooter.vue' */
 </script>
 
@@ -24,4 +24,3 @@ header {
   z-index: 1000;
 }
 </style>
-

@@ -1,18 +1,40 @@
 /* =========================
    VARIABLES + BASE
    ========================= */
-:root{
-  --brand:#2B6CB0;           /* primario (azul andino) */
-  --brand-600:#1E4E91;
-  --brand-200:#A9C3E8;
-  --ink:#1A202C;             /* texto principal */
-  --muted:#6B7280;           /* texto secundario */
-  --bg:#F7FAFC;              /* fondo app */
-  --white:#fff;
+:root {
+  --brand: #2b6cb0; /* primario (azul andino) */
+  --brand-600: #1e4e91;
+  --brand-200: #a9c3e8;
+  --ink: #1a202c; /* texto principal */
+  --muted: #6b7280; /* texto secundario */
+  --bg: #f7fafc; /* fondo app */
+  --white: #fff;
 }
 
-html,body,#app{width:100%;max-width:none;margin:0;padding:0;}
-body{background:var(--bg);color:var(--ink);font-family:"Jost",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";}
+html,
+body,
+#app {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    'Jost',
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Apple Color Emoji',
+    'Segoe UI Emoji';
+}
 
 /* Evitar que el contenido quede debajo del header fijo */
 /* @media (min-width: 992px){
@@ -23,66 +45,114 @@ body{background:var(--bg);color:var(--ink);font-family:"Jost",system-ui,-apple-s
 } */
 
 /* Contenedores Bootstrap: aseguran ancho full en desktop */
-.container,.container-sm,.container-md,.container-lg,.container-xl,.container-xxl{
-  max-width:1320px; width:100%;
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: 1320px;
+  width: 100%;
 }
 
 /* Links generales */
-a{color:var(--brand);text-decoration:none}
-a:hover{color:var(--brand-600)}
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--brand-600);
+}
 
 /* =========================
    HEADER (navbar)
    ========================= */
-.site-header{
-  position:fixed; top:0; left:0; right:0; z-index:1030;
-  background:var(--white);
-  border-bottom:1px solid rgba(0,0,0,.04);
-  box-shadow:0 2px 10px rgba(0,0,0,.04);
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: var(--white);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 /* Marca */
-.navbar-brand{
-  font-weight:700; letter-spacing:.2px; color:var(--ink) !important;
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--ink) !important;
 }
-.navbar-brand .dot{color:var(--brand);}
+.navbar-brand .dot {
+  color: var(--brand);
+}
 
 /* Toggler */
-.navbar-toggler{border:0; outline:0; padding:.25rem .5rem;}
-.navbar-toggler:focus{box-shadow:none}
+.navbar-toggler {
+  border: 0;
+  outline: 0;
+  padding: 0.25rem 0.5rem;
+}
+.navbar-toggler:focus {
+  box-shadow: none;
+}
 
 /* Items */
-.navbar-nav{gap:.5rem;}
-.navbar-nav .nav-link{
-  text-transform:uppercase;
-  font-weight:600; font-size:.9rem; letter-spacing:.04em;
-  color:var(--muted);
-  padding:.6rem .8rem;
-  border-radius:.5rem;
-  transition:color .2s ease, background-color .2s ease;
+.navbar-nav {
+  gap: 0.5rem;
 }
-.navbar-nav .nav-link:hover{color:var(--brand); background:rgba(43,108,176,.08);}
+.navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--brand);
+  background: rgba(43, 108, 176, 0.08);
+}
 .navbar-nav .nav-link.router-link-active,
-.navbar-nav .nav-link.router-link-exact-active{
-  color:#fff; background:var(--brand);
+.navbar-nav .nav-link.router-link-exact-active {
+  color: #fff;
+  background: var(--brand);
 }
 
 /* Dropdowns (si los usas) */
-.dropdown-menu{border-radius:.75rem; border-color:rgba(0,0,0,.06)}
-.dropdown-item{font-weight:500}
-.dropdown-item:hover{background:rgba(43,108,176,.08); color:var(--brand)}
+.dropdown-menu {
+  border-radius: 0.75rem;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+.dropdown-item {
+  font-weight: 500;
+}
+.dropdown-item:hover {
+  background: rgba(43, 108, 176, 0.08);
+  color: var(--brand);
+}
 
 /* Barra derecha (iconos / botones) */
-.header-actions{display:flex; align-items:center; gap:.5rem;}
-.header-actions .btn{
-  font-weight:600; letter-spacing:.02em;
-  border-radius:.6rem;
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.header-actions .btn {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 0.6rem;
 }
 
 /* Estados pegajosos opcionales (si luego añades JS para scroll) */
-.site-header.scrolled{
-  box-shadow:0 6px 24px rgba(0,0,0,.08);
-  border-color:transparent;
+.site-header.scrolled {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  border-color: transparent;
 }
 
 /*************PROMO BANNER*************/
@@ -162,7 +232,6 @@ a:hover{color:var(--brand-600)}
   color: white;
 }
 
-
 .clickable-card {
   cursor: pointer;
 }
@@ -223,7 +292,6 @@ a:hover{color:var(--brand-600)}
 .card-oferta:hover .overlay i {
   transform: scale(1.1);
 }
-
 
 /****************PRODUCTO DETALLE***************/
 :root {

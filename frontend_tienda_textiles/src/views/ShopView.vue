@@ -6,11 +6,7 @@
         <span v-if="selectedCategory" class="badge bg-primary">
           {{ selectedCategory }}
         </span>
-        <button
-          v-if="selectedCategory"
-          class="btn btn-link btn-sm"
-          @click="clearCategory"
-        >
+        <button v-if="selectedCategory" class="btn btn-link btn-sm" @click="clearCategory">
           limpiar
         </button>
       </div>
@@ -47,9 +43,9 @@ const router = useRouter()
 
 // Demo local; reemplaza por fetch a tu API.
 const products = [
-  { id: 1, name: 'Poncho andino',     category: 'calzado-hombre', image: 'poncho.jpg',  price: 120 },
-  { id: 2, name: 'Bufanda alpaca',    category: 'ballerinas',     image: 'bufanda.jpg', price: 80  },
-  { id: 3, name: 'Manta color tierra',category: 'bolsos',         image: 'manta.jpg',   price: 150 },
+  { id: 1, name: 'Poncho andino', category: 'calzado-hombre', image: 'poncho.jpg', price: 120 },
+  { id: 2, name: 'Bufanda alpaca', category: 'ballerinas', image: 'bufanda.jpg', price: 80 },
+  { id: 3, name: 'Manta color tierra', category: 'bolsos', image: 'manta.jpg', price: 150 },
   // …
 ]
 
@@ -57,7 +53,7 @@ const selectedCategory = computed(() => (route.query.category as string) || '')
 
 const visibleProducts = computed(() => {
   if (!selectedCategory.value) return products
-  return products.filter(p => p.category === selectedCategory.value)
+  return products.filter((p) => p.category === selectedCategory.value)
 })
 
 function clearCategory() {

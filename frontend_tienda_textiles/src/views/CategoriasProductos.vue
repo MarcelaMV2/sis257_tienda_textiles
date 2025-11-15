@@ -129,7 +129,7 @@ onMounted(async () => {
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background-color: var(--color-white, #fff);
+  background-color: #fabf13;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
@@ -189,17 +189,20 @@ onMounted(async () => {
 }
 
 .card-producto {
-  background-color: #fff;
+  background-color: #faf0e6;
   border-radius: 10px;
   overflow: hidden;
   transition: 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  border-color: #1a202c;
+  border: 1px solid;
 }
 
 .card-producto:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  background-color: white;
 }
 
 .imagen-wrapper {

@@ -42,12 +42,19 @@ onMounted(() => {
     <!-- 🔹 Top bar -->
     <div class="top-bar">
       <div class="container d-flex justify-content-between align-items-center">
+<<<<<<< HEAD
         <span>+ (591) 67399831</span>
+=======
+        <span style="color: black">📞 + (591) 67399831</span>
+        <div class="brand-logo">
+          <img src="@/assets/images/sansa.png" alt="Nombre del Logo" />
+        </div>
+>>>>>>> develop
         <div class="social-icons">
-          <i class="pi pi-instagram"></i>
-          <i class="pi pi-facebook"></i>
-          <i class="pi pi-envelope"></i>
-          <i class="pi pi-youtube"></i>
+          <i class="pi pi-instagram" style="color: #1a365d"></i>
+          <i class="pi pi-facebook" style="color: #1a365d"></i>
+          <i class="pi pi-envelope" style="color: #1a365d"></i>
+          <i class="pi pi-youtube" style="color: #1a365d"></i>
         </div>
       </div>
     </div>
@@ -57,7 +64,7 @@ onMounted(() => {
       <div class="container d-flex justify-content-between align-items-center flex-wrap">
         <!-- Logo -->
         <RouterLink to="/" class="logo">
-          <img src="@/assets/images/insta-item2.jpg" alt="MiniStore" />
+          <img src="@/assets/images/logoSansa.png" alt="MiniStore" />
           <span class="slogan">El arte de tejer sonrisas</span>
         </RouterLink>
 
@@ -137,11 +144,21 @@ onMounted(() => {
 <style scoped>
 /* (mismo CSS que antes) */
 .top-bar {
-  background-color: #7fc3c0;
+  background-color: #fabf13;
   color: white;
   font-size: 0.9rem;
-  padding: 0.3rem 0;
+  padding: 0.5rem 0;
 }
+
+.brand-logo img {
+  /* Define un tamaño máximo para que el logo no sea demasiado grande */
+  max-height: 25px;
+  /* El width automático mantiene la proporción de la imagen */
+  width: auto;
+  /* Puedes agregar un poco de margen si fuera necesario */
+  /* margin: 0 20px; */
+}
+
 .social-icons i {
   margin-left: 1rem;
   cursor: pointer;
@@ -151,12 +168,12 @@ onMounted(() => {
   opacity: 0.8;
 }
 .middle-bar {
-  background: #fff;
-  padding: 0.8rem 0;
+  background: #faf0e6;
+  padding: 0.3rem 0;
   border-bottom: 1px solid #e2e8f0;
 }
 .logo img {
-  height: 60px;
+  height: 100px;
 }
 .logo {
   display: flex;
@@ -203,17 +220,18 @@ onMounted(() => {
   color: #2b6cb0;
 }
 .main-navbar {
-  background-color: #7fc3c0;
+  padding: 5px;
+  background-color: #fabf13;
 }
 .main-navbar .nav-link {
-  color: white !important;
+  color: #1a202c !important;
   font-weight: 600;
   margin: 0 1rem;
   transition: color 0.2s;
 }
 .main-navbar .nav-link:hover,
 .main-navbar .nav-link.router-link-active {
-  color: #1a202c !important;
+  color: white !important;
 }
 .dropdown-menu {
   border-radius: 0.5rem;
