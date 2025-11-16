@@ -25,4 +25,17 @@ export class CreatePagoDto {
   @IsString({ message: 'El campo estado debe ser de tipo cadena' })
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly estado?: string;
+
+  // 👇 agregar
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString({ message: 'El campo comprobante debe ser de tipo cadena' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly comprobante?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString({ message: 'El campo maskedCard debe ser de tipo cadena' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly maskedCard?: string;
 }

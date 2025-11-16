@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import MainFooter from './components/MainFooter.vue';
-import MainHeader from './components/MainHeader.vue';
-/* import MainFooter from './components/MainFooter.vue' */
+import { RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import MainFooter from './components/MainFooter.vue'
+import MainHeader from './components/MainHeader.vue'
+
+const route = useRoute()
+const hideLayout = computed(() => {
+  const noLayoutNames = ['login', 'register']  // 👈 aquí añadimos register
+  return route.path.startsWith('/admin') || noLayoutNames.includes(route.name as string)
+})
 </script>
 
 <template>
-  <MainHeader />
+  <MainHeader v-if="!hideLayout" />
   <RouterView />
-
-  <MainFooter />
+  <MainFooter v-if="!hideLayout" />
 </template>
 
 <!-- <style>
@@ -24,4 +29,3 @@ header {
   z-index: 1000;
 }
 </style>
-

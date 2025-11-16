@@ -22,6 +22,12 @@ export class Pago {
   @Column('decimal', { precision: 10, scale: 2 })
   monto: number;
 
+  @Column('varchar', { length: 400, nullable: true })
+  comprobante: string | null;
+
+  @Column('varchar', { length: 20, name: 'masked_card', nullable: true })
+  maskedCard: string | null;
+
   @Column({ default: 'pendiente' })
   estado: string;
 

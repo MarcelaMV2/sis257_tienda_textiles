@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import SidebarAdmin from '@/components/admin/SidebarAdmin.vue';
-
-
+import SidebarAdmin from '@/components/admin/SidebarAdmin.vue'
 </script>
 
 <template>
@@ -10,9 +8,6 @@ import SidebarAdmin from '@/components/admin/SidebarAdmin.vue';
       <SidebarAdmin />
     </aside>
     <main class="content">
-      <header class="topbar">
-        <h2>Panel de Administración</h2>
-      </header>
       <section class="page">
         <router-view />
       </section>
@@ -25,20 +20,30 @@ import SidebarAdmin from '@/components/admin/SidebarAdmin.vue';
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 }
+
 .sidebar {
-  border-right: 1px solid #2d3748;
+  border-right: 1px solid #e5e7eb;
   padding: 1rem;
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
 }
+
 .content {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  background: #f8f9fa;
 }
-.topbar {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #2d3748;
-}
+
 .page {
-  padding: 1.25rem;
+  padding: 0;
+  flex: 1;
 }
 </style>

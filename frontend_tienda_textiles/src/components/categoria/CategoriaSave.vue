@@ -23,6 +23,7 @@ const dialogVisible = computed({
 })
 
 const categoria = ref<Categoria>({ ...props.categoria })
+
 watch(
   () => props.categoria,
   (newVal) => {
@@ -30,43 +31,70 @@ watch(
   },
 )
 
+watch(
+  () => props.mostrar,
+  (open) => {
+    if (open) {
+      if (props.categoria?.id) {
+        categoria.value = { ...props.categoria }
+      } else {
+        // Resetea para nuevo registro
+        categoria.value = {
+          id: 0,
+          nombre: '',
+          descripcion: '',
+          imagenUrl: '',
+        } as Categoria
+      }
+    }
+  },
+)
+
+async function onFileChange(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+
+  if (!file) return
+
+  const fd = new FormData()
+  fd.append('file', file)
+
+  try {
+    // No pongas Content-Type manualmente, axios lo detecta con FormData
+    const { data } = await http.post('uploads', fd)
+
+    if (data?.url) {
+      categoria.value.imagenUrl = data.url
+      console.log('Imagen subida:', data.url)
+    }
+  } catch (err: any) {
+    console.error('Error al subir imagen:', err)
+    alert(err?.response?.data?.message || 'No se pudo subir la imagen')
+  }
+}
+
 async function handleSave() {
   try {
     const body = {
       nombre: categoria.value.nombre,
       descripcion: categoria.value.descripcion,
+      imagenUrl: categoria.value.imagenUrl || '', // ← AGREGADO
     }
-    if (props.modoEdicion) {
-      console.log('body enviado:', body)
 
+    console.log('Body enviado:', body)
+
+    if (props.modoEdicion) {
       await http.patch(`${ENDPOINT}/${categoria.value.id}`, body)
     } else {
-      console.log('body enviadoFYTGHVGUV:', body)
       await http.post(ENDPOINT, body)
     }
+
     emit('guardar')
     categoria.value = {} as Categoria
     dialogVisible.value = false
   } catch (error: any) {
-    alert(error?.response?.data?.message)
-  }
-}
-
-async function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-  const fd = new FormData()
-  fd.append('file', file)
-  try {
-    const { data } = await http.post('/uploads', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-    if (data?.url) categoria.value.imagenUrl = data.url // ← se guarda internamente
-  } catch (err: any) {
-    alert(err?.response?.data?.message || 'No se pudo subir la imagen')
-  } finally {
-    input.value = ''
+    console.error('Error al guardar:', error)
+    alert(error?.response?.data?.message || 'Error al guardar la categoría')
   }
 }
 </script>
@@ -76,7 +104,7 @@ async function onFileChange(e: Event) {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar' : 'Crear'"
-      style="width: 25rem"
+      style="width: 28rem"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-3">Nombre</label>
@@ -86,8 +114,10 @@ async function onFileChange(e: Event) {
           class="flex-auto"
           autocomplete="off"
           autofocus
+          maxlength="60"
         />
       </div>
+
       <div class="flex items-center gap-4 mb-4">
         <label for="descripcion" class="font-semibold w-3">Descripción</label>
         <Textarea
@@ -100,19 +130,20 @@ async function onFileChange(e: Event) {
         />
       </div>
 
-      <!-- Subir imagen (único input visible) -->
+      <!-- Subir imagen -->
       <div class="flex items-center gap-4 mb-4">
         <label for="imagenFile" class="font-semibold w-3">Imagen</label>
         <input id="imagenFile" type="file" accept="image/*" @change="onFileChange" />
       </div>
 
-      <!-- Previsualización si ya hay URL (creación o edición) -->
-      <div v-if="categoria.imagenUrl" class="mb-4">
+      <!-- Previsualización -->
+      <div v-if="categoria.imagenUrl" class="mb-4 text-center">
         <img
           :src="categoria.imagenUrl"
-          alt="imagen producto"
-          style="width: 120px; border-radius: 6px"
+          alt="imagen categoría"
+          style="width: 120px; height: 120px; object-fit: cover; border-radius: 6px"
         />
+        <p class="text-xs text-gray-500 mt-1">Vista previa</p>
       </div>
 
       <div class="flex justify-end gap-2">
@@ -122,8 +153,8 @@ async function onFileChange(e: Event) {
           icon="pi pi-times"
           severity="secondary"
           @click="dialogVisible = false"
-        ></Button>
-        <Button type="button" label="Guardar" icon="pi pi-save" @click="handleSave"></Button>
+        />
+        <Button type="button" label="Guardar" icon="pi pi-save" @click="handleSave" />
       </div>
     </Dialog>
   </div>

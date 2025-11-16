@@ -25,25 +25,25 @@ const services = [
 
 <template>
   <div class="contenedor">
-  <section class="services py-5">
-    <div class="container">
-      <div class="row text-center">
-        <div class="col-md-3" v-for="(s, i) in services" :key="i">
-          <div class="service-box p-3">
-            <div class="icon fs-1 mb-3">{{ s.icon }}</div>
-            <h4 class="fw-semibold">{{ s.title }}</h4>
-            <p class="text-muted">{{ s.text }}</p>
+    <section class="services py-5">
+      <div class="container">
+        <div class="row text-center">
+          <div class="col-md-3" v-for="(s, i) in services" :key="i">
+            <div class="service-box p-3">
+              <div class="icon fs-1 mb-3">{{ s.icon }}</div>
+              <h4 class="fw-semibold">{{ s.title }}</h4>
+              <p class="text-muted">{{ s.text }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
   </div>
 </template>
 
 <style scoped>
 .contenedor {
-  background-color: #FEE3FE;
+  background-color: #fee3fe;
 }
 .service-box {
   background: var(--color-white);

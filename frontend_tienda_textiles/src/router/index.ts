@@ -1,44 +1,10 @@
-/* import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-    {
-      path: '/categorias',
-      name: 'categorias',
-      component: () => import('../views/admin/CategoriaView.vue'),
-    },
-    {
-      path: '/productos',
-      name: 'productos',
-      component: () => import('../views/admin/ProductoView.vue'),
-    },
-  ],
-})
-
-export default router
- */
-
 import { createRouter, createWebHistory } from 'vue-router'
 
-// públicas (como ya las tenías)
+// públicas
 import HomeView from '@/views/HomeView.vue'
 
 // layout admin
+import { getTokenFromLocalStorage, parseJwt } from '@/helpers'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = createRouter({
@@ -61,17 +27,12 @@ const router = createRouter({
       component: () => import('@/views/ShopView.vue'),
     },
 
-    // ⚠️ Mantén tus rutas viejas pero redirige al admin (no rompe tu menú actual)
+    // Rutas viejas redirigidas
     {
       path: '/categorias',
       name: 'categorias',
       redirect: '/admin/categorias',
     },
-    /* {
-      path: '/productos',
-      name: 'productos',
-      redirect: '/admin/productos',
-    }, */
     {
       path: '/productos',
       name: 'productos',
@@ -112,11 +73,35 @@ const router = createRouter({
       name: 'checkout-gracias',
       component: () => import('@/views/CheckoutGraciasView.vue'),
     },
-    // ADMIN (layout + children)
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+    },
+    {
+      path: '/mis-pedidos',
+      name: 'mis-pedidos',
+      component: () => import('@/views/MisPedidosView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/perfil',
+      name: 'perfil',
+      component: () => import('@/views/PerfilView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+       component: () => import('@/views/RegisterView.vue'),
+    },
+    // .
+
+    // ADMIN (layout + children) - Solo accesible para usuarios con rol admin
     {
       path: '/admin',
       component: AdminLayout,
-      // meta: { requiresAdmin: true }, // ← cuando quieras activar guard
+      meta: { requiresAuth: true, requiresAdmin: true },
       children: [
         { path: '', redirect: '/admin/productos' },
 
@@ -130,35 +115,83 @@ const router = createRouter({
           name: 'admin-categorias',
           component: () => import('@/views/admin/CategoriaView.vue'),
         },
-
-        // Si ya creaste estas vistas, habilítalas.
-        // {
-        //   path: 'pedidos',
-        //   name: 'admin-pedidos',
-        //   component: () => import('@/views/admin/PedidoView.vue'),
-        // },
-        // {
-        //   path: 'pagos',
-        //   name: 'admin-pagos',
-        //   component: () => import('@/views/admin/PagoView.vue'),
-        // },
+        {
+          path: 'pedidos',
+          name: 'admin-pedidos',
+          component: () => import('@/views/admin/PedidosAdminView.vue'),
+        },
+        {
+          path: 'pagos',
+          name: 'admin-pagos',
+          component: () => import('@/views/admin/PagosAdminView.vue'),
+        },
       ],
     },
 
-    // 404 opcional
-    // { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/views/NotFound.vue') },
+    // Ruta de acceso denegado
+    {
+      path: '/acceso-denegado',
+      name: 'acceso-denegado',
+      component: () => import('@/views/AccesoDenegadoView.vue'),
+    },
   ],
 })
 
-/* Guard opcional para cuando agregues roles
-router.beforeEach((to, _from, next) => {
+// Guard de navegación para verificar autenticación y rol de admin
+router.beforeEach((to, from, next) => {
+  const token = getTokenFromLocalStorage()
+
+  // Verificar si la ruta requiere rol de admin
   if (to.meta?.requiresAdmin) {
-    const raw = localStorage.getItem('user')
-    const user = raw ? JSON.parse(raw) : null
-    if (!user || user.rol !== 'admin') return next('/') // o /login
+    // Primero verificar si está autenticado
+    if (!token) {
+      // Si no hay token, redirigir al login con la URL de retorno
+      return next({
+        name: 'login',
+        query: { returnUrl: to.fullPath },
+      })
+    }
+
+    // Si tiene token, verificar el rol
+    try {
+      // Decodificar el token para obtener el rol del usuario
+      const decoded = parseJwt(token)
+      const userRole = decoded?.rol || decoded?.role || decoded?.tipo // Ajusta según tu estructura de JWT
+
+      // Verificar si el usuario es admin
+      if (userRole !== 'admin') {
+        // Si está logueado pero NO es admin, mostrar acceso denegado
+        return next({ name: 'acceso-denegado' })
+      }
+
+      // Si es admin, permitir acceso
+      return next()
+    } catch (error) {
+      console.error('Error al decodificar el token:', error)
+      // Si hay error al decodificar, cerrar sesión y redirigir al login
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      return next({
+        name: 'login',
+        query: { returnUrl: to.fullPath },
+      })
+    }
   }
+
+  // Verificar si la ruta requiere solo autenticación (sin ser admin)
+  if (to.meta?.requiresAuth && !to.meta?.requiresAdmin) {
+    if (!token) {
+      // Si no hay token, redirigir al login
+      return next({
+        name: 'login',
+        query: { returnUrl: to.fullPath },
+      })
+    }
+  }
+
+
+  // Si todo está bien, continuar con la navegación
   next()
 })
-*/
 
 export default router

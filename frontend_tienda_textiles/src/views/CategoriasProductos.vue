@@ -4,16 +4,27 @@ import http from '@/plugins/axios'
 import type { Producto } from '@/models/producto'
 import type { Categoria } from '@/models/categoria'
 import { useRoute, useRouter } from 'vue-router'
-import { usarCarrito } from '@/funciones/UsarCarrito' // ✅ Importar función del carrito
+import { usarCarrito } from '@/funciones/UsarCarrito'
+import Dialog from 'primevue/dialog' // ⬅️ nuevo
+import Button from 'primevue/button' // ⬅️ nuevo
 
 const route = useRoute()
 const router = useRouter()
-const { agregarProducto } = usarCarrito() // ✅ Instancia del carrito
+const { agregarProducto } = usarCarrito()
 
 const categorias = ref<Categoria[]>([])
 const productos = ref<Producto[]>([])
 const categoriaSeleccionada = ref<number | null>(null)
 const cargando = ref(false)
+
+// 🔐 control modal login
+const mostrarModalLogin = ref(false)
+
+// 🔐 helper para saber si está logueado
+function estaLogueado(): boolean {
+  // cambia 'token' por la clave real que uses en localStorage
+  return !!localStorage.getItem('token')
+}
 
 // 🟦 Obtener todas las categorías
 const obtenerCategorias = async () => {
@@ -45,14 +56,23 @@ const seleccionarCategoria = (cat: Categoria) => {
   obtenerProductosPorCategoria(cat.id)
 }
 
-// 🟦 Agregar producto al carrito
+// 🟦 Agregar producto al carrito (con validación de login)
 const añadirAlCarrito = (producto: Producto) => {
+  if (!estaLogueado()) {
+    mostrarModalLogin.value = true
+    return
+  }
   agregarProducto(producto, 1)
 }
 
 // 🟦 Ir al detalle del producto
 const irADetalle = (producto: Producto) => {
   router.push({ name: 'detalle-producto', params: { id: producto.id } })
+}
+
+// 🔐 Ir al login desde el modal
+const irALogin = () => {
+  router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
 
 onMounted(async () => {
@@ -116,6 +136,20 @@ onMounted(async () => {
       </div>
     </main>
   </div>
+
+  <!-- 🔒 Modal para pedir inicio de sesión -->
+  <Dialog
+    v-model:visible="mostrarModalLogin"
+    modal
+    header="Inicia sesión para continuar"
+    :style="{ width: '400px' }"
+  >
+    <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
+    <div class="d-flex justify-content-end gap-2">
+      <Button label="Cerrar" class="p-button-text" @click="mostrarModalLogin = false" />
+      <Button label="Ir al login" @click="irALogin" />
+    </div>
+  </Dialog>
 </template>
 
 <style scoped>
@@ -129,7 +163,7 @@ onMounted(async () => {
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background-color: #FABF13;
+  background-color: #fabf13;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
@@ -189,7 +223,7 @@ onMounted(async () => {
 }
 
 .card-producto {
-  background-color: #FAF0E6;
+  background-color: #faf0e6;
   border-radius: 10px;
   overflow: hidden;
   transition: 0.3s ease;

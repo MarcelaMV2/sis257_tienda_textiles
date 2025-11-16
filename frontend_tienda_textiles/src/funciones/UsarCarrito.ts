@@ -19,7 +19,7 @@ watch(
   (nuevoValor) => {
     localStorage.setItem('carrito', JSON.stringify(nuevoValor))
   },
-  { deep: true }
+  { deep: true },
 )
 
 export function usarCarrito() {
@@ -62,10 +62,7 @@ export function usarCarrito() {
 
   // 💰 Calcular total
   const totalCarrito = () =>
-    carrito.value.reduce(
-      (total, item) => total + item.producto.precio * item.cantidad,
-      0
-    )
+    carrito.value.reduce((total, item) => total + item.producto.precio * item.cantidad, 0)
 
   return {
     carrito,

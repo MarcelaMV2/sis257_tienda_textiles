@@ -15,11 +15,59 @@ export class PagosService {
   async create(dto: CreatePagoDto): Promise<Pago> {
     const pago = new Pago();
     Object.assign(pago, dto);
+
+    // normalizar método
+    const metodo = (dto.metodo || '').toLowerCase().trim();
+    pago.metodo = metodo;
+
+    // estado inicial por método
+    // transferencia/qr con comprobante => en_revision
+    // tarjeta (simulada) => pendiente
+    // otro => pendiente
+    pago.estado =
+      dto.estado?.trim().toLowerCase() ??
+      (metodo === 'transferencia' || metodo === 'qr'
+        ? dto.comprobante
+          ? 'en_revision'
+          : 'pendiente'
+        : 'pendiente');
+
+    // maskedCard solo aplica a tarjeta
+    if (metodo !== 'tarjeta') {
+      pago.maskedCard = null;
+    }
+
     return this.pagosRepository.save(pago);
   }
 
   async findAll(): Promise<Pago[]> {
-    return this.pagosRepository.find({ relations: ['pedido'] });
+    return this.pagosRepository.find({
+      relations: {
+        pedido: {
+          usuario: true,
+        },
+      },
+      select: {
+        id: true,
+        metodo: true,
+        monto: true,
+        estado: true,
+        comprobante: true,
+        maskedCard: true,
+        fechaPago: true,
+        pedido: {
+          id: true,
+          total: true,
+          estado: true,
+          usuario: {
+            id: true,
+            nombre: true,
+            email: true,
+          },
+        },
+      },
+      order: { id: 'DESC' },
+    });
   }
 
   async findOne(id: number): Promise<Pago> {

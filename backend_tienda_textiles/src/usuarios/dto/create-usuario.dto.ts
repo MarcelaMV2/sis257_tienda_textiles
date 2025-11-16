@@ -30,6 +30,12 @@ export class CreateUsuarioDto {
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly email: string;
 
+  @ApiProperty({ description: 'Teléfono de contacto', example: '+59170000000' })
+  @IsString({ message: 'El campo telefono debe ser una cadena' })
+  @MaxLength(20, { message: 'El campo telefono no debe exceder 20 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  telefono: string;
+
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo rol es obligatorio' })
   @IsString({ message: 'El campo rol debe ser de tipo cadena' })
