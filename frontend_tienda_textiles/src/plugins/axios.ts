@@ -9,11 +9,11 @@ const axios: AxiosInstance = Axios.create({
 axios.interceptors.request.use((config) => {
   config.headers = config.headers || {}
 
-  // ← Si el body es FormData, NO toques el Content-Type
-  // Axios lo manejará automáticamente con el boundary correcto
+  // ← Detecta si el body es FormData
   if (!(config.data instanceof FormData)) {
     config.headers['Content-Type'] = 'application/json'
   }
+  // Si ES FormData, no toques Content-Type y déjalo como está
 
   const token = getTokenFromLocalStorage()
   if (token) {

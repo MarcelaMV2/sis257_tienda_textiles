@@ -41,7 +41,33 @@ export class PagosService {
   }
 
   async findAll(): Promise<Pago[]> {
-    return this.pagosRepository.find({ relations: ['pedido'] });
+    return this.pagosRepository.find({
+      relations: {
+        pedido: {
+          usuario: true,
+        },
+      },
+      select: {
+        id: true,
+        metodo: true,
+        monto: true,
+        estado: true,
+        comprobante: true,
+        maskedCard: true,
+        fechaPago: true,
+        pedido: {
+          id: true,
+          total: true,
+          estado: true,
+          usuario: {
+            id: true,
+            nombre: true,
+            email: true,
+          },
+        },
+      },
+      order: { id: 'DESC' },
+    });
   }
 
   async findOne(id: number): Promise<Pago> {

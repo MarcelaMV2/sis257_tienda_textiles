@@ -123,7 +123,7 @@ export class PedidosService {
   }
 
   async cambiarEstado(id: number, estado: string): Promise<Pedido> {
-    const permitidos = ['pendiente', 'confirmado', 'enviado', 'entregado', 'cancelado'];
+    const permitidos = ['pendiente', 'entregado', 'enviado', 'confirmado', 'cancelado'];
     if (!permitidos.includes(estado)) {
       throw new BadRequestException('Estado inválido');
     }

@@ -1,9 +1,12 @@
+// ProductoDetalle.vue (tu archivo de producto detalle)
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import http from '@/plugins/axios'
 import type { Producto } from '@/models/producto'
 import { usarCarrito } from '@/funciones/UsarCarrito'
+import Dialog from 'primevue/dialog' // ⬅️ si usas PrimeVue
+import Button from 'primevue/button'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +15,15 @@ const relacionados = ref<Producto[]>([])
 const cantidad = ref(1)
 const cargando = ref(true)
 const { agregarProducto } = usarCarrito()
+
+// 🔐 control del modal de login
+const mostrarModalLogin = ref(false)
+
+// 👀 función auxiliar para saber si está logueado
+function estaLogueado(): boolean {
+  // Cambia 'token' por la clave que tú uses en localStorage
+  return !!localStorage.getItem('token')
+}
 
 const obtenerProducto = async () => {
   cargando.value = true
@@ -30,8 +42,19 @@ const obtenerProducto = async () => {
   }
 }
 
+// ⬇️ aquí metemos la validación
 const añadirAlCarrito = (producto: Producto) => {
-  agregarProducto(producto, 1)
+  if (!estaLogueado()) {
+    mostrarModalLogin.value = true
+    return
+  }
+  agregarProducto(producto, cantidad.value)
+}
+
+// ir al login desde el modal
+const irALogin = () => {
+  // opcional: mandar la ruta actual para que vuelva después de loguearse
+  router.push({ name: 'login', query: { redirect: route.fullPath } })
 }
 
 onMounted(() => obtenerProducto())
@@ -66,7 +89,7 @@ const disminuir = () => {
 
         <div class="d-flex align-items-center gap-3 mb-3">
           <label class="fw-semibold">Cantidad:</label>
-          <div class="input-group cantidad-control" style="width: 120px">
+          <div class="input-group cantidad-control">
             <button class="btn btn-outline-dark" @click="disminuir">−</button>
             <input type="number" v-model="cantidad" class="form-control text-center" min="1" />
             <button class="btn btn-outline-dark" @click="aumentar">+</button>
@@ -80,10 +103,10 @@ const disminuir = () => {
           <i class="pi pi-shopping-cart me-2"></i> Agregar al Carrito
         </button>
 
-        <p class="text-success fw-semibold mb-3">
+        <!-- <p class="text-success fw-semibold mb-3">
           <i class="pi pi-check-circle me-2"></i>
           Stock disponible: {{ producto.stock }} unidades
-        </p>
+        </p> -->
 
         <h5 class="fw-bold">Descripción</h5>
         <p class="text-muted">{{ producto.descripcion }}</p>
@@ -124,4 +147,43 @@ const disminuir = () => {
     <div class="spinner-border text-primary mb-3"></div>
     <p>Cargando producto...</p>
   </div>
+
+  <!-- 🔒 Modal para pedir login -->
+  <Dialog
+    v-model:visible="mostrarModalLogin"
+    modal
+    header="Inicia sesión para continuar"
+    :style="{ width: '400px' }"
+  >
+    <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
+    <div class="d-flex justify-content-end gap-2">
+      <Button label="Cerrar" class="p-button-text" @click="mostrarModalLogin = false" />
+      <Button label="Ir al login" @click="irALogin" />
+    </div>
+  </Dialog>
 </template>
+
+<style scoped>
+.cantidad-control {
+  width: 130px;          /* ancho compacto */
+  flex: 0 0 auto;        /* que NO se estire a todo el ancho */
+}
+
+.cantidad-control .form-control {
+  text-align: center;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+/* Opcional: ocultar flechitas del number */
+.cantidad-control input[type='number']::-webkit-outer-spin-button,
+.cantidad-control input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.cantidad-control input[type='number'] {
+  -moz-appearance: textfield;
+}
+</style>
+
+

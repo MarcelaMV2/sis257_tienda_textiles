@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import http from '@/plugins/axios' // 👈 usa tu instancia axios configurada (como usas en tus otros componentes)
 import { usarCarrito } from '@/funciones/UsarCarrito'
 import CarritoPanel from './CarritoPanel.vue'
+import { getTokenFromLocalStorage, parseJwt } from '@/helpers'
+import { useRouter } from 'vue-router'
 
 // Estados
 const categorias = ref<{ id: number; nombre: string }[]>([])
@@ -12,6 +14,10 @@ const errorCategorias = ref<string | null>(null)
 
 const { carrito } = usarCarrito()
 const mostrarCarrito = ref(false)
+const router = useRouter()
+const mostrarMenuUsuario = ref(false)
+const usuarioLogueado = ref(false)
+const emailUsuario = ref('')
 
 // contador dinámico
 const carritoCount = computed(() => carrito.value.reduce((s, item) => s + item.cantidad, 0))
@@ -31,9 +37,45 @@ const obtenerCategorias = async () => {
   }
 }
 
+const verificarSesion = () => {
+  const token = getTokenFromLocalStorage()
+  if (token) {
+    usuarioLogueado.value = true
+    const decoded = parseJwt(token)
+    emailUsuario.value = decoded?.email || 'Usuario'
+  } else {
+    usuarioLogueado.value = false
+  }
+}
+
+const cerrarSesion = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  usuarioLogueado.value = false
+  mostrarMenuUsuario.value = false
+  router.push('/')
+}
+
+const irALogin = () => {
+  router.push('/login')
+}
+
+const cerrarMenuUsuario = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.user-menu')) {
+    mostrarMenuUsuario.value = false
+  }
+}
+
 // Cargar automáticamente
 onMounted(() => {
   obtenerCategorias()
+  verificarSesion()
+  document.addEventListener('click', cerrarMenuUsuario)  // ← Agregar
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', cerrarMenuUsuario)
 })
 </script>
 
@@ -42,14 +84,10 @@ onMounted(() => {
     <!-- 🔹 Top bar -->
     <div class="top-bar">
       <div class="container d-flex justify-content-between align-items-center">
-<<<<<<< HEAD
-        <span>+ (591) 67399831</span>
-=======
-        <span style="color: black">📞 + (591) 67399831</span>
+        <span style="color: black">+ (591) 67399831</span>
         <div class="brand-logo">
           <img src="@/assets/images/sansa.png" alt="Nombre del Logo" />
         </div>
->>>>>>> develop
         <div class="social-icons">
           <i class="pi pi-instagram" style="color: #1a365d"></i>
           <i class="pi pi-facebook" style="color: #1a365d"></i>
@@ -65,7 +103,6 @@ onMounted(() => {
         <!-- Logo -->
         <RouterLink to="/" class="logo">
           <img src="@/assets/images/logoSansa.png" alt="MiniStore" />
-          <span class="slogan">El arte de tejer sonrisas</span>
         </RouterLink>
 
         <!-- Buscador -->
@@ -76,9 +113,38 @@ onMounted(() => {
 
         <!-- Usuario / Carrito -->
         <div class="user-cart d-flex align-items-center gap-4">
-          <RouterLink to="/mi-cuenta" class="user-icon">
-            <i class="pi pi-user"></i>
-          </RouterLink>
+          <!-- Usuario con dropdown -->
+          <div class="user-menu position-relative">
+            <!-- Si NO está logueado -->
+            <div v-if="!usuarioLogueado" @click="irALogin" class="user-icon">
+              <i class="pi pi-user"></i>
+            </div>
+
+            <!-- Si SÍ está logueado -->
+            <div v-else @click="mostrarMenuUsuario = !mostrarMenuUsuario" class="user-icon">
+              <i class="pi pi-user"></i>
+            </div>
+
+            <!-- Dropdown menu -->
+            <div v-if="usuarioLogueado && mostrarMenuUsuario" class="user-dropdown">
+              <div class="user-email">{{ emailUsuario }}</div>
+              <div class="dropdown-divider"></div>
+              <RouterLink to="/perfil" class="dropdown-item" @click="mostrarMenuUsuario = false">
+                <i class="pi pi-user"></i> Mi Perfil
+              </RouterLink>
+              <RouterLink
+                to="/mis-pedidos"
+                class="dropdown-item"
+                @click="mostrarMenuUsuario = false"
+              >
+                <i class="pi pi-shopping-bag"></i> Mis Pedidos
+              </RouterLink>
+              <div class="dropdown-divider"></div>
+              <a @click="cerrarSesion" class="dropdown-item logout">
+                <i class="pi pi-sign-out"></i> Cerrar Sesión
+              </a>
+            </div>
+          </div>
 
           <!-- 🟢 Ícono de carrito que abre el panel lateral -->
           <div class="cart-icon position-relative" @click="mostrarCarrito = true">
@@ -241,5 +307,66 @@ onMounted(() => {
 .dropdown-item:hover {
   background-color: #7fc3c0;
   color: white;
+}
+.user-menu {
+  position: relative;
+}
+
+.user-icon {
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.user-icon:hover {
+  opacity: 0.7;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  z-index: 1000;
+  padding: 8px 0;
+}
+
+.user-email {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #2b6cb0;
+  font-size: 0.9rem;
+}
+
+.user-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #1a202c;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-dropdown .dropdown-item:hover {
+  background: #f7fafc;
+}
+
+.user-dropdown .dropdown-item.logout {
+  color: #e53e3e;
+}
+
+.user-dropdown .dropdown-item.logout:hover {
+  background: #fff5f5;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 8px 0;
 }
 </style>

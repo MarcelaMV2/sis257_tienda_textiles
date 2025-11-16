@@ -18,11 +18,12 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { PickType } from '@nestjs/mapped-types';
 import { IsIn, IsString } from 'class-validator';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 // Derivado del existente, pero SOLO con 'estado'
 class UpdateEstadoPedidoDto {
   @IsString({ message: 'El estado es obligatorio' })
-  @IsIn(['pendiente', 'confirmado', 'cancelado'], {
+  @IsIn(['pendiente', 'entregado', 'cancelado'], {
     message: 'Estado inválido',
   })
   estado!: string;
@@ -47,11 +48,27 @@ export class PedidosController {
     return this.pedidosService.findAll();
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /* @UseGuards(AuthGuard('jwt'))
   @Get('mios')
   async misPedidos(@Req() req) {
     // req.user.sub viene del JWT
     return this.pedidosService.findByUser(req.user.sub);
+  } */
+
+  // IMPORTANTE: usa JwtAuthGuard en vez de AuthGuard('jwt') para que respete @Public()
+  @UseGuards(AuthGuard('jwt'))
+  @Get('mios')
+  async misPedidos(@Req() req) {
+    console.log('req.user en /pedidos/mios =>', req.user); // para ver qué llega
+
+    // OJO: JwtStrategy.validate devuelve un Usuario completo
+    const userId = req.user?.id;
+
+    if (!userId) {
+      throw new UnauthorizedException('No se pudo obtener el ID del usuario');
+    }
+
+    return this.pedidosService.findByUser(userId);
   }
 
   @Get(':id')

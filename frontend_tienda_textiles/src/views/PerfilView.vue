@@ -32,33 +32,38 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="profile-wrap">
-    <header class="toolbar">
-      <h2>Mi Perfil</h2>
-    </header>
+  <div class="perfil-container">
+    <section class="profile-wrap">
+      <header class="toolbar">
+        <h2>Mi Perfil</h2>
+      </header>
 
-    <div v-if="error" class="alert error">{{ error }}</div>
-    <div v-else>
-      <div class="profile-card">
-        <div class="profile-item">
-          <strong>Nombre:</strong>
-          <span>{{ usuario.nombre }}</span>
+      <div v-if="error" class="alert error">{{ error }}</div>
+      <div v-else>
+        <div class="profile-card">
+          <div class="profile-item">
+            <strong>Nombre:</strong>
+            <span>{{ usuario.nombre }}</span>
+          </div>
+          <div class="profile-item">
+            <strong>Email:</strong>
+            <span>{{ usuario.email }}</span>
+          </div>
+          <div class="profile-item">
+            <strong>Teléfono:</strong>
+            <span>{{ usuario.telefono || 'No disponible' }}</span>
+          </div>
+          <!-- Aquí puedes agregar un formulario para editar el perfil -->
+          <RouterLink to="/mis-pedidos" class="button">mis pedidos</RouterLink>
         </div>
-        <div class="profile-item">
-          <strong>Email:</strong>
-          <span>{{ usuario.email }}</span>
-        </div>
-        <div class="profile-item">
-          <strong>Teléfono:</strong>
-          <span>{{ usuario.telefono || 'No disponible' }}</span>
-        </div>
-        <!-- Aquí puedes agregar un formulario para editar el perfil -->
-         <RouterLink to="/mis-pedidos" class="button">mis pedidos</RouterLink>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-/* Estilos básicos para el perfil */
+.perfil-container {
+  min-height: calc(100vh - 400px); /* Ajusta el 400px según la altura de tu header + footer */
+  padding: 40px 20px;
+}
 </style>

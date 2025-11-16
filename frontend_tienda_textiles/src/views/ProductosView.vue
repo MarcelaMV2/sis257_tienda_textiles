@@ -4,11 +4,20 @@ import http from '@/plugins/axios'
 import { useRouter } from 'vue-router'
 import { usarCarrito } from '@/funciones/UsarCarrito'
 import type { Producto } from '@/models/producto'
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
 
 const router = useRouter()
 const productos = ref<Producto[]>([])
 const cargando = ref(false)
 const { agregarProducto } = usarCarrito()
+
+// 🔐 modal de login
+const mostrarModalLogin = ref(false)
+
+function estaLogueado(): boolean {
+  return !!localStorage.getItem('token') // cambia 'token' si usas otro nombre
+}
 
 const obtenerProductos = async () => {
   cargando.value = true
@@ -23,11 +32,19 @@ const obtenerProductos = async () => {
 }
 
 const añadirAlCarrito = (producto: Producto) => {
+  if (!estaLogueado()) {
+    mostrarModalLogin.value = true
+    return
+  }
   agregarProducto(producto, 1)
 }
 
 const irADetalle = (producto: Producto) => {
   router.push({ name: 'detalle-producto', params: { id: producto.id } })
+}
+
+const irALogin = () => {
+  router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
 
 onMounted(obtenerProductos)
@@ -75,6 +92,20 @@ onMounted(obtenerProductos)
       </div>
     </div>
   </section>
+
+  <!-- 🔒 Modal de login -->
+  <Dialog
+    v-model:visible="mostrarModalLogin"
+    modal
+    header="Inicia sesión para continuar"
+    :style="{ width: '400px' }"
+  >
+    <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
+    <div class="d-flex justify-content-end gap-2">
+      <Button label="Cerrar" class="p-button-text" @click="mostrarModalLogin = false" />
+      <Button label="Ir al login" @click="irALogin" />
+    </div>
+  </Dialog>
 </template>
 
 <style scoped>

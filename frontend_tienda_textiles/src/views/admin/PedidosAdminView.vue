@@ -13,42 +13,44 @@ type PedidoProducto = {
 
 type Pago = {
   id: number
-  metodo: 'efectivo' | 'transferencia' | 'qr' | 'tarjeta'
+  metodo: string
   estado: string
   comprobante?: string
-  maskedCard?: string
   fechaPago?: string
 }
 
 type Pedido = {
   id: number
   total: number
-  estado: 'pendiente' | 'confirmado' | 'cancelado'
+  estado: 'pendiente' | 'entregado' | 'cancelado'
   metodoPago: string
   tipoEnvio: string
   direccion?: string
   referencia?: string
   departamento?: string
   pais?: string
-  usuario?: { id: number; nombre: string; email?: string }
+  usuario?: { nombre: string; email?: string }
   fechaCreacion?: string
   pedidosProductos?: PedidoProducto[]
   pagos?: Pago[]
 }
 
 const router = useRouter()
-
-// --- estado UI ---
 const cargando = ref(true)
-const error = ref<string | null>(null)
 const pedidos = ref<Pedido[]>([])
-const filtroEstado = ref<'todos' | 'pendiente' | 'confirmado' | 'cancelado'>('todos')
+const filtroEstado = ref<'todos' | 'pendiente' | 'entregado' | 'cancelado'>('todos')
 const q = ref('')
-const abierto = ref<number | null>(null) // id del pedido abierto (detalle)
+const abierto = ref<number | null>(null)
+const paginaActual = ref(1)
+const itemsPorPagina = ref(10)
 
-const estados = ['pendiente', 'confirmado', 'cancelado'] as const
+// Modales
+const mostrarModal = ref(false)
+const imagenModal = ref('')
+const mostrarModalConfirm = ref(false)
+const mensajeConfirm = ref('')
+const accionConfirm = ref<(() => Promise<void>) | null>(null)
 
-// --- auth mínima: exigir admin ---
 onMounted(async () => {
   const token = getTokenFromLocalStorage()
   const payload = token ? parseJwt(token) : null
@@ -62,53 +64,104 @@ onMounted(async () => {
 
 async function cargarPedidos() {
   cargando.value = true
-  error.value = null
   try {
     const { data } = await http.get<Pedido[]>('/pedidos')
-    // /pedidos viene “compacto”; cuando abras un detalle, se pedirá /pedidos/:id
+    for (const pedido of data) {
+      try {
+        const { data: detalle } = await http.get(`/pedidos/${pedido.id}`)
+        // Asignar todos los datos del detalle al pedido
+        Object.assign(pedido, detalle)
+        pedido.pagos = detalle.pagos || []
+        pedido.pedidosProductos = detalle.pedidosProductos || []
+      } catch (e) {
+        pedido.pagos = []
+        pedido.pedidosProductos = []
+      }
+    }
     pedidos.value = data
   } catch (e: any) {
-    error.value = e?.response?.data?.message || 'No se pudieron cargar los pedidos'
+    alert(e?.response?.data?.message || 'Error al cargar pedidos')
   } finally {
     cargando.value = false
   }
 }
 
-async function abrirDetalle(id: number) {
-  try {
-    const { data } = await http.get(`/pedidos/${id}`)
-    const i = pedidos.value.findIndex((p) => p.id === id)
-    if (i >= 0) {
-      pedidos.value[i] = {
-        ...pedidos.value[i],
-        ...data,
-        pedidosProductos: data.pedidosProductos ?? [],
-        pagos: data.pagos ?? [],
-      }
+function handleCambioEstadoPedido(pedido: Pedido, nuevoEstado: string) {
+  abrirModalConfirm(`¿Desea cambiar el estado del pedido a "${nuevoEstado}"?`, async () => {
+    try {
+      await http.patch(`/pedidos/${pedido.id}/estado`, { estado: nuevoEstado })
+      pedido.estado = nuevoEstado as any
+    } catch (e: any) {
+      alert(e?.response?.data?.message || 'Error al actualizar')
     }
-    abierto.value = id
-  } catch {
-    alert('No se pudo cargar el detalle')
+  })
+}
+
+function handleCambioEstadoPago(pedido: Pedido, nuevoEstado: string) {
+  if (!pedido.pagos?.[0]) {
+    alert('Este pedido no tiene registro de pago')
+    return
+  }
+
+  abrirModalConfirm(
+    `¿Desea cambiar el estado del pago a "${nuevoEstado.replace('_', ' ')}"?`,
+    async () => {
+      try {
+        const pago = pedido.pagos![0]
+        await http.patch(`/pagos/${pago.id}`, { estado: nuevoEstado })
+        pago.estado = nuevoEstado
+
+        if (nuevoEstado === 'rechazado') {
+          await http.patch(`/pedidos/${pedido.id}/estado`, { estado: 'cancelado' })
+          pedido.estado = 'cancelado'
+          alert('El pago fue rechazado y el pedido ha sido cancelado automáticamente')
+        }
+      } catch (e: any) {
+        alert(e?.response?.data?.message || 'Error al actualizar')
+      }
+    },
+  )
+}
+
+function toggleDetalle(id: number) {
+  abierto.value = abierto.value === id ? null : id
+}
+
+function verComprobante(url: string) {
+  imagenModal.value = url
+  mostrarModal.value = true
+}
+
+function cerrarModal() {
+  mostrarModal.value = false
+  imagenModal.value = ''
+}
+
+/***MODALES DE ESTADO DE PAGO Y PEDIDO */
+function abrirModalConfirm(mensaje: string, accion: () => Promise<void>) {
+  mensajeConfirm.value = mensaje
+  accionConfirm.value = accion
+  mostrarModalConfirm.value = true
+}
+
+function cancelarConfirm() {
+  mostrarModalConfirm.value = false
+  mensajeConfirm.value = ''
+  accionConfirm.value = null
+}
+
+async function ejecutarConfirm() {
+  mostrarModalConfirm.value = false
+  if (accionConfirm.value) {
+    await accionConfirm.value()
+    accionConfirm.value = null
   }
 }
 
-async function cambiarEstado(id: number, estado: Pedido['estado']) {
-  const prev = pedidos.value.find((p) => p.id === id)?.estado
-  // optimista
-  const i = pedidos.value.findIndex((p) => p.id === id)
-  if (i >= 0) pedidos.value[i] = { ...pedidos.value[i], estado }
-
-  try {
-    await http.patch(`/pedidos/${id}/estado`, { estado })
-    // OK
-  } catch (e: any) {
-    // revertir
-    if (i >= 0 && prev) pedidos.value[i].estado = prev as Pedido['estado']
-    alert(e?.response?.data?.message || 'No se pudo actualizar el estado')
-  }
+function obtenerEstadoPago(p: Pedido): string {
+  return p.pagos?.[0]?.estado || 'sin_pago'
 }
 
-// --- filtros ---
 const filtrados = computed(() => {
   let arr = [...pedidos.value]
   if (filtroEstado.value !== 'todos') {
@@ -123,151 +176,185 @@ const filtrados = computed(() => {
         (p.usuario?.email || '').toLowerCase().includes(s),
     )
   }
-  // más recientes primero (si el backend no lo hace)
   return arr.sort((a, b) => b.id - a.id)
 })
 
+const totalPaginas = computed(() => Math.ceil(filtrados.value.length / itemsPorPagina.value))
+
+const paginados = computed(() => {
+  const inicio = (paginaActual.value - 1) * itemsPorPagina.value
+  return filtrados.value.slice(inicio, inicio + itemsPorPagina.value)
+})
+
+function cambiarPagina(p: number) {
+  if (p >= 1 && p <= totalPaginas.value) {
+    paginaActual.value = p
+    abierto.value = null
+  }
+}
+
 function fmtFecha(iso?: string) {
-  if (!iso) return ''
-  const d = new Date(iso)
-  return isNaN(+d) ? '' : d.toLocaleString()
+  if (!iso) return '—'
+  return new Date(iso).toLocaleString()
 }
 
 function fmtBs(n?: number) {
-  if (n == null) return '0.00'
+  if (n == null || n === undefined) return '0.00'
   return Number(n).toFixed(2)
 }
 </script>
 
 <template>
   <section class="admin-wrap">
-    <header class="toolbar">
-      <h2>Pedidos (Admin)</h2>
-
+    <!-- Header -->
+    <div class="header">
+      <h2>Pedidos</h2>
       <div class="filters">
-        <input v-model="q" type="search" placeholder="Buscar por #, cliente o email…" />
+        <input v-model="q" type="search" placeholder="Buscar..." />
         <select v-model="filtroEstado">
           <option value="todos">Todos</option>
           <option value="pendiente">Pendiente</option>
-          <option value="confirmado">Confirmado</option>
+          <option value="entregado">Entregado</option>
           <option value="cancelado">Cancelado</option>
         </select>
-        <button class="btn" @click="cargarPedidos" :disabled="cargando">
-          {{ cargando ? 'Actualizando…' : 'Actualizar' }}
-        </button>
       </div>
-    </header>
+    </div>
 
-    <div v-if="error" class="alert error">{{ error }}</div>
-    <div v-else class="card">
-      <table class="tabla">
+    <!-- Tabla -->
+    <div class="card">
+      <table>
         <thead>
           <tr>
             <th>#</th>
             <th>Cliente</th>
             <th>Total (Bs.)</th>
             <th>Método</th>
-            <th>Estado</th>
+            <th>Estado Pago</th>
+            <th>Estado Pedido</th>
             <th>Fecha</th>
-            <th style="width: 160px">Acciones</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Un solo v-for que envuelve la fila normal y la fila de detalle -->
-          <template v-for="p in filtrados" :key="p.id">
-            <!-- Fila principal -->
+          <template v-for="p in paginados" :key="p.id">
             <tr>
-              <td>#{{ p.id }}</td>
+              <td>{{ p.id }}</td>
               <td>
-                <div class="cliente">
-                  <strong>{{ p.usuario?.nombre ?? '—' }}</strong>
-                  <small v-if="p.usuario?.email">{{ p.usuario.email }}</small>
-                </div>
+                <strong>{{ p.usuario?.nombre || '—' }}</strong>
+                <small v-if="p.usuario?.email">{{ p.usuario.email }}</small>
               </td>
-              <td class="moneda">{{ fmtBs(p.total) }}</td>
-              <td>{{ p.metodoPago ?? '—' }}</td>
+              <td>
+                <strong>{{ fmtBs(p.total) }}</strong>
+              </td>
+              <td>{{ p.metodoPago }}</td>
               <td>
                 <select
-                  class="pill"
-                  :class="p.estado"
-                  v-model="p.estado"
-                  @change="cambiarEstado(p.id, p.estado)"
+                  v-if="p.pagos?.[0]"
+                  class="badge"
+                  :class="obtenerEstadoPago(p)"
+                  :value="obtenerEstadoPago(p)"
+                  @change="handleCambioEstadoPago(p, ($event.target as HTMLSelectElement).value)"
                 >
-                  <option value="pendiente">pendiente</option>
-                  <option value="confirmado">confirmado</option>
-                  <option value="cancelado">cancelado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en_revision">En Revisión</option>
+                  <option value="aprobado">Aprobado</option>
+                  <option value="rechazado">Rechazado</option>
+                </select>
+                <span v-else class="badge sin">Sin pago</span>
+              </td>
+              <td>
+                <select
+                  class="badge"
+                  :class="p.estado"
+                  :value="p.estado"
+                  @change="handleCambioEstadoPedido(p, ($event.target as HTMLSelectElement).value)"
+                >
+                  <option value="pendiente">Pendiente</option>
+                  <option value="entregado">Entregado</option>
+                  <option value="cancelado">Cancelado</option>
                 </select>
               </td>
               <td>{{ fmtFecha(p.fechaCreacion) }}</td>
-              <td class="acciones">
-                <button class="btn-sec" @click="abrirDetalle(p.id)">
+              <td>
+                <button class="btn-action" @click="toggleDetalle(p.id)">
                   {{ abierto === p.id ? 'Ocultar' : 'Ver' }}
                 </button>
               </td>
             </tr>
 
-            <!-- Fila de detalle (NO lleva v-for) -->
-            <tr v-if="abierto === p.id" class="detalle" :key="`det-${p.id}`">
-              <td colspan="7">
-                <div class="detalle-grid">
-                  <section>
+            <!-- Detalle -->
+            <tr v-if="abierto === p.id" class="detalle">
+              <td colspan="8">
+                <div class="detalle-content">
+                  <!-- Productos -->
+                  <div class="detalle-box">
                     <h4>Productos</h4>
-                    <div v-if="!p.pedidosProductos?.length" class="empty">Sin ítems</div>
-                    <ul v-else class="lista-productos">
-                      <li v-for="d in p.pedidosProductos" :key="d.id">
-                        <img v-if="d.producto?.imagenUrl" :src="d.producto.imagenUrl" />
-                        <div>
-                          <div class="nombre">{{ d.producto?.nombre }}</div>
-                          <small
-                            >Cant: {{ d.cantidad }} · Precio: Bs.
-                            {{ fmtBs(d.precioUnitario) }}</small
-                          >
-                        </div>
-                        <strong>Bs. {{ fmtBs(d.cantidad * d.precioUnitario) }}</strong>
-                      </li>
-                    </ul>
-                  </section>
+                    <div v-if="!p.pedidosProductos?.length" class="empty">Sin productos</div>
+                    <div v-for="d in p.pedidosProductos" :key="d.id" class="producto">
+                      <img v-if="d.producto?.imagenUrl" :src="d.producto.imagenUrl" />
+                      <div class="producto-info">
+                        <strong>{{ d.producto?.nombre }}</strong>
+                        <span>×{{ d.cantidad }} - Bs. {{ fmtBs(d.precioUnitario) }}</span>
+                      </div>
+                      <strong>Bs. {{ fmtBs(d.cantidad * d.precioUnitario) }}</strong>
+                    </div>
+                  </div>
 
-                  <section>
+                  <!-- Pago -->
+                  <div class="detalle-box">
                     <h4>Pago</h4>
-                    <div v-if="!p.pagos?.length" class="empty">Aún sin registro de pago</div>
-                    <ul v-else class="lista-pagos">
-                      <li v-for="pg in p.pagos" :key="pg.id">
-                        <div class="row">
-                          <span>Método:</span><strong>{{ pg.metodo }}</strong>
-                        </div>
-                        <div class="row">
-                          <span>Estado:</span><strong>{{ pg.estado }}</strong>
-                        </div>
-                        <div class="row" v-if="pg.maskedCard">
-                          <span>Tarjeta:</span><strong>{{ pg.maskedCard }}</strong>
-                        </div>
-                        <div class="row" v-if="pg.comprobante">
-                          <span>Comprobante:</span><a :href="pg.comprobante" target="_blank">ver</a>
-                        </div>
-                        <div class="row" v-if="pg.fechaPago">
-                          <span>Fecha:</span><small>{{ fmtFecha(pg.fechaPago) }}</small>
-                        </div>
-                      </li>
-                    </ul>
-                  </section>
+                    <div v-if="!p.pagos?.length" class="empty">Sin registro</div>
+                    <div v-for="pg in p.pagos" :key="pg.id" class="info-grid">
+                      <div class="info-row">
+                        <span>Método:</span>
+                        <strong>{{ pg.metodo }}</strong>
+                      </div>
+                      <div class="info-row">
+                        <span>Estado:</span>
+                        <span class="badge" :class="pg.estado">{{
+                          pg.estado.replace('_', ' ')
+                        }}</span>
+                      </div>
+                      <div class="info-row" v-if="pg.comprobante">
+                        <span>Comprobante:</span>
+                        <button class="btn-comprobante" @click="verComprobante(pg.comprobante)">
+                          Ver comprobante
+                        </button>
+                      </div>
+                      <div class="info-row">
+                        <span>Fecha:</span>
+                        <small>{{ fmtFecha(pg.fechaPago) }}</small>
+                      </div>
+                    </div>
+                  </div>
 
-                  <section>
+                  <!-- Envío -->
+                  <div class="detalle-box">
                     <h4>Envío</h4>
-                    <div class="row">
-                      <span>Tipo:</span><strong>{{ p.tipoEnvio ?? '—' }}</strong>
+                    <div class="info-grid">
+                      <div class="info-row">
+                        <span>Tipo:</span>
+                        <strong>{{ p.tipoEnvio || '—' }}</strong>
+                      </div>
+                      <div class="info-row" v-if="p.direccion">
+                        <span>Dirección:</span>
+                        <span>{{ p.direccion }}</span>
+                      </div>
+                      <div class="info-row" v-if="p.referencia">
+                        <span>Referencia:</span>
+                        <span>{{ p.referencia }}</span>
+                      </div>
+                      <div class="info-row" v-if="p.departamento || p.pais">
+                        <span>Ubicación:</span>
+                        <span>{{
+                          [p.departamento, p.pais].filter(Boolean).join(', ') || '—'
+                        }}</span>
+                      </div>
+                      <div class="empty" v-if="!p.tipoEnvio && !p.direccion">
+                        Sin datos de envío
+                      </div>
                     </div>
-                    <div class="row">
-                      <span>Dirección:</span><small>{{ p.direccion ?? '—' }}</small>
-                    </div>
-                    <div class="row" v-if="p.referencia">
-                      <span>Referencia:</span><small>{{ p.referencia }}</small>
-                    </div>
-                    <div class="row" v-if="p.departamento || p.pais">
-                      <span>Ubicación:</span>
-                      <small>{{ p.departamento ?? '—' }} · {{ p.pais ?? '' }}</small>
-                    </div>
-                  </section>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -275,8 +362,57 @@ function fmtBs(n?: number) {
         </tbody>
       </table>
 
-      <div v-if="!cargando && !filtrados.length" class="empty big">
-        No hay pedidos con esos filtros.
+      <!-- Paginación -->
+      <div v-if="totalPaginas > 1" class="paginacion">
+        <button
+          class="btn-pag"
+          :disabled="paginaActual === 1"
+          @click="cambiarPagina(paginaActual - 1)"
+        >
+          ‹
+        </button>
+
+        <div class="paginas">
+          <button
+            v-for="p in totalPaginas"
+            :key="p"
+            class="btn-num"
+            :class="{ activo: p === paginaActual }"
+            @click="cambiarPagina(p)"
+          >
+            {{ p }}
+          </button>
+        </div>
+
+        <button
+          class="btn-pag"
+          :disabled="paginaActual === totalPaginas"
+          @click="cambiarPagina(paginaActual + 1)"
+        >
+          ›
+        </button>
+      </div>
+
+      <div v-if="!cargando && !filtrados.length" class="empty-state">No hay pedidos</div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div v-if="mostrarModalConfirm" class="modal-overlay" @click="cancelarConfirm">
+      <div class="modal-confirm" @click.stop>
+        <h3>Confirmar Acción</h3>
+        <p>{{ mensajeConfirm }}</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="cancelarConfirm">Cancelar</button>
+          <button class="btn-confirm" @click="ejecutarConfirm">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Comprobante -->
+    <div v-if="mostrarModal" class="modal-overlay" @click="cerrarModal">
+      <div class="modal-content" @click.stop>
+        <button class="btn-close" @click="cerrarModal">✕</button>
+        <img :src="imagenModal" alt="Comprobante" class="modal-img" />
       </div>
     </div>
   </section>
@@ -284,157 +420,409 @@ function fmtBs(n?: number) {
 
 <style scoped>
 .admin-wrap {
-  padding: 24px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
-.toolbar {
+
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
+
+.header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
 .filters {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 10px;
 }
-.filters input {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  min-width: 280px;
-}
+
+.filters input,
 .filters select {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
 }
-.btn,
-.btn-sec {
-  padding: 0.55rem 0.9rem;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
+
+.filters input {
+  width: 250px;
 }
-.btn {
-  background: #38b2ac;
-  color: white;
-}
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.btn-sec {
-  background: #f3f4f6;
-  color: #111827;
-}
+
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
-.tabla {
+
+table {
   width: 100%;
   border-collapse: collapse;
 }
-.tabla th,
-.tabla td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #eef2f7;
-  vertical-align: top;
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
 }
-.moneda {
-  font-weight: 700;
+
+th {
+  background: #fbbf24;
+  color: #000;
+  font-weight: 600;
+  font-size: 14px;
 }
-.cliente small {
+
+td strong {
   display: block;
+  color: #111;
+}
+
+td small {
+  display: block;
+  color: #666;
+  font-size: 12px;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.badge.pendiente {
+  background: #f59e0b;
+  color: white;
+}
+
+.badge.entregado {
+  background: #10b981;
+  color: white;
+}
+
+.badge.cancelado,
+.badge.rechazado {
+  background: #ef4444;
+  color: white;
+}
+
+.badge.en_revision {
+  background: #3b82f6;
+  color: white;
+}
+
+.badge.aprobado {
+  background: #10b981;
+  color: white;
+}
+
+.badge.sin {
+  background: #e5e7eb;
   color: #6b7280;
 }
-.pill {
-  padding: 0.35rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
+
+.btn-action {
+  padding: 6px 16px;
+  background: #374151;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s;
 }
-.pill.pendiente {
-  background: #da851d;
+
+.btn-action:hover {
+  background: #1f2937;
 }
-.pill.confirmado {
-  background: #0ecc73;
-}
-.pill.cancelado {
-  background: #de1e1e;
-}
-.acciones {
-  display: flex;
-  gap: 8px;
-}
+
 .detalle {
   background: #fafafa;
 }
-.detalle-grid {
+
+.detalle-content {
   display: grid;
-  grid-template-columns: 2fr 1.3fr 1fr;
-  gap: 18px;
-  padding: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 16px;
 }
-.lista-productos,
-.lista-pagos {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.lista-productos li,
-.lista-pagos li {
+
+.detalle-box {
   background: white;
+  padding: 16px;
+  border-radius: 8px;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 10px;
+}
+
+.detalle-box h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #111;
+  border-bottom: 2px solid #fbbf24;
+  padding-bottom: 8px;
+}
+
+.producto {
   display: flex;
   align-items: center;
   gap: 12px;
-  justify-content: space-between;
+  padding: 8px;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
-.lista-productos img {
-  width: 48px;
-  height: 48px;
+
+.producto img {
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
 }
-.lista-productos .nombre {
-  font-weight: 600;
+
+.producto-info {
+  flex: 1;
 }
-.row {
+
+.producto-info strong {
+  font-size: 14px;
+}
+
+.producto-info span {
+  font-size: 12px;
+  color: #666;
+}
+
+.info-grid {
   display: flex;
+  flex-direction: column;
   gap: 8px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  font-size: 13px;
 }
-.row span {
-  width: 90px;
-  color: #6b7280;
+
+.info-row span:first-child {
+  color: #666;
+  font-weight: 500;
 }
-.empty {
-  color: #6b7280;
+
+.btn-comprobante {
+  padding: 6px 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s;
 }
-.empty.big {
-  padding: 24px;
+
+.btn-comprobante:hover {
+  background: #2563eb;
+}
+
+.empty,
+.empty-state {
   text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
 }
-.alert.error {
-  background: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #7f1d1d;
-  padding: 10px 12px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid #f1f5f9;
 }
-@media (max-width: 1024px) {
-  .detalle-grid {
+
+.paginas {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-pag,
+.btn-num {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.813rem;
+  color: #4b5563;
+}
+
+.btn-pag:hover:not(:disabled),
+.btn-num:hover {
+  background: #fef3c7;
+  border-color: #fbbf24;
+}
+
+.btn-pag:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-num.activo {
+  background: #f59e0b;
+  color: white;
+  border-color: #f59e0b;
+}
+
+.btn-pag i {
+  font-size: 0.75rem;
+}
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .filters input {
+    width: 100%;
+  }
+
+  .detalle-content {
     grid-template-columns: 1fr;
   }
+}
+
+/* Modal de Comprobante */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 700px;
+  max-height: 85vh;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  overflow: auto;
+}
+
+.btn-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.btn-close:hover {
+  background: #dc2626;
+}
+
+.modal-img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Modal de Confirmación */
+.modal-confirm {
+  background: white;
+  padding: 28px;
+  border-radius: 12px;
+  min-width: 400px;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.modal-confirm h3 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  color: #111;
+}
+
+.modal-confirm p {
+  margin: 0 0 24px 0;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel,
+.btn-confirm {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: #e5e7eb;
+  color: #111;
+}
+
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+.btn-confirm {
+  background: #fbbf24;
+  color: #000;
+}
+
+.btn-confirm:hover {
+  background: #f59e0b;
 }
 </style>

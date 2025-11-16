@@ -1,14 +1,41 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/index'
+import { useRouter, useRoute } from 'vue-router'
+import { parseJwt } from '@/helpers'
 
+const router = useRouter()
+const route = useRoute()
 const email = ref('')
 const clave = ref('')
 const error = ref(false)
 
-function onSubmit() {
+async function onSubmit() {
   const authStore = useAuthStore()
-  authStore.login(email.value, clave.value).catch(() => (error.value = true))
+  try {
+    await authStore.login(email.value, clave.value)
+
+    // Obtener el token del localStorage después del login exitoso
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      // Decodificar el token para obtener el rol
+      const decoded = parseJwt(token)
+      const userRole = decoded?.rol || decoded?.role || decoded?.tipo
+
+      // Redirigir según el rol
+      if (userRole === 'admin') {
+        // Si hay returnUrl en la query, usar esa, sino ir al admin
+        const returnUrl = route.query.returnUrl as string
+        router.push(returnUrl || '/admin')
+      } else {
+        // Cliente o cualquier otro rol
+        router.push('/') // o '/mis-pedidos' si prefieres
+      }
+    }
+  } catch {
+    error.value = true
+  }
 }
 </script>
 
@@ -25,6 +52,10 @@ function onSubmit() {
       <p v-if="error" class="text-danger">Usuario y/o contraseña incorrectos</p>
       <input type="submit" class="form-submit" value="Ingresar" />
     </form>
+    <p class="mt-3 text-center">
+      ¿No tienes cuenta?
+      <RouterLink to="/register" class="text-primary fw-semibold"> Regístrate aquí </RouterLink>
+    </p>
   </div>
 </template>
 

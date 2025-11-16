@@ -10,6 +10,10 @@ import type { Producto } from '@/models/producto'
 import { useRouter } from 'vue-router'
 import { usarCarrito } from '@/funciones/UsarCarrito'
 
+// ⬇️ NUEVO: imports para el modal
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
+
 const router = useRouter()
 
 // ID de la categoría que deseas mostrar (ejemplo: 3 = "Bebidas naturales")
@@ -17,7 +21,17 @@ const ID_CATEGORIA = 3
 const productos = ref<Producto[]>([])
 
 const { agregarProducto } = usarCarrito()
-// ✅ Nueva función que llama directamente al endpoint correcto
+
+// ⬇️ NUEVO: estado para mostrar el modal
+const mostrarModalLogin = ref(false)
+
+// ⬇️ NUEVO: helper para saber si está logueado
+function estaLogueado(): boolean {
+  // cambia 'token' si tu clave en localStorage se llama diferente
+  return !!localStorage.getItem('token')
+}
+
+// ✅ Llamada al endpoint de productos por categoría
 const obtenerProductosPorCategoria = async () => {
   try {
     const respuesta = await http.get(`productos/categoria/${ID_CATEGORIA}`)
@@ -27,12 +41,23 @@ const obtenerProductosPorCategoria = async () => {
   }
 }
 
+// ⬇️ MODIFICADO: ahora valida login antes de agregar
 const añadirAlCarrito = (producto: Producto) => {
+  if (!estaLogueado()) {
+    mostrarModalLogin.value = true
+    return
+  }
+
   agregarProducto(producto, 1)
 }
 
 const irADetalle = (producto: Producto) => {
   router.push({ name: 'detalle-producto', params: { id: producto.id } })
+}
+
+// ⬇️ NUEVO: ir al login desde el modal
+const irALogin = () => {
+  router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
 
 onMounted(() => {
@@ -83,4 +108,27 @@ onMounted(() => {
       </Swiper>
     </div>
   </section>
+
+  <!-- 🔒 Modal de login -->
+  <Dialog
+    v-model:visible="mostrarModalLogin"
+    modal
+    header="Inicia sesión para continuar"
+    :style="{ width: '400px' }"
+  >
+    <p class="mb-4">
+      Debes iniciar sesión para agregar productos al carrito.
+    </p>
+    <div class="d-flex justify-content-end gap-2">
+      <Button
+        label="Cerrar"
+        class="p-button-text"
+        @click="mostrarModalLogin = false"
+      />
+      <Button
+        label="Ir al login"
+        @click="irALogin"
+      />
+    </div>
+  </Dialog>
 </template>

@@ -73,7 +73,7 @@ async function onFileChange(e: Event) {
   fd.append('file', file)
 
   try {
-    // ← NO especifiques Content-Type, Axios lo detectará automáticamente
+    // ← NO pongas headers aquí
     const { data } = await http.post('uploads', fd)
 
     console.log('Respuesta del backend:', data)
