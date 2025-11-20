@@ -79,16 +79,11 @@ function cerrarSesion() {
       <div class="user-role">{{ rolUsuario }}</div>
     </div>
 
-
     <!-- Botón de cerrar sesión -->
-    <Button
-      label="Cerrar Sesión"
-      icon="pi pi-sign-out"
-      class="w-full btn-logout"
-      severity="danger"
-      outlined
-      @click="cerrarSesion"
-    />
+    <button class="btn-logout" @click="cerrarSesion">
+      <span class="pi pi-sign-out"></span>
+      <span>  Cerrar Sesión</span>
+    </button>
   </nav>
 </template>
 
@@ -169,6 +164,8 @@ function cerrarSesion() {
 }
 
 .btn-logout {
+  padding: 10px;
+  border-radius: 10px;
   margin-top: 0;
   background: transparent !important;
   border: 2px solid #dc2626 !important;
@@ -177,7 +174,7 @@ function cerrarSesion() {
 }
 
 .btn-logout:hover {
-  background: #dc2626 !important;
+  background-color: #dc2626 !important;
   color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);

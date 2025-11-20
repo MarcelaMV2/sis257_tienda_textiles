@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue' // Elimina onMounted
 import http from '@/plugins/axios'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router' // Importa useRoute
 import { usarCarrito } from '@/funciones/UsarCarrito'
-import type { Producto } from '@/models/producto'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
+import type { Producto } from '@/models/producto' // Asegúrate de que esta importación esté solo una vez
 
 const router = useRouter()
+const route = useRoute() // 👈 Objeto de ruta
 const productos = ref<Producto[]>([])
 const cargando = ref(false)
 const { agregarProducto } = usarCarrito()
@@ -19,17 +20,8 @@ function estaLogueado(): boolean {
   return !!localStorage.getItem('token') // cambia 'token' si usas otro nombre
 }
 
-const obtenerProductos = async () => {
-  cargando.value = true
-  try {
-    const res = await http.get('productos')
-    productos.value = res.data
-  } catch (error) {
-    console.error('Error al obtener productos:', error)
-  } finally {
-    cargando.value = false
-  }
-}
+// ❌ ELIMINA la función 'obtenerProductos' ya que 'cargarProductos' la reemplazará.
+// ❌ ELIMINA la línea 'onMounted(obtenerProductos)'
 
 const añadirAlCarrito = (producto: Producto) => {
   if (!estaLogueado()) {
@@ -47,7 +39,35 @@ const irALogin = () => {
   router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
 
-onMounted(obtenerProductos)
+// ✅ Función ÚNICA para cargar productos, usando el término de búsqueda
+const cargarProductos = async (terminoBusqueda: string = '') => {
+  cargando.value = true // Construye la URL de la API: si hay término, lo añade como query parameter 'q'
+  const url = terminoBusqueda
+    ? `productos?q=${terminoBusqueda}` // Tu backend debe saber cómo filtrar con 'q'
+    : 'productos'
+
+  try {
+    // 2. Llama a tu backend
+    const res = await http.get(url)
+    productos.value = res.data
+  } catch (error) {
+    console.error('Error al cargar productos:', error)
+  } finally {
+    cargando.value = false
+  }
+}
+
+// ✅ 3. Observar cambios en el parámetro 'q' de la URL
+// Esta función se ejecuta al inicio (por { immediate: true }) y cada vez que el
+// MainHeader redirige con un nuevo término.
+watch(
+  () => route.query.q, // Observa el valor del query parameter 'q'
+  (newQ) => {
+    // newQ es el nuevo valor de 'q' o undefined si se eliminó
+    cargarProductos((newQ as string) || '')
+  },
+  { immediate: true }, // Esto asegura que la función se ejecute al montar el componente.
+)
 </script>
 
 <template>

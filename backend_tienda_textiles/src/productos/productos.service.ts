@@ -25,8 +25,19 @@ export class ProductosService {
   }
 
   async findAll(parametro?: string): Promise<Producto[]> {
+    const searchTerm = parametro ? parametro.trim() : ''; // Si no hay término de búsqueda (o es solo espacios), no aplicamos la cláusula WHERE de búsqueda.
+
+    let whereCondition = {};
+
+    if (searchTerm.length > 0) {
+      // Aplicamos el filtro si hay un término
+      whereCondition = [
+        { nombre: ILike(`%${searchTerm}%`) }, // Busca en nombre
+        { descripcion: ILike(`%${searchTerm}%`) }, // Busca también en descripción
+      ];
+    } // Usamos la condición de filtro (o el objeto vacío si no hay búsqueda)
     return this.productosRepository.find({
-      where: { nombre: ILike(`%${parametro ?? ''}%`) },
+      where: whereCondition, // <-- Usa la condición de búsqueda
       relations: { categoria: true },
       select: {
         id: true,

@@ -60,6 +60,20 @@ const irALogin = () => {
   router.push('/login')
 }
 
+// Estado y handler para la búsqueda de productos
+const terminoBusqueda = ref('')
+
+const buscar = (e?: Event) => {
+  if (e) e.preventDefault()
+  const termino = terminoBusqueda.value.trim()
+  if (termino) {
+    router.push({ path: '/productos', query: { q: termino } })
+  } else {
+    router.push('/productos')
+  }
+  terminoBusqueda.value = ''
+}
+
 const cerrarMenuUsuario = (event: MouseEvent) => {
   const target = event.target as HTMLElement
   if (!target.closest('.user-menu')) {
@@ -71,7 +85,7 @@ const cerrarMenuUsuario = (event: MouseEvent) => {
 onMounted(() => {
   obtenerCategorias()
   verificarSesion()
-  document.addEventListener('click', cerrarMenuUsuario)  // ← Agregar
+  document.addEventListener('click', cerrarMenuUsuario) // ← Agregar
 })
 
 onUnmounted(() => {
@@ -106,9 +120,10 @@ onUnmounted(() => {
         </RouterLink>
 
         <!-- Buscador -->
-        <form class="search-box d-flex">
-          <input type="search" class="form-control" placeholder="Buscar productos..." />
-          <button class="btn btn-search">Buscar</button>
+        <form class="search-box d-flex" @submit.prevent="buscar">
+            <input v-model="terminoBusqueda" type="search" class="form-control"
+              placeholder="Buscar productos..." aria-label="Buscar productos"/>
+            <button type="submit" class="btn btn-search">Buscar</button>
         </form>
 
         <!-- Usuario / Carrito -->
