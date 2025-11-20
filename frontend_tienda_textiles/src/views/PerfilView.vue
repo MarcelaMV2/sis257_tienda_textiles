@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import http from '@/plugins/axios'
 import { getTokenFromLocalStorage, parseJwt } from '@/helpers'
+import router from '@/router'
 
 const usuario = ref({
   id: 0,

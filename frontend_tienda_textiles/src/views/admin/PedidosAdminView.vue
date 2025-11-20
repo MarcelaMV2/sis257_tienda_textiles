@@ -225,7 +225,7 @@ function fmtBs(n?: number) {
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            <th>Nro</th>
             <th>Cliente</th>
             <th>Total (Bs.)</th>
             <th>Método</th>

@@ -73,7 +73,7 @@ defineExpose({ obtenerLista })
       <table class="tabla">
         <thead>
           <tr>
-            <th>#</th>
+            <th>Nro</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Imagen</th>

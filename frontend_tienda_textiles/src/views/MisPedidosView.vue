@@ -97,12 +97,12 @@ function fmtBs(n?: number) {
         <table class="tabla">
           <thead>
             <tr>
-              <th>#</th>
+              <th>Nro</th>
               <th>Total (Bs.)</th>
               <th>Método</th>
               <th>Estado</th>
               <th>Fecha</th>
-              <th>Acciones</th>
+              <th>Accionesggg</th>
             </tr>
           </thead>
           <tbody>

@@ -40,14 +40,15 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="my-5 pt-5">
-    <h1 class="text-center">Iniciar Sesión</h1>
+  <div class="full-screen-container">
+  <div class="container my-5 pt-5">
+    <h1 class="text-center" style="color: #E54D07;">Iniciar Sesión</h1>
     <form class="form" @submit.prevent="onSubmit">
-      <label class="form-label">email:</label>
-      <input v-model="email" type="text" class="form-input" placeholder="Email" autofocus />
+      <label class="form-label">Email:</label>
+      <input v-model="email" type="text" class="form-input" style="background-color: #C7DAF1; color:black; border-radius: 20px;" placeholder="Email" autofocus />
 
       <label class="form-label">Contraseña:</label>
-      <input v-model="clave" type="password" class="form-input" placeholder="Contraseña" />
+      <input v-model="clave" type="password" class="form-input" style="background-color: #C7DAF1; color:black; border-radius: 20px;" placeholder="Contraseña" />
 
       <p v-if="error" class="text-danger">Usuario y/o contraseña incorrectos</p>
       <input type="submit" class="form-submit" value="Ingresar" />
@@ -57,9 +58,27 @@ async function onSubmit() {
       <RouterLink to="/register" class="text-primary fw-semibold"> Regístrate aquí </RouterLink>
     </p>
   </div>
+</div>
 </template>
 
 <style>
+.full-screen-container {
+    /* 1. Imagen de Fondo */
+    background-image: url('@/assets/images/fondologin.jpg'); 
+    
+    /* 2. Propiedades de Ajuste */
+    background-size: cover;          /* Escala la imagen para cubrir todo el contenedor */
+    background-position: center center; /* Centra la imagen horizontal y verticalmente */
+    background-repeat: no-repeat;    /* Evita que la imagen se repita */
+
+    /* Propiedades de altura y ancho que ya tenías */
+    min-height: 100vh; 
+    width: 100%;
+    padding-top: 30px;
+    /* Opcional: Color de respaldo (se ve si la imagen no carga) */
+    background-color: #333333; 
+}
+
 .form {
   margin: 1.5rem auto;
   display: flex;
@@ -68,9 +87,9 @@ async function onSubmit() {
   width: 20%;
   min-width: 350px;
   max-width: 100%;
-  background: rgba(19, 35, 47, 0.9);
+  background: #0B3A66;
   border-radius: 5px;
-  padding: 40px;
+  padding: 50px;
   box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.3);
 }
 

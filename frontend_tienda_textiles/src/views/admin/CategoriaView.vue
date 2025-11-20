@@ -28,7 +28,7 @@ function handleGuardar() {
 </script>
 
 <template>
-  <div>
+  <div class="admin-wrap">
     <h2>Categorias</h2>
     <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" />
     <CategoriaList ref="categoriaListRef" @edit="handleEdit" />
@@ -42,4 +42,10 @@ function handleGuardar() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.admin-wrap {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+</style>
