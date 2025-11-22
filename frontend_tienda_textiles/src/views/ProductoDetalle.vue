@@ -114,33 +114,34 @@ const disminuir = () => {
     </div>
 
     <!-- 🔗 Productos relacionados -->
-    <div class="relacionados mt-5">
-      <h4 class="fw-bold mb-4">Productos Relacionados</h4>
+<div class="relacionados mt-5">
+  <h4 class="fw-bold mb-4">Productos Relacionados</h4>
 
-      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
-        <div
-          class="col"
-          v-for="rel in relacionados"
-          :key="rel.id"
-          @click="$router.push(`/productos/${rel.id}`)"
-        >
-          <div class="card card-relacionado h-100 border-0 shadow-sm">
-            <div class="img-container">
-              <img
-                :src="rel.imagenUrl || '/assets/images/default.jpg'"
-                class="card-img-top"
-                :alt="rel.nombre"
-              />
-            </div>
-            <div class="card-body p-2 text-center">
-              <h6 class="fw-semibold text-dark small mb-1">{{ rel.nombre }}</h6>
-              <p class="text-primary fw-bold mb-1">Bs. {{ rel.precio }}</p>
-              <button class="btn btn-outline-primary btn-sm w-100">Ver detalles</button>
-            </div>
-          </div>
+  <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
+    <div
+      class="col d-flex justify-content-center"
+      v-for="rel in relacionados"
+      :key="rel.id"
+      @click="$router.push(`/productos/${rel.id}`)"
+    >
+      <div class="card card-relacionado border-0 shadow-sm">
+        <div class="img-container">
+          <img
+            :src="rel.imagenUrl || '/assets/images/default.jpg'"
+            class="card-img-top"
+            :alt="rel.nombre"
+          />
+        </div>
+        <div class="card-body p-2 text-center">
+          <h6 class="fw-semibold text-dark small mb-1">{{ rel.nombre }}</h6>
+          <p class="text-primary fw-bold mb-1">Bs. {{ rel.precio }}</p>
+          <button class="btn btn-outline-primary btn-sm w-100">Ver detalles</button>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
   </section>
 
   <div v-else class="text-center py-5 text-muted">
@@ -183,6 +184,26 @@ const disminuir = () => {
 }
 .cantidad-control input[type='number'] {
   -moz-appearance: textfield;
+}
+/* Contenedor fijo para imágenes relacionadas */
+.img-container {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-relacionado {
+  width: 160px; /* ajusta según tu diseño */
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
 

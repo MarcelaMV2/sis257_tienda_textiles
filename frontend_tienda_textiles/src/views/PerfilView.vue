@@ -39,24 +39,31 @@ onMounted(async () => {
         <h2>Mi Perfil</h2>
       </header>
 
-      <div v-if="error" class="alert error">{{ error }}</div>
-      <div v-else>
-        <div class="profile-card">
-          <div class="profile-item">
-            <strong>Nombre:</strong>
-            <span>{{ usuario.nombre }}</span>
-          </div>
-          <div class="profile-item">
-            <strong>Email:</strong>
-            <span>{{ usuario.email }}</span>
-          </div>
-          <div class="profile-item">
-            <strong>Teléfono:</strong>
-            <span>{{ usuario.telefono || 'No disponible' }}</span>
-          </div>
-          <!-- Aquí puedes agregar un formulario para editar el perfil -->
-          <RouterLink to="/mis-pedidos" class="button">mis pedidos</RouterLink>
+      <!-- Mensaje de error -->
+      <div v-if="error" class="alert error">
+        {{ error }}
+      </div>
+
+      <!-- Vista del perfil -->
+      <div v-else class="profile-card">
+        <div class="profile-row">
+          <strong>Nombre:</strong>
+          <span>{{ usuario.nombre }}</span>
         </div>
+
+        <div class="profile-row">
+          <strong>Email:</strong>
+          <span>{{ usuario.email }}</span>
+        </div>
+
+        <div class="profile-row">
+          <strong>Teléfono:</strong>
+          <span>{{ usuario.telefono || 'No disponible' }}</span>
+        </div>
+
+        <RouterLink to="/mis-pedidos" class="button">
+          📦 Ver mis pedidos
+        </RouterLink>
       </div>
     </section>
   </div>
@@ -64,7 +71,75 @@ onMounted(async () => {
 
 <style scoped>
 .perfil-container {
-  min-height: calc(100vh - 400px); /* Ajusta el 400px según la altura de tu header + footer */
+  min-height: calc(100vh - 200px);
   padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-wrap {
+  width: 100%;
+  max-width: 550px;
+}
+
+.toolbar h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Tarjeta */
+.profile-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Filas */
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-row strong {
+  color: #444;
+}
+
+/* Botón */
+.button {
+  margin-top: 20px;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  padding: 12px 18px;
+  background: #1e88e5;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.button:hover {
+  background: #1565c0;
+}
+
+/* Estilo de error */
+.alert.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #e53935;
+  font-weight: 500;
 }
 </style>
