@@ -101,15 +101,12 @@ async function procederAlPago() {
             <div class="flex-grow-1">
               <h6 class="fw-semibold mb-1">{{ item.producto.nombre }}</h6>
               <p class="text-muted small mb-1">{{ item.producto.descripcion }}</p>
-              <span class="fw-bold text-primary">
-                Bs. {{ item.producto.precio.toFixed(2) }}
-              </span>
+              <span class="fw-bold text-primary"> Bs. {{ item.producto.precio.toFixed(2) }} </span>
 
               <!-- 🔴 Mensaje de stock insuficiente -->
               <p v-if="erroresStock[item.producto.id]" class="stock-error-text mt-1 mb-0">
                 Stock insuficiente: pediste
-                {{ erroresStock[item.producto.id].solicitado }},
-                disponibles
+                {{ erroresStock[item.producto.id].solicitado }}, disponibles
                 {{ erroresStock[item.producto.id].disponible }}.
               </p>
             </div>
@@ -139,9 +136,7 @@ async function procederAlPago() {
             </button>
           </div>
 
-          <button class="btn btn-outline-danger mt-3" @click="vaciarCarrito">
-            Vaciar carrito
-          </button>
+          <button class="btn btn-outline-danger mt-3" @click="vaciarCarrito">Vaciar carrito</button>
         </div>
       </div>
 
@@ -194,15 +189,10 @@ async function procederAlPago() {
       </p>
 
       <ul class="mb-3">
-        <li
-          v-for="(info, id) in erroresStock"
-          :key="id"
-        >
+        <li v-for="(info, id) in erroresStock" :key="id">
           {{
-            carrito.find((c) => c.producto.id === Number(id))?.producto.nombre ||
-            `Producto #${id}`
-          }}:
-          pediste {{ info.solicitado }}, disponibles {{ info.disponible }}.
+            carrito.find((c) => c.producto.id === Number(id))?.producto.nombre || `Producto #${id}`
+          }}: pediste {{ info.solicitado }}, disponibles {{ info.disponible }}.
         </li>
       </ul>
 

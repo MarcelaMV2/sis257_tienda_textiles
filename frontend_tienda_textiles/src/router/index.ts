@@ -93,7 +93,7 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-       component: () => import('@/views/RegisterView.vue'),
+      component: () => import('@/views/RegisterView.vue'),
     },
     // .
 
@@ -188,7 +188,6 @@ router.beforeEach((to, from, next) => {
       })
     }
   }
-
 
   // Si todo está bien, continuar con la navegación
   next()

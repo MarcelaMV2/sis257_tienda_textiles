@@ -61,9 +61,7 @@ onMounted(async () => {
           <span>{{ usuario.telefono || 'No disponible' }}</span>
         </div>
 
-        <RouterLink to="/mis-pedidos" class="button">
-          📦 Ver mis pedidos
-        </RouterLink>
+        <RouterLink to="/mis-pedidos" class="button"> 📦 Ver mis pedidos </RouterLink>
       </div>
     </section>
   </div>

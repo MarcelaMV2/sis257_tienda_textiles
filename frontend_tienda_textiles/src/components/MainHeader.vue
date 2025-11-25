@@ -121,8 +121,14 @@ onUnmounted(() => {
 
         <!-- Buscador -->
         <form class="search-box d-flex" @submit.prevent="buscar">
-            <input v-model="terminoBusqueda" type="search" class="form-control"
-              placeholder="Buscar productos..." aria-label="Buscar productos"/>
+           
+          <input
+            v-model="terminoBusqueda"
+            type="search"
+            class="form-control"
+            placeholder="Buscar productos..."
+            aria-label="Buscar productos"
+          />
             <button type="submit" class="btn btn-search">Buscar</button>
         </form>
 

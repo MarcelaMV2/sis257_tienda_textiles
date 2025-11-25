@@ -82,7 +82,7 @@ function cerrarSesion() {
     <!-- Botón de cerrar sesión -->
     <button class="btn-logout" @click="cerrarSesion">
       <span class="pi pi-sign-out"></span>
-      <span>  Cerrar Sesión</span>
+      <span> Cerrar Sesión</span>
     </button>
   </nav>
 </template>

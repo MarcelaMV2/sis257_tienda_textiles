@@ -6,7 +6,7 @@ import MainHeader from './components/MainHeader.vue'
 
 const route = useRoute()
 const hideLayout = computed(() => {
-  const noLayoutNames = ['login', 'register']  // 👈 aquí añadimos register
+  const noLayoutNames = ['login', 'register'] // 👈 aquí añadimos register
   return route.path.startsWith('/admin') || noLayoutNames.includes(route.name as string)
 })
 </script>

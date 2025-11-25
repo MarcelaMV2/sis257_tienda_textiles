@@ -2,7 +2,7 @@
 import type { Categoria } from '@/models/categoria'
 import type { Producto } from '@/models/producto'
 import http from '@/plugins/axios'
-import { Button, Dialog, InputText, Select, Textarea } from 'primevue'
+import { Button, Dialog, InputNumber, InputText, Select, Textarea } from 'primevue'
 import { computed, ref, watch } from 'vue'
 
 const ENDPOINT = 'productos'
@@ -182,9 +182,11 @@ watch(
 
       <div class="flex items-center gap-4 mb-4">
         <label for="precio" class="font-semibold w-3">Precio</label>
-        <InputText
+        <InputNumber
           id="precio"
           v-model.number="producto.precio"
+          :minFractionDigits="2"
+          :maxFractionDigits="5"
           class="flex-auto"
           autocomplete="off"
         />
