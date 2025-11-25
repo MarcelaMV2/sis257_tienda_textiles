@@ -20,9 +20,7 @@ const categoriasFiltradas = computed(() =>
   ),
 )
 
-const totalPaginas = computed(() =>
-  Math.ceil(categoriasFiltradas.value.length / ITEMS_PER_PAGE),
-)
+const totalPaginas = computed(() => Math.ceil(categoriasFiltradas.value.length / ITEMS_PER_PAGE))
 
 const categoriasPaginadas = computed(() => {
   const inicio = (paginaActual.value - 1) * ITEMS_PER_PAGE
@@ -60,11 +58,7 @@ defineExpose({ obtenerLista })
       <div class="search-bar">
         <InputGroup>
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
-          <InputText
-            v-model="busqueda"
-            type="text"
-            placeholder="Buscar por nombre o descripción"
-          />
+          <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre o descripción" />
         </InputGroup>
       </div>
     </div>
@@ -147,10 +141,11 @@ defineExpose({ obtenerLista })
       modal
     >
       <div class="confirm-content">
-        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b;"></i>
+        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b"></i>
         <p>
           ¿Estás seguro de que deseas eliminar la categoría
-          <strong>{{ categoriaDelete?.nombre }}</strong>?
+          <strong>{{ categoriaDelete?.nombre }}</strong
+          >?
         </p>
       </div>
       <template #footer>

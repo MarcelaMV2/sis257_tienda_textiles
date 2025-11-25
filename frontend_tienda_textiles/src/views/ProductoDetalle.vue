@@ -114,34 +114,33 @@ const disminuir = () => {
     </div>
 
     <!-- 🔗 Productos relacionados -->
-<div class="relacionados mt-5">
-  <h4 class="fw-bold mb-4">Productos Relacionados</h4>
+    <div class="relacionados mt-5">
+      <h4 class="fw-bold mb-4">Productos Relacionados</h4>
 
-  <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
-    <div
-      class="col d-flex justify-content-center"
-      v-for="rel in relacionados"
-      :key="rel.id"
-      @click="$router.push(`/productos/${rel.id}`)"
-    >
-      <div class="card card-relacionado border-0 shadow-sm">
-        <div class="img-container">
-          <img
-            :src="rel.imagenUrl || '/assets/images/default.jpg'"
-            class="card-img-top"
-            :alt="rel.nombre"
-          />
-        </div>
-        <div class="card-body p-2 text-center">
-          <h6 class="fw-semibold text-dark small mb-1">{{ rel.nombre }}</h6>
-          <p class="text-primary fw-bold mb-1">Bs. {{ rel.precio }}</p>
-          <button class="btn btn-outline-primary btn-sm w-100">Ver detalles</button>
+      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-3">
+        <div
+          class="col d-flex justify-content-center"
+          v-for="rel in relacionados"
+          :key="rel.id"
+          @click="$router.push(`/productos/${rel.id}`)"
+        >
+          <div class="card card-relacionado border-0 shadow-sm">
+            <div class="img-container">
+              <img
+                :src="rel.imagenUrl || '/assets/images/default.jpg'"
+                class="card-img-top"
+                :alt="rel.nombre"
+              />
+            </div>
+            <div class="card-body p-2 text-center">
+              <h6 class="fw-semibold text-dark small mb-1">{{ rel.nombre }}</h6>
+              <p class="text-primary fw-bold mb-1">Bs. {{ rel.precio }}</p>
+              <button class="btn btn-outline-primary btn-sm w-100">Ver detalles</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-
   </section>
 
   <div v-else class="text-center py-5 text-muted">
@@ -166,8 +165,8 @@ const disminuir = () => {
 
 <style scoped>
 .cantidad-control {
-  width: 130px;          /* ancho compacto */
-  flex: 0 0 auto;        /* que NO se estire a todo el ancho */
+  width: 130px; /* ancho compacto */
+  flex: 0 0 auto; /* que NO se estire a todo el ancho */
 }
 
 .cantidad-control .form-control {
@@ -206,5 +205,3 @@ const disminuir = () => {
   margin-right: auto;
 }
 </style>
-
-

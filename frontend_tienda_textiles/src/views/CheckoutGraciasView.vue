@@ -42,7 +42,7 @@ onMounted(async () => {
       referencia: data.referencia,
       tipoEnvio: data.tipoEnvio,
     }
-    items.value = (data.pedidosProductos || []).map((d:any) => ({
+    items.value = (data.pedidosProductos || []).map((d: any) => ({
       id: d.id,
       nombre: d.producto?.nombre,
       imagenUrl: d.producto?.imagenUrl,
@@ -52,8 +52,9 @@ onMounted(async () => {
     }))
     // si tienes /pagos en relations:
     pago.value = (data.pagos && data.pagos[0]) || null
-  } catch { /* si falla, te quedas con el ticket local */ }
-  finally {
+  } catch {
+    /* si falla, te quedas con el ticket local */
+  } finally {
     cargando.value = false
   }
 
@@ -73,7 +74,6 @@ function fmtBs(n?: number) {
 }
 </script>
 
-
 <template>
   <section class="gracias">
     <h2>¡Gracias por tu compra!</h2>
@@ -87,7 +87,8 @@ function fmtBs(n?: number) {
       <div class="fila"><b>Estado:</b> {{ pedido?.estado }}</div>
 
       <div v-if="pedido?.direccion" class="fila">
-        <b>Envío:</b> {{ pedido?.tipoEnvio }} — {{ pedido?.direccion }} <span v-if="pedido?.referencia">({{ pedido?.referencia }})</span>
+        <b>Envío:</b> {{ pedido?.tipoEnvio }} — {{ pedido?.direccion }}
+        <span v-if="pedido?.referencia">({{ pedido?.referencia }})</span>
       </div>
     </div>
 
@@ -122,18 +123,62 @@ function fmtBs(n?: number) {
 </template>
 
 <style scoped>
-.gracias { padding: 24px; text-align: center; }
-.panel { margin:16px auto; padding:16px; max-width:720px; background:#fff; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.08); text-align:left; }
-.fila { margin: 6px 0; }
-.lista { max-width:720px; margin:0 auto; }
-.item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; }
-.item img { width:56px; height:56px; object-fit:cover; border-radius:8px; }
-.item .info { flex:1; margin:0 12px; }
-.item .tit { font-weight:600; }
-.item .sub { color:#555; font-size:.9rem; }
-.item .monto { font-weight:700; }
-.btn { display:inline-block; margin-top:16px; background:#38b2ac; color:#fff; padding:.7rem 1.2rem; border-radius:8px; }
-.vacio { color:#666; }
+.gracias {
+  padding: 24px;
+  text-align: center;
+}
+.panel {
+  margin: 16px auto;
+  padding: 16px;
+  max-width: 720px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+.fila {
+  margin: 6px 0;
+}
+.lista {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+.item img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.item .info {
+  flex: 1;
+  margin: 0 12px;
+}
+.item .tit {
+  font-weight: 600;
+}
+.item .sub {
+  color: #555;
+  font-size: 0.9rem;
+}
+.item .monto {
+  font-weight: 700;
+}
+.btn {
+  display: inline-block;
+  margin-top: 16px;
+  background: #38b2ac;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+}
+.vacio {
+  color: #666;
+}
 </style>
-
-

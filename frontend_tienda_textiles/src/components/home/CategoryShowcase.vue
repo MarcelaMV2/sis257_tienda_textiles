@@ -42,8 +42,8 @@ const categoriasConImagen = computed(() =>
 
 // 🚨 CAMBIO CLAVE: Usar el ID para navegar a la ruta de categoría
 const irACategoria = (idCategoria: number) => {
-  // Usamos la ruta dinámica que típicamente maneja las categorías por ID
-  router.push(`/categorias/${idCategoria}`) 
+  // Usamos la ruta dinámica que típicamente maneja las categorías por ID
+  router.push(`/categorias/${idCategoria}`)
 }
 
 onMounted(() => {
@@ -68,7 +68,7 @@ onMounted(() => {
         <SwiperSlide
           v-for="categoria in categoriasConImagen"
           :key="categoria.id"
-         @click="irACategoria(categoria.id)"
+          @click="irACategoria(categoria.id)"
           class="tarjeta-categoria"
         >
           <div class="card-categoria shadow-sm">
@@ -78,7 +78,9 @@ onMounted(() => {
             <div class="info-box">
               <h5>{{ categoria.nombre }}</h5>
               <p>{{ categoria.descripcion }}</p>
-              <button class="btn-ver" @click.stop="irACategoria(categoria.id)">Ver productos</button>
+              <button class="btn-ver" @click.stop="irACategoria(categoria.id)">
+                Ver productos
+              </button>
             </div>
           </div>
         </SwiperSlide>

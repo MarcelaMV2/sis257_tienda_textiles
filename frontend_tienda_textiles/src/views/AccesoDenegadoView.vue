@@ -12,7 +12,13 @@ function volverInicio() {
   <div class="acceso-denegado">
     <div class="contenedor">
       <div class="icono">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="15" y1="9" x2="9" y2="15"></line>
           <line x1="9" y1="9" x2="15" y2="15"></line>
@@ -21,20 +27,16 @@ function volverInicio() {
 
       <h1>Acceso Denegado</h1>
       <p class="mensaje">
-        Esta sección es exclusiva para administradores.
-        Tu cuenta actual no tiene los permisos necesarios para acceder al panel de administración.
+        Esta sección es exclusiva para administradores. Tu cuenta actual no tiene los permisos
+        necesarios para acceder al panel de administración.
       </p>
       <p class="submensaje">
         Si crees que deberías tener acceso, contacta con el administrador del sistema.
       </p>
 
       <div class="acciones">
-        <button @click="volverInicio" class="btn-primario">
-          Volver al Inicio
-        </button>
-        <router-link to="/mis-pedidos" class="btn-secundario">
-          Ver Mis Pedidos
-        </router-link>
+        <button @click="volverInicio" class="btn-primario">Volver al Inicio</button>
+        <router-link to="/mis-pedidos" class="btn-secundario"> Ver Mis Pedidos </router-link>
       </div>
     </div>
   </div>

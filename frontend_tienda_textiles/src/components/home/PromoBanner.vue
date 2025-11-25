@@ -116,19 +116,10 @@ onMounted(() => {
     header="Inicia sesión para continuar"
     :style="{ width: '400px' }"
   >
-    <p class="mb-4">
-      Debes iniciar sesión para agregar productos al carrito.
-    </p>
+    <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
     <div class="d-flex justify-content-end gap-2">
-      <Button
-        label="Cerrar"
-        class="p-button-text"
-        @click="mostrarModalLogin = false"
-      />
-      <Button
-        label="Ir al login"
-        @click="irALogin"
-      />
+      <Button label="Cerrar" class="p-button-text" @click="mostrarModalLogin = false" />
+      <Button label="Ir al login" @click="irALogin" />
     </div>
   </Dialog>
 </template>

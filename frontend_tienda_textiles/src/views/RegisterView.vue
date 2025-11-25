@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import http from '@/plugins/axios'
-import Dialog from 'primevue/dialog'   // 🆕
-import Button from 'primevue/button'   // 🆕
+import Dialog from 'primevue/dialog' // 🆕
+import Button from 'primevue/button' // 🆕
 
 const router = useRouter()
 const route = useRoute()

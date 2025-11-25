@@ -25,7 +25,9 @@ const productosFiltrados = computed(() => {
 })
 
 // Paginación
-const totalPaginas = computed(() => Math.ceil(productosFiltrados.value.length / itemsPorPagina.value))
+const totalPaginas = computed(() =>
+  Math.ceil(productosFiltrados.value.length / itemsPorPagina.value),
+)
 
 const productosPaginados = computed(() => {
   const inicio = (paginaActual.value - 1) * itemsPorPagina.value
@@ -69,7 +71,6 @@ defineExpose({ obtenerLista })
   <div class="productos-container">
     <!-- Header con botón y búsqueda -->
     <div class="header-acciones">
-
       <div class="search-bar">
         <InputGroup>
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
@@ -111,12 +112,7 @@ defineExpose({ obtenerLista })
             </td>
             <td>
               <div class="acciones">
-                <Button
-                  icon="pi pi-pencil"
-                  severity="info"
-                  text
-                  @click="emitirEdicion(producto)"
-                />
+                <Button icon="pi pi-pencil" severity="info" text @click="emitirEdicion(producto)" />
                 <Button
                   icon="pi pi-trash"
                   severity="danger"
@@ -172,8 +168,12 @@ defineExpose({ obtenerLista })
       modal
     >
       <div class="confirm-content">
-        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b;"></i>
-        <p>¿Estás seguro de que deseas eliminar el producto <strong>{{ productoDelete?.nombre }}</strong>?</p>
+        <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b"></i>
+        <p>
+          ¿Estás seguro de que deseas eliminar el producto
+          <strong>{{ productoDelete?.nombre }}</strong
+          >?
+        </p>
       </div>
       <template #footer>
         <Button
@@ -182,11 +182,7 @@ defineExpose({ obtenerLista })
           outlined
           @click="mostrarConfirmDialog = false"
         />
-        <Button
-          label="Eliminar"
-          severity="danger"
-          @click="eliminar"
-        />
+        <Button label="Eliminar" severity="danger" @click="eliminar" />
       </template>
     </Dialog>
   </div>
@@ -339,11 +335,11 @@ defineExpose({ obtenerLista })
   background: none;
 }
 
-.acciones :deep(.p-button[severity="info"]:hover) {
+.acciones :deep(.p-button[severity='info']:hover) {
   color: #3b82f6;
 }
 
-.acciones :deep(.p-button[severity="danger"]:hover) {
+.acciones :deep(.p-button[severity='danger']:hover) {
   color: #ef4444;
 }
 
