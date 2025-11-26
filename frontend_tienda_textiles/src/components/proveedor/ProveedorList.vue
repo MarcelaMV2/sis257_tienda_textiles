@@ -1,105 +1,141 @@
 <script setup lang="ts">
-import type { Departamento } from '@/models/departamento'
+import type { Proveedor } from '@/models/proveedor'
 import http from '@/plugins/axios'
 import { Button, Dialog, InputGroup, InputGroupAddon, InputText } from 'primevue'
 import { computed, onMounted, ref } from 'vue'
 
-const ENDPOINT = 'departamentos'
-const departamentos = ref<Departamento[]>([])
-const departamentoDelete = ref<Departamento | null>(null)
-const mostrarConfirmDialog = ref(false)
-const busqueda = ref('')
+const ENDPOINT = 'proveedores'
+const proveedores = ref<Proveedor[]>([])
+const proveedorDelete = ref<Proveedor | null>(null)
+const mostrarConfirmDialog = ref<boolean>(false)
+const busqueda = ref<string>('')
+
+// Paginación
 const paginaActual = ref(1)
-const ITEMS_PER_PAGE = 10
+const itemsPorPagina = ref(10)
 
 const emit = defineEmits(['edit'])
 
-const departamentosFiltrados = computed(() =>
-  departamentos.value.filter((d) =>
-    (d.nombre || '').toLowerCase().includes(busqueda.value.toLowerCase()),
-  ),
-)
-
-const totalPaginas = computed(() => Math.ceil(departamentosFiltrados.value.length / ITEMS_PER_PAGE))
-
-const departamentosPaginados = computed(() => {
-  const inicio = (paginaActual.value - 1) * ITEMS_PER_PAGE
-  return departamentosFiltrados.value.slice(inicio, inicio + ITEMS_PER_PAGE)
+const proveedoresFiltrados = computed(() => {
+  const term = busqueda.value.toLowerCase()
+  return proveedores.value.filter((p) => {
+    return (
+      p.nombre.toLowerCase().includes(term) ||
+      (p.email || '').toLowerCase().includes(term) ||
+      (p.telefono || '').toLowerCase().includes(term)
+    )
+  })
 })
 
-const cambiarPagina = (p: number) => {
-  if (p >= 1 && p <= totalPaginas.value) paginaActual.value = p
+const totalPaginas = computed(() =>
+  Math.ceil(proveedoresFiltrados.value.length / itemsPorPagina.value),
+)
+
+const proveedoresPaginados = computed(() => {
+  const inicio = (paginaActual.value - 1) * itemsPorPagina.value
+  const fin = inicio + itemsPorPagina.value
+  return proveedoresFiltrados.value.slice(inicio, fin)
+})
+
+function cambiarPagina(pagina: number) {
+  if (pagina >= 1 && pagina <= totalPaginas.value) {
+    paginaActual.value = pagina
+  }
 }
 
-const obtenerLista = async () => {
-  departamentos.value = await http.get(ENDPOINT).then((r) => r.data)
+async function obtenerLista() {
+  proveedores.value = await http.get(ENDPOINT).then((r) => r.data)
 }
 
-const emitirEdicion = (departamento: Departamento) => emit('edit', departamento)
+function emitirEdicion(proveedor: Proveedor) {
+  emit('edit', proveedor)
+}
 
-const mostrarEliminarConfirm = (departamento: Departamento) => {
-  departamentoDelete.value = departamento
+function mostrarEliminarConfirm(proveedor: Proveedor) {
+  proveedorDelete.value = proveedor
   mostrarConfirmDialog.value = true
 }
 
-const eliminar = async () => {
-  if (!departamentoDelete.value?.id) return
-  await http.delete(`${ENDPOINT}/${departamentoDelete.value.id}`)
+async function eliminar() {
+  if (!proveedorDelete.value) return
+  await http.delete(`${ENDPOINT}/${proveedorDelete.value.id}`)
   await obtenerLista()
   mostrarConfirmDialog.value = false
 }
 
 onMounted(obtenerLista)
+
 defineExpose({ obtenerLista })
 </script>
 
 <template>
   <div class="productos-container">
+    <!-- Header con búsqueda -->
     <div class="header-acciones">
       <div class="search-bar">
         <InputGroup style="margin-top: 5px;">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
-          <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre" />
+          <InputText
+            v-model="busqueda"
+            type="text"
+            placeholder="Buscar por nombre, email o teléfono"
+          />
         </InputGroup>
       </div>
     </div>
 
+    <!-- Tabla -->
     <div class="tabla-card">
       <table class="tabla">
         <thead>
           <tr>
             <th>Nro</th>
             <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Dirección</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(departamento, index) in departamentosPaginados" :key="departamento.id">
-            <td>{{ (paginaActual - 1) * ITEMS_PER_PAGE + index + 1 }}</td>
-            <td class="producto-nombre">{{ departamento.nombre }}</td>
+          <tr v-for="(proveedor, index) in proveedoresPaginados" :key="proveedor.id">
+            <td>{{ (paginaActual - 1) * itemsPorPagina + index + 1 }}</td>
+            <td class="texto-principal">
+              {{ proveedor.nombre }}
+            </td>
+            <td>{{ proveedor.telefono || '—' }}</td>
+            <td>{{ proveedor.email || '—' }}</td>
+            <td>{{ proveedor.direccion || '—' }}</td>
+            <td>
+              <span class="badge">
+                {{ proveedor.estado || 'activo' }}
+              </span>
+            </td>
             <td>
               <div class="acciones">
                 <Button
                   icon="pi pi-pencil"
-                  aria-label="Editar"
+                  severity="info"
                   text
-                  @click="emitirEdicion(departamento)"
+                  @click="emitirEdicion(proveedor)"
                 />
                 <Button
                   icon="pi pi-trash"
-                  aria-label="Eliminar"
+                  severity="danger"
                   text
-                  @click="mostrarEliminarConfirm(departamento)"
+                  @click="mostrarEliminarConfirm(proveedor)"
                 />
               </div>
             </td>
           </tr>
-          <tr v-if="departamentosPaginados.length === 0">
-            <td colspan="3" class="empty">No se encontraron resultados.</td>
+          <tr v-if="proveedoresPaginados.length === 0">
+            <td colspan="7" class="empty">No se encontraron proveedores.</td>
           </tr>
         </tbody>
       </table>
 
+      <!-- Paginación -->
       <div v-if="totalPaginas > 1" class="paginacion">
         <button
           class="btn-pag"
@@ -131,6 +167,7 @@ defineExpose({ obtenerLista })
       </div>
     </div>
 
+    <!-- Dialog de confirmación -->
     <Dialog
       v-model:visible="mostrarConfirmDialog"
       header="Confirmar Eliminación"
@@ -140,20 +177,19 @@ defineExpose({ obtenerLista })
       <div class="confirm-content">
         <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b"></i>
         <p>
-          ¿Estás seguro de que deseas eliminar el departamento
-          <strong>{{ departamentoDelete?.nombre }}</strong
+          ¿Estás seguro de que deseas eliminar el proveedor
+          <strong>{{ proveedorDelete?.nombre }}</strong
           >?
         </p>
       </div>
       <template #footer>
         <Button
-          type="button"
           label="Cancelar"
           severity="secondary"
           outlined
           @click="mostrarConfirmDialog = false"
         />
-        <Button type="button" label="Eliminar" severity="danger" @click="eliminar" />
+        <Button label="Eliminar" severity="danger" @click="eliminar" />
       </template>
     </Dialog>
   </div>
@@ -161,7 +197,7 @@ defineExpose({ obtenerLista })
 
 <style scoped>
 .productos-container {
-    padding: 0; 
+  padding: 0;
 }
 
 .header-acciones {
@@ -238,11 +274,17 @@ defineExpose({ obtenerLista })
   background: #fafafa;
 }
 
-.producto-nombre {
+.texto-principal {
   color: #1f2937;
   font-weight: 500;
 }
 
+.badge {
+  font-size: 0.813rem;
+  color: #4b5563;
+}
+
+/* Botones de acción */
 .acciones {
   display: flex;
   gap: 8px;
@@ -260,11 +302,11 @@ defineExpose({ obtenerLista })
   background: none;
 }
 
-.acciones :deep(.p-button[aria-label='Editar']:hover) {
+.acciones :deep(.p-button[severity='info']:hover) {
   color: #3b82f6;
 }
 
-.acciones :deep(.p-button[aria-label='Eliminar']:hover) {
+.acciones :deep(.p-button[severity='danger']:hover) {
   color: #ef4444;
 }
 
@@ -275,6 +317,7 @@ defineExpose({ obtenerLista })
   padding: 32px;
 }
 
+/* Paginación */
 .paginacion {
   display: flex;
   justify-content: center;
@@ -335,6 +378,7 @@ defineExpose({ obtenerLista })
   color: #1a202c;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .header-acciones {
     flex-direction: column;

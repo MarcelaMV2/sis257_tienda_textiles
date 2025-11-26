@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import http from '@/plugins/axios'
-import Dialog from 'primevue/dialog' // 🆕
-import Button from 'primevue/button' // 🆕
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
 
 const router = useRouter()
 const route = useRoute()
@@ -21,40 +21,24 @@ const datos = ref({
 
 const cargando = ref(false)
 const error = ref<string | null>(null)
-
-// 🆕 control del modal de éxito
 const mostrarModalExito = ref(false)
 
 async function registrarUsuario() {
   cargando.value = true
   error.value = null
   try {
-    const body = {
-      nombre: datos.value.nombre,
-      apellidos: datos.value.apellidos,
-      email: datos.value.email,
-      telefono: datos.value.telefono,
-      rol: datos.value.rol,
-      // no mandamos clave: backend usa la default
-    }
-
-    // 1) Crear usuario
+    const body = { ...datos.value }
     await http.post(ENDPOINT, body)
 
-    // 2) Login automático con la contraseña por defecto
     const { data: loginData } = await http.post('/auth/login', {
       email: body.email,
       clave: DEFAULT_PWD,
     })
 
     localStorage.setItem('token', loginData.access_token)
-
-    // 3) 🆕 En lugar de redirigir de una, mostramos el modal
     mostrarModalExito.value = true
   } catch (e: any) {
-    console.error(e)
     const msg = e?.response?.data?.message
-
     if (typeof msg === 'string' && msg.toLowerCase().includes('existe')) {
       error.value = 'Ese correo ya está registrado. Inicia sesión para continuar.'
     } else if (Array.isArray(msg)) {
@@ -67,103 +51,147 @@ async function registrarUsuario() {
   }
 }
 
-// 🆕 función para ir al inicio cuando se cierra el modal
 const irAlInicio = () => {
   mostrarModalExito.value = false
-  // Si SIEMPRE quieres ir al home:
   router.push('/')
-  // Si quisieras respetar un `redirect` de la URL, podrías usar:
-  // const redirect = (route.query.redirect as string) || '/'
-  // router.push(redirect)
 }
 </script>
 
 <template>
-  <section class="checkout-container">
-    <div class="contenido">
-      <div class="formulario">
-        <h3>Crear cuenta</h3>
+  <div class="full-screen-container">
+    <div class="container my-5 pt-5">
 
-        <form @submit.prevent="registrarUsuario">
-          <div class="campos-doble">
-            <div class="campo">
-              <label>Nombre</label>
-              <input type="text" v-model="datos.nombre" required />
-            </div>
-            <div class="campo">
-              <label>Apellidos</label>
-              <input type="text" v-model="datos.apellidos" required />
-            </div>
+      <form class="form" @submit.prevent="registrarUsuario">
+        <h1 class="text-center" style="color: white">Crear Cuenta</h1>
+        <div class="campos-doble">
+          <div class="campo">
+            <label class="form-label">Nombre</label>
+            <input v-model="datos.nombre" type="text" class="form-input" required
+            placeholder="Nombre" />
           </div>
-
-          <div class="campos-doble">
-            <div class="campo">
-              <label>Correo electrónico</label>
-              <input type="email" v-model="datos.email" required />
-            </div>
-            <div class="campo">
-              <label>Teléfono</label>
-              <input type="text" v-model="datos.telefono" required />
-            </div>
+          <div class="campo">
+            <label class="form-label">Apellidos</label>
+            <input v-model="datos.apellidos" type="text" class="form-input" required
+            placeholder="Apellidos"/>
           </div>
+        </div>
 
-          <p v-if="error" class="error-msg">{{ error }}</p>
+        <div class="campos-doble">
+          <div class="campo">
+            <label class="form-label">Correo electrónico</label>
+            <input v-model="datos.email" type="email" class="form-input" required
+            placeholder="Correo electronico"/>
+          </div>
+          <div class="campo">
+            <label class="form-label">Teléfono</label>
+            <input v-model="datos.telefono" type="text" class="form-input" required
+            placeholder="Teléfono" />
+          </div>
+        </div>
 
-          <button class="btn-continuar" type="submit" :disabled="cargando">
-            {{ cargando ? 'Registrando...' : 'Registrarme' }}
-          </button>
-        </form>
+        <p v-if="error" class="text-danger">{{ error }}</p>
+        <input type="submit" class="form-submit" :value="cargando ? 'Registrando...' : 'Registrarme'" :disabled="cargando" />
+      </form>
 
-        <p class="texto">
-          ¿Ya tienes cuenta?
-          <RouterLink to="/login">Inicia sesión aquí</RouterLink>.
-        </p>
-      </div>
+      <p class="mt-3 text-center">
+        ¿Ya tienes cuenta?
+        <RouterLink to="/login" class="text-primary fw-semibold"> Inicia sesión aquí </RouterLink>
+      </p>
     </div>
-  </section>
 
-  <!-- 🆕 Modal bonito de éxito -->
-  <Dialog
-    v-model:visible="mostrarModalExito"
-    modal
-    :closable="false"
-    header="¡Registro exitoso!"
-    :style="{ width: '420px' }"
-  >
-    <div class="text-center">
-      <p class="mb-2">🎉 ¡Felicidades, tu cuenta ha sido creada correctamente!</p>
-      <p class="mb-4">Bienvenido(a) a <strong>SANSA</strong>. Ya puedes empezar a comprar.</p>
+    <!-- Modal de éxito -->
 
-      <Button label="Ir al inicio" @click="irAlInicio" />
-    </div>
-  </Dialog>
+    <Dialog
+  v-model:visible="mostrarModalExito"
+  modal
+  :closable="false"
+  header="¡Registro exitoso!"
+  :style="{ width: '420px', borderRadius: '12px' }"
+>
+  <div class="text-center" style="padding: 1rem">
+
+    <h2 style="color: #0b3a66; margin-bottom: 0.5rem">¡Felicidades!</h2>
+    <p style="font-size: 1rem; color: #333; margin-bottom: 0.5rem">
+      Tu cuenta ha sido creada correctamente.
+    </p>
+    <p style="font-size: 0.95rem; color: #555; margin-bottom: 1.5rem">
+      Bienvenido(a) a <strong>SANSA</strong>. Ya puedes empezar a comprar.
+    </p>
+    <Button
+    label="Ir al inicio"
+  @click="irAlInicio"
+  class="btn-exito"/>
+
+  </div>
+</Dialog>
+
+
+
+
+  </div>
+
+
+
+
+
 </template>
 
 <style scoped>
-.checkout-container {
-  padding: 2rem;
-  background: var(--color-bg, #f3f4f6);
-  min-height: 80vh;
-  display: flex;
-  justify-content: center;
-}
 
-.contenido {
+
+.full-screen-container {
+  background-image: url('@/assets/images/fondologin.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
   width: 100%;
-  max-width: 800px;
+  padding-top: 30px;
+  background-color: #333333;
 }
 
-.formulario {
-  background: white;
-  padding: 2rem 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.campo {
-  margin-bottom: 1rem;
+.form {
+  margin: 1.5rem auto;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 25%;
+  min-width: 500px;
+  max-width: 100%;
+  background: #0b3a66;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-label {
+  margin-top: 1rem;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  padding: 10px 15px;
+  background-color: #c7daf1;
+  border: none;
+  border-radius: 20px;
+  color: black;
+}
+
+.form-submit {
+  background: #ee5007;
+  border: none;
+  border-radius: 5rem;
+  color: white;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-submit:disabled {
+  opacity: 0.7;
+  cursor: default;
 }
 
 .campos-doble {
@@ -171,33 +199,21 @@ const irAlInicio = () => {
   gap: 1rem;
 }
 
-input[type='text'],
-input[type='email'] {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.campo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.btn-continuar {
-  margin-top: 1rem;
-  background-color: #38b2ac;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
+.btn-exito {
+  background-color: rgb(0, 0, 92) !important;
+  border: none !important;
+  color: white !important;
   font-weight: 600;
-  width: 100%;
-  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+.btn-exito:hover {
+  background-color: #050033 !important;
 }
 
-.btn-continuar:disabled {
-  opacity: 0.7;
-  cursor: default;
-}
-
-.error-msg {
-  margin-top: 0.5rem;
-  color: #dc2626;
-  white-space: pre-line;
-}
 </style>

@@ -4,19 +4,31 @@ import { Repository } from 'typeorm';
 import { CreatePedidoProductoDto } from './dto/create-pedido_producto.dto';
 import { UpdatePedidoProductoDto } from './dto/update-pedido_producto.dto';
 import { PedidoProducto } from './entities/pedido_producto.entity';
+import { ProductosService } from 'src/productos/productos.service';
 
 @Injectable()
 export class PedidoProductosService {
   constructor(
     @InjectRepository(PedidoProducto)
     private pedidoProductoRepository: Repository<PedidoProducto>,
+    private readonly productosService: ProductosService,
   ) {}
 
   async create(createPedidoProductoDto: CreatePedidoProductoDto): Promise<PedidoProducto> {
     const pedidoProducto = new PedidoProducto();
     Object.assign(pedidoProducto, createPedidoProductoDto);
 
-    return this.pedidoProductoRepository.save(pedidoProducto);
+    // 1) Guardamos el detalle del pedido
+    const detalleGuardado = await this.pedidoProductoRepository.save(pedidoProducto);
+
+    // 2) Descontamos del stock del producto
+    await this.productosService.disminuirStock(
+      detalleGuardado.idProducto, // id del producto
+      detalleGuardado.cantidad, // cantidad pedida
+    );
+
+    // 3) Devolvemos el detalle
+    return detalleGuardado;
   }
 
   async findAll(): Promise<PedidoProducto[]> {

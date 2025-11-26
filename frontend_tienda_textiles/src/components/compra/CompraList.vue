@@ -1,105 +1,145 @@
 <script setup lang="ts">
-import type { Departamento } from '@/models/departamento'
+import type { Compra } from '@/models/compra'
 import http from '@/plugins/axios'
 import { Button, Dialog, InputGroup, InputGroupAddon, InputText } from 'primevue'
 import { computed, onMounted, ref } from 'vue'
 
-const ENDPOINT = 'departamentos'
-const departamentos = ref<Departamento[]>([])
-const departamentoDelete = ref<Departamento | null>(null)
-const mostrarConfirmDialog = ref(false)
-const busqueda = ref('')
+const ENDPOINT = 'compras'
+const compras = ref<Compra[]>([])
+const compraDelete = ref<Compra | null>(null)
+const mostrarConfirmDialog = ref<boolean>(false)
+const busqueda = ref<string>('')
+
+// Paginación
 const paginaActual = ref(1)
-const ITEMS_PER_PAGE = 10
+const itemsPorPagina = ref(10)
 
 const emit = defineEmits(['edit'])
 
-const departamentosFiltrados = computed(() =>
-  departamentos.value.filter((d) =>
-    (d.nombre || '').toLowerCase().includes(busqueda.value.toLowerCase()),
-  ),
-)
-
-const totalPaginas = computed(() => Math.ceil(departamentosFiltrados.value.length / ITEMS_PER_PAGE))
-
-const departamentosPaginados = computed(() => {
-  const inicio = (paginaActual.value - 1) * ITEMS_PER_PAGE
-  return departamentosFiltrados.value.slice(inicio, inicio + ITEMS_PER_PAGE)
+const comprasFiltradas = computed(() => {
+  const term = busqueda.value.toLowerCase()
+  return compras.value.filter((c) => {
+    const prov = c.proveedor?.nombre || ''
+    const prod = c.producto?.nombre || ''
+    return (
+      prov.toLowerCase().includes(term) ||
+      prod.toLowerCase().includes(term) ||
+      String(c.id).includes(term)
+    )
+  })
 })
 
-const cambiarPagina = (p: number) => {
-  if (p >= 1 && p <= totalPaginas.value) paginaActual.value = p
+const totalPaginas = computed(() => Math.ceil(comprasFiltradas.value.length / itemsPorPagina.value))
+
+const comprasPaginadas = computed(() => {
+  const inicio = (paginaActual.value - 1) * itemsPorPagina.value
+  const fin = inicio + itemsPorPagina.value
+  return comprasFiltradas.value.slice(inicio, fin)
+})
+
+function cambiarPagina(pagina: number) {
+  if (pagina >= 1 && pagina <= totalPaginas.value) {
+    paginaActual.value = pagina
+  }
 }
 
-const obtenerLista = async () => {
-  departamentos.value = await http.get(ENDPOINT).then((r) => r.data)
+async function obtenerLista() {
+  compras.value = await http.get(ENDPOINT).then((r) => r.data)
 }
 
-const emitirEdicion = (departamento: Departamento) => emit('edit', departamento)
+function emitirEdicion(compra: Compra) {
+  emit('edit', compra)
+}
 
-const mostrarEliminarConfirm = (departamento: Departamento) => {
-  departamentoDelete.value = departamento
+function mostrarEliminarConfirm(compra: Compra) {
+  compraDelete.value = compra
   mostrarConfirmDialog.value = true
 }
 
-const eliminar = async () => {
-  if (!departamentoDelete.value?.id) return
-  await http.delete(`${ENDPOINT}/${departamentoDelete.value.id}`)
+async function eliminar() {
+  if (!compraDelete.value) return
+  await http.delete(`${ENDPOINT}/${compraDelete.value.id}`)
   await obtenerLista()
   mostrarConfirmDialog.value = false
 }
 
+function fmtFecha(iso?: string | Date) {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleDateString()
+}
+
+function fmtBs(n: number | undefined) {
+  if (n == null) return '0.00'
+  return Number(n).toFixed(2)
+}
+
 onMounted(obtenerLista)
+
 defineExpose({ obtenerLista })
 </script>
 
 <template>
   <div class="productos-container">
+    <!-- Header con búsqueda -->
     <div class="header-acciones">
       <div class="search-bar">
         <InputGroup style="margin-top: 5px;">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
-          <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre" />
+          <InputText
+            v-model="busqueda"
+            type="text"
+            placeholder="Buscar por proveedor, producto o N° compra"
+          />
         </InputGroup>
       </div>
     </div>
 
+    <!-- Tabla -->
     <div class="tabla-card">
       <table class="tabla">
         <thead>
           <tr>
             <th>Nro</th>
-            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Proveedor</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Total</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(departamento, index) in departamentosPaginados" :key="departamento.id">
-            <td>{{ (paginaActual - 1) * ITEMS_PER_PAGE + index + 1 }}</td>
-            <td class="producto-nombre">{{ departamento.nombre }}</td>
+          <tr v-for="(compra, index) in comprasPaginadas" :key="compra.id">
+            <td>{{ (paginaActual - 1) * itemsPorPagina + index + 1 }}</td>
+            <!-- usa fechaCreacion del entity -->
+            <td>{{ fmtFecha(compra.fechaCreacion as any) }}</td>
+            <td>{{ compra.proveedor?.nombre || '—' }}</td>
+            <td>{{ compra.producto?.nombre || '—' }}</td>
+            <td>{{ compra.cantidad }}</td>
+            <!-- usa precioUnitario -->
+            <td>Bs. {{ fmtBs(compra.precioUnitario) }}</td>
+            <!-- usa montoTotal del backend -->
+            <td>Bs. {{ fmtBs(compra.montoTotal) }}</td>
             <td>
               <div class="acciones">
-                <Button
-                  icon="pi pi-pencil"
-                  aria-label="Editar"
-                  text
-                  @click="emitirEdicion(departamento)"
-                />
+                <Button icon="pi pi-pencil" severity="info" text @click="emitirEdicion(compra)" />
                 <Button
                   icon="pi pi-trash"
-                  aria-label="Eliminar"
+                  severity="danger"
                   text
-                  @click="mostrarEliminarConfirm(departamento)"
+                  @click="mostrarEliminarConfirm(compra)"
                 />
               </div>
             </td>
           </tr>
-          <tr v-if="departamentosPaginados.length === 0">
-            <td colspan="3" class="empty">No se encontraron resultados.</td>
+          <tr v-if="comprasPaginadas.length === 0">
+            <td colspan="8" class="empty">No se encontraron compras.</td>
           </tr>
         </tbody>
       </table>
 
+      <!-- Paginación -->
       <div v-if="totalPaginas > 1" class="paginacion">
         <button
           class="btn-pag"
@@ -131,6 +171,7 @@ defineExpose({ obtenerLista })
       </div>
     </div>
 
+    <!-- Dialog de confirmación -->
     <Dialog
       v-model:visible="mostrarConfirmDialog"
       header="Confirmar Eliminación"
@@ -140,28 +181,28 @@ defineExpose({ obtenerLista })
       <div class="confirm-content">
         <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #f59e0b"></i>
         <p>
-          ¿Estás seguro de que deseas eliminar el departamento
-          <strong>{{ departamentoDelete?.nombre }}</strong
+          ¿Estás seguro de que deseas eliminar la compra
+          <strong>#{{ compraDelete?.id }}</strong
           >?
         </p>
       </div>
       <template #footer>
         <Button
-          type="button"
           label="Cancelar"
           severity="secondary"
           outlined
           @click="mostrarConfirmDialog = false"
         />
-        <Button type="button" label="Eliminar" severity="danger" @click="eliminar" />
+        <Button label="Eliminar" severity="danger" @click="eliminar" />
       </template>
     </Dialog>
   </div>
 </template>
 
 <style scoped>
+/* dejo tu mismo CSS tal cual */
 .productos-container {
-    padding: 0; 
+  padding: 0;
 }
 
 .header-acciones {
@@ -238,11 +279,12 @@ defineExpose({ obtenerLista })
   background: #fafafa;
 }
 
-.producto-nombre {
-  color: #1f2937;
-  font-weight: 500;
+.badge {
+  font-size: 0.813rem;
+  color: #4b5563;
 }
 
+/* Botones de acción */
 .acciones {
   display: flex;
   gap: 8px;
@@ -260,11 +302,11 @@ defineExpose({ obtenerLista })
   background: none;
 }
 
-.acciones :deep(.p-button[aria-label='Editar']:hover) {
+.acciones :deep(.p-button[severity='info']:hover) {
   color: #3b82f6;
 }
 
-.acciones :deep(.p-button[aria-label='Eliminar']:hover) {
+.acciones :deep(.p-button[severity='danger']:hover) {
   color: #ef4444;
 }
 
@@ -275,6 +317,7 @@ defineExpose({ obtenerLista })
   padding: 32px;
 }
 
+/* Paginación */
 .paginacion {
   display: flex;
   justify-content: center;
@@ -335,6 +378,7 @@ defineExpose({ obtenerLista })
   color: #1a202c;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .header-acciones {
     flex-direction: column;
