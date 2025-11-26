@@ -42,8 +42,9 @@ async function onSubmit() {
 <template>
   <div class="full-screen-container">
     <div class="container my-5 pt-5">
-      <h1 class="text-center" style="color: #e54d07">Iniciar Sesión</h1>
+
       <form class="form" @submit.prevent="onSubmit">
+        <h1 class="text-center" style="color: white">Iniciar Sesión</h1>
         <label class="form-label">Email:</label>
         <input
           v-model="email"
