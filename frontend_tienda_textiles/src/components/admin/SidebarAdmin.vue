@@ -71,6 +71,13 @@ function cerrarSesion() {
       :outlined="!isActive('/admin/pagos')"
       @click="router.push('/admin/pagos')"
     />
+    <Button
+      label="Departamentos"
+      icon="pi pi-map"
+      class="w-full mb-2"
+      :outlined="!isActive('/admin/departamentos')"
+      @click="router.push('/admin/departamentos')"
+    />
     <!-- Separador visual -->
     <div class="separador"></div>
 

@@ -125,6 +125,11 @@ const router = createRouter({
           name: 'admin-pagos',
           component: () => import('@/views/admin/PagosAdminView.vue'),
         },
+        {
+          path: 'departamentos',
+          name: 'admin-departamentos',
+          component: () => import('@/views/admin/DepartamentoView.vue'),
+        },
       ],
     },
 

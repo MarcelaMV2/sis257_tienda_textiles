@@ -19,6 +19,11 @@ type Pago = {
   fechaPago?: string
 }
 
+type DepartamentoPedido = {
+  id: number
+  nombre: string
+}
+
 type Pedido = {
   id: number
   total: number
@@ -27,7 +32,8 @@ type Pedido = {
   tipoEnvio: string
   direccion?: string
   referencia?: string
-  departamento?: string
+  ciudad?: string // 👈 ciudad
+  departamento?: DepartamentoPedido | string // puede venir objeto o string
   pais?: string
   usuario?: { nombre: string; email?: string }
   fechaCreacion?: string
@@ -336,21 +342,42 @@ function fmtBs(n?: number) {
                         <span>Tipo:</span>
                         <strong>{{ p.tipoEnvio || '—' }}</strong>
                       </div>
+
                       <div class="info-row" v-if="p.direccion">
                         <span>Dirección:</span>
                         <span>{{ p.direccion }}</span>
                       </div>
+
                       <div class="info-row" v-if="p.referencia">
                         <span>Referencia:</span>
                         <span>{{ p.referencia }}</span>
                       </div>
-                      <div class="info-row" v-if="p.departamento || p.pais">
-                        <span>Ubicación:</span>
-                        <span>{{
-                          [p.departamento, p.pais].filter(Boolean).join(', ') || '—'
-                        }}</span>
+
+                      <div class="info-row" v-if="p.ciudad">
+                        <span>Ciudad:</span>
+                        <span>{{ p.ciudad }}</span>
                       </div>
-                      <div class="empty" v-if="!p.tipoEnvio && !p.direccion">
+
+                      <div class="info-row" v-if="p.departamento">
+                        <span>Departamento:</span>
+                        <span>
+                          {{
+                            typeof p.departamento === 'string'
+                              ? p.departamento
+                              : p.departamento?.nombre
+                          }}
+                        </span>
+                      </div>
+
+                      <div class="info-row" v-if="p.pais">
+                        <span>País:</span>
+                        <span>{{ p.pais }}</span>
+                      </div>
+
+                      <div
+                        class="empty"
+                        v-if="!p.tipoEnvio && !p.direccion && !p.ciudad && !p.departamento"
+                      >
                         Sin datos de envío
                       </div>
                     </div>

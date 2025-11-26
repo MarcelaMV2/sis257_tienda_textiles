@@ -19,21 +19,16 @@ const subtotal = computed(() => totalCarrito().toFixed(2))
 const usuarioId = ref<number | null>(null)
 
 // Lista de departamentos de Bolivia
-const departamentos = [
-  'La Paz',
-  'Santa Cruz',
-  'Cochabamba',
-  'Oruro',
-  'Potosí',
-  'Chuquisaca',
-  'Tarija',
-  'Beni',
-  'Pando',
-]
+interface Departamento {
+  id: number
+  nombre: string
+}
+
+const departamentos = ref<Departamento[]>([])
 
 const envio = ref({
   pais: 'Bolivia', // Valor fijo
-  departamento: '',
+  idDepartamento: null as number | null, // 👈 antes 'departamento'
   ciudad: '',
   direccion: '',
   referencia: '',
@@ -49,7 +44,12 @@ const pago = ref({
   cardCvv: '',
 })
 
-onMounted(() => {
+async function cargarDepartamentos() {
+  const { data } = await http.get<Departamento[]>('/departamentos') // o '/departamentos/activos'
+  departamentos.value = data
+}
+
+onMounted(async () => {
   const token = getTokenFromLocalStorage()
   if (!token) {
     router.replace('/checkout')
@@ -57,7 +57,12 @@ onMounted(() => {
   }
   const payload = parseJwt(token)
   usuarioId.value = payload?.sub ?? null
-  if (!usuarioId.value) router.replace('/checkout')
+  if (!usuarioId.value) {
+    router.replace('/checkout')
+    return
+  }
+
+  await cargarDepartamentos()
 })
 
 function last4(num: string) {
@@ -81,7 +86,7 @@ async function confirmarPedido() {
       return
     }
 
-    if (!envio.value.departamento || !envio.value.direccion) {
+    if (!envio.value.idDepartamento || !envio.value.direccion) {
       alert('Completa departamento y dirección.')
       return
     }
@@ -106,7 +111,7 @@ async function confirmarPedido() {
       total: Number(totalCarrito()),
       estado: 'pendiente',
       pais: 'Bolivia', // Siempre Bolivia
-      departamento: envio.value.departamento,
+      idDepartamento: envio.value.idDepartamento,
       provincia: envio.value.ciudad, // Se envía como provincia
       direccion: envio.value.direccion,
       referencia: envio.value.referencia,
@@ -199,10 +204,10 @@ async function confirmarPedido() {
           <!-- Departamento -->
           <div class="campo">
             <label>Departamento <span class="required">*</span></label>
-            <select v-model="envio.departamento" required>
+            <select v-model.number="envio.idDepartamento" required>
               <option value="" disabled>Selecciona un departamento</option>
-              <option v-for="dept in departamentos" :key="dept" :value="dept">
-                {{ dept }}
+              <option v-for="dept in departamentos" :key="dept.id" :value="dept.id">
+                {{ dept.nombre }}
               </option>
             </select>
           </div>
