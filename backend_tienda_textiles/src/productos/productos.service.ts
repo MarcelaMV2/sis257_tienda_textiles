@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Repository } from 'typeorm';
 import { Producto } from './entities/producto.entity';
@@ -88,5 +93,37 @@ export class ProductosService {
       relations: ['categoria'],
       order: { nombre: 'ASC' },
     });
+  }
+
+  async incrementarStock(idProducto: number, cantidad: number): Promise<Producto> {
+    const producto = await this.productosRepository.findOneBy({ id: idProducto });
+
+    if (!producto) {
+      throw new NotFoundException('El producto no existe');
+    }
+
+    // sumamos la cantidad comprada al stock actual
+    producto.stock = (producto.stock ?? 0) + cantidad;
+
+    return this.productosRepository.save(producto);
+  }
+
+  async disminuirStock(idProducto: number, cantidad: number): Promise<Producto> {
+    const producto = await this.productosRepository.findOneBy({ id: idProducto });
+
+    if (!producto) {
+      throw new NotFoundException('El producto no existe');
+    }
+
+    const nuevoStock = (producto.stock ?? 0) - cantidad;
+
+    if (nuevoStock < 0) {
+      // opcional: puedes dejar que llegue a cero o lanzar error
+      throw new BadRequestException('Stock insuficiente para este producto');
+    }
+
+    producto.stock = nuevoStock;
+
+    return this.productosRepository.save(producto);
   }
 }
