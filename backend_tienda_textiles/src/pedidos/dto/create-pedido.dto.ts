@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsDefined, IsInt, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDefined, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 export class CreatePedidoDto {
   @ApiProperty({
@@ -48,17 +48,17 @@ export class CreatePedidoDto {
   @IsString({ message: 'El campo provincia debe ser una cadena' })
   @MaxLength(100, { message: 'El campo provincia no debe exceder los 100 caracteres' })
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
-  provincia?: string;
+  ciudad?: string;
 
   @ApiProperty({
     description: 'Departamento o región del pedido',
     example: 'Chuquisaca',
   })
-  @IsOptional()
-  @IsString({ message: 'El campo departamento debe ser una cadena' })
-  @MaxLength(100, { message: 'El campo departamento no debe exceder los 100 caracteres' })
-  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
-  departamento?: string;
+  @ApiProperty({ description: 'ID del departamento (FK)', example: 1 })
+  @IsNotEmpty({ message: 'El campo idDepartamento es obligatorio' })
+  @Type(() => Number)
+  @IsInt({ message: 'El campo idDepartamento debe ser un número entero' })
+  readonly idDepartamento: number;
 
   @ApiProperty({ description: 'País', example: 'Bolivia' })
   @IsOptional()

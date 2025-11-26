@@ -35,14 +35,35 @@ export class PedidosService {
 
   async findAll(): Promise<Pedido[]> {
     return this.pedidosRepository.find({
-      relations: { usuario: true },
+      relations: {
+        usuario: true,
+        departamento: true, // 👈 importante
+      },
       select: {
         id: true,
         total: true,
         estado: true,
         metodoPago: true,
         fechaCreacion: true,
-        usuario: { id: true, nombre: true, email: true },
+
+        // Campos de envío 👇
+        direccion: true,
+        referencia: true,
+        ciudad: true,
+        pais: true,
+        idDepartamento: true,
+
+        usuario: {
+          id: true,
+          nombre: true,
+          email: true,
+        },
+
+        // Solo lo necesario del departamento
+        departamento: {
+          id: true,
+          nombre: true,
+        },
       },
       order: { id: 'ASC' },
     });
@@ -53,9 +74,8 @@ export class PedidosService {
       where: { id },
       relations: {
         usuario: true,
-        // trae los detalles + el producto (nombre, imagen, precio, etc.)
+        departamento: true, // 👈 aquí
         pedidosProductos: { producto: true },
-        // trae los pagos asociados (metodo, estado, comprobante, maskedCard…)
         pagos: true,
       },
       order: {
