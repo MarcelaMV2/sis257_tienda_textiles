@@ -75,7 +75,7 @@ async function handleSave() {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar departamento' : 'Crear departamento'"
-      style="width: 24rem"
+      style="width: 24rem; background-color: #fabf13; color: black;"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-3">Nombre</label>
@@ -86,6 +86,7 @@ async function handleSave() {
           autocomplete="off"
           autofocus
           maxlength="100"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 

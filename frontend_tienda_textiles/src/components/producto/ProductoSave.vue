@@ -141,8 +141,8 @@ watch(
   <div class="card flex justify-center">
     <Dialog
       v-model:visible="dialogVisible"
-      :header="props.modoEdicion ? 'Editar' : 'Crear'"
-      style="width: 0.28m; background-color: #fabf13"
+      :header="props.modoEdicion ? 'Editar un producto' : 'Crear nuevo producto'"
+      style="width: 0.28m; background-color: #fabf13; color: black;"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="categoria" class="font-semibold w-3">Categoría</label>
@@ -154,6 +154,7 @@ watch(
           optionValue="id"
           class="flex-auto"
           autofocus
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
         />
       </div>
 
@@ -165,6 +166,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="60"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -177,6 +179,7 @@ watch(
           rows="3"
           maxlength="200"
           autocomplete="off"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -189,6 +192,7 @@ watch(
           :maxFractionDigits="5"
           class="flex-auto"
           autocomplete="off"
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
         />
       </div>
 
@@ -199,6 +203,7 @@ watch(
           v-model.number="producto.stock"
           class="flex-auto"
           autocomplete="off"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
