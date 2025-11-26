@@ -25,7 +25,7 @@ export class PedidoProducto {
   @Column('integer')
   cantidad: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { name: 'precio_unitario', precision: 10, scale: 2 })
   precioUnitario: number;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
