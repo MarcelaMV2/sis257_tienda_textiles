@@ -14,6 +14,7 @@ import { CarritoProductosModule } from './carrito-productos/carrito-productos.mo
 import { UploadsModule } from './uploads/uploads.module';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
+import { DepartamentosModule } from './departamentos/departamentos.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AuthModule } from './auth/auth.module';
     UploadsModule,
     MailModule,
     AuthModule,
+    DepartamentosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

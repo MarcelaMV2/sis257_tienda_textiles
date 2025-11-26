@@ -12,6 +12,7 @@ import {
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { PedidoProducto } from 'src/pedido_productos/entities/pedido_producto.entity';
 import { Pago } from 'src/pagos/entities/pago.entity';
+import { Departamento } from 'src/departamentos/entities/departamento.entity';
 
 @Entity('pedidos')
 export class Pedido {
@@ -20,6 +21,11 @@ export class Pedido {
 
   @Column('integer', { name: 'id_usuario' })
   idUsuario: number;
+
+  /* @Column('varchar', { length: 100, nullable: true })
+  departamento: string; */
+  @Column('int', { name: 'id_departamento' })
+  idDepartamento: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
   total: number;
@@ -31,10 +37,7 @@ export class Pedido {
   pais: string;
 
   @Column('varchar', { length: 100, nullable: true })
-  departamento: string;
-
-  @Column('varchar', { length: 100, nullable: true })
-  provincia: string;
+  ciudad: string;
 
   @Column('varchar', { length: 255, nullable: true })
   direccion: string;
@@ -66,4 +69,8 @@ export class Pedido {
 
   @OneToMany(() => Pago, pago => pago.pedido)
   pagos: Pago[];
+
+  @ManyToOne(() => Departamento, departamento => departamento.pedidos)
+  @JoinColumn({ name: 'id_departamento', referencedColumnName: 'id' })
+  departamento: Departamento;
 }
