@@ -15,6 +15,8 @@ import { UploadsModule } from './uploads/uploads.module';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import { DepartamentosModule } from './departamentos/departamentos.module';
+import { ProveedoresModule } from './proveedores/proveedores.module';
+import { ComprasModule } from './compras/compras.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { DepartamentosModule } from './departamentos/departamentos.module';
     MailModule,
     AuthModule,
     DepartamentosModule,
+    ProveedoresModule,
+    ComprasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

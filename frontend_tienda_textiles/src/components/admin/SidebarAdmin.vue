@@ -78,6 +78,27 @@ function cerrarSesion() {
       :outlined="!isActive('/admin/departamentos')"
       @click="router.push('/admin/departamentos')"
     />
+    <Button
+      label="Proveedores"
+      icon="pi pi-truck"
+      class="w-full mb-2"
+      :outlined="!isActive('/admin/proveedores')"
+      @click="router.push('/admin/proveedores')"
+    />
+    <Button
+      label="Compras"
+      icon="pi pi-shopping-bag"
+      class="w-full mb-2"
+      :outlined="!isActive('/admin/compras')"
+      @click="router.push('/admin/compras')"
+    />
+    <Button
+      label="Usuarios"
+      icon="pi pi-user"
+      class="w-full mb-2"
+      :outlined="!isActive('/admin/usuarios')"
+      @click="router.push('/admin/usuarios')"
+    />
     <!-- Separador visual -->
     <div class="separador"></div>
 

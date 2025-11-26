@@ -130,6 +130,21 @@ const router = createRouter({
           name: 'admin-departamentos',
           component: () => import('@/views/admin/DepartamentoView.vue'),
         },
+        {
+          path: 'proveedores',
+          name: 'admin-proveedores',
+          component: () => import('@/views/admin/ProveedorView.vue'),
+        },
+        {
+          path: 'compras',
+          name: 'admin-compras',
+          component: () => import('@/views/admin/CompraView.vue'),
+        },
+        {
+          path: 'usuarios',
+          name: 'admin-usuarios',
+          component: () => import('@/views/admin/UsuarioView.vue'),
+        },
       ],
     },
 
