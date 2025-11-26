@@ -100,17 +100,45 @@ const irAlInicio = () => {
     </div>
 
     <!-- Modal de éxito -->
-    <Dialog v-model:visible="mostrarModalExito" modal :closable="false" header="¡Registro exitoso!" :style="{ width: '420px' }">
-      <div class="text-center">
-        <p class="mb-2">🎉 ¡Felicidades, tu cuenta ha sido creada correctamente!</p>
-        <p class="mb-4">Bienvenido(a) a <strong>SANSA</strong>. Ya puedes empezar a comprar.</p>
-        <Button label="Ir al inicio" @click="irAlInicio" />
-      </div>
-    </Dialog>
+
+    <Dialog
+  v-model:visible="mostrarModalExito"
+  modal
+  :closable="false"
+  header="¡Registro exitoso!"
+  :style="{ width: '420px', borderRadius: '12px' }"
+>
+  <div class="text-center" style="padding: 1rem">
+
+    <h2 style="color: #0b3a66; margin-bottom: 0.5rem">¡Felicidades!</h2>
+    <p style="font-size: 1rem; color: #333; margin-bottom: 0.5rem">
+      Tu cuenta ha sido creada correctamente.
+    </p>
+    <p style="font-size: 0.95rem; color: #555; margin-bottom: 1.5rem">
+      Bienvenido(a) a <strong>SANSA</strong>. Ya puedes empezar a comprar.
+    </p>
+    <Button
+    label="Ir al inicio"
+  @click="irAlInicio"
+  class="btn-exito"/>
+
   </div>
+</Dialog>
+
+
+
+
+  </div>
+
+
+
+
+
 </template>
 
 <style scoped>
+
+
 .full-screen-container {
   background-image: url('@/assets/images/fondologin.jpg');
   background-size: cover;
@@ -176,4 +204,16 @@ const irAlInicio = () => {
   display: flex;
   flex-direction: column;
 }
+
+.btn-exito {
+  background-color: rgb(0, 0, 92) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+.btn-exito:hover {
+  background-color: #050033 !important;
+}
+
 </style>
