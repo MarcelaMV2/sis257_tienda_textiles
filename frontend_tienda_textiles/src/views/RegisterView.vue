@@ -9,7 +9,6 @@ const router = useRouter()
 const route = useRoute()
 
 const ENDPOINT = '/usuarios'
-const DEFAULT_PWD = import.meta.env.VITE_DEFAULT_PASSWORD || 'hola123'
 
 const datos = ref({
   nombre: '',
@@ -17,6 +16,7 @@ const datos = ref({
   email: '',
   telefono: '',
   rol: 'cliente',
+  clave: '' // 🔑 añadimos la contraseña al objeto datos
 })
 
 const cargando = ref(false)
@@ -30,9 +30,11 @@ async function registrarUsuario() {
     const body = { ...datos.value }
     await http.post(ENDPOINT, body)
 
+
+    // 🔑 Usamos la contraseña que el usuario escribió
     const { data: loginData } = await http.post('/auth/login', {
       email: body.email,
-      clave: DEFAULT_PWD,
+      clave: body.clave,
     })
 
     localStorage.setItem('token', loginData.access_token)
@@ -56,6 +58,7 @@ const irAlInicio = () => {
   router.push('/')
 }
 </script>
+
 
 <template>
   <div class="full-screen-container">
@@ -89,9 +92,18 @@ const irAlInicio = () => {
           </div>
         </div>
 
+        <div class="campos-doble">
+          <div class="campo">
+            <label class="form-label">Contraseña</label>
+            <input v-model="datos.clave" type="password" class="form-input" required
+            placeholder="Contraseña" />
+          </div>
+        </div>
+
         <p v-if="error" class="text-danger">{{ error }}</p>
         <input type="submit" class="form-submit" :value="cargando ? 'Registrando...' : 'Registrarme'" :disabled="cargando" />
       </form>
+
 
       <p class="mt-3 text-center">
         ¿Ya tienes cuenta?
@@ -125,14 +137,7 @@ const irAlInicio = () => {
   </div>
 </Dialog>
 
-
-
-
   </div>
-
-
-
-
 
 </template>
 
