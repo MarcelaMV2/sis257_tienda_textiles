@@ -121,9 +121,8 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar Compra' : 'Registrar Compra'"
-      style="width: 0.28m; background-color: #fabf13"
+      style="width: 0.28m; background-color: #fabf13; color: black;"
     >
-      <!-- Proveedor -->
       <div class="flex items-center gap-4 mb-4">
         <label for="proveedor" class="font-semibold w-3">Proveedor</label>
         <Select
@@ -133,10 +132,10 @@ watch(
           optionLabel="nombre"
           optionValue="id"
           class="flex-auto"
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
         />
       </div>
 
-      <!-- Producto -->
       <div class="flex items-center gap-4 mb-4">
         <label for="producto" class="font-semibold w-3">Producto</label>
         <Select
@@ -146,10 +145,9 @@ watch(
           optionLabel="nombre"
           optionValue="id"
           class="flex-auto"
-        />
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
       </div>
 
-      <!-- Cantidad -->
       <div class="flex items-center gap-4 mb-4">
         <label for="cantidad" class="font-semibold w-3">Cantidad</label>
         <InputNumber
@@ -158,10 +156,9 @@ watch(
           :min="1"
           class="flex-auto"
           autocomplete="off"
-        />
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
       </div>
 
-      <!-- Precio Unitario -->
       <div class="flex items-center gap-4 mb-4">
         <label for="precioUnitario" class="font-semibold w-3">Precio Unitario</label>
         <InputNumber
@@ -171,10 +168,9 @@ watch(
           :maxFractionDigits="5"
           class="flex-auto"
           autocomplete="off"
-        />
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
       </div>
 
-      <!-- Precio Unitario -->
       <div class="flex items-center gap-4 mb-4">
         <label class="font-semibold w-3">Total</label>
         <InputNumber
@@ -183,10 +179,9 @@ watch(
           :maxFractionDigits="2"
           class="flex-auto"
           disabled
-        />
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
       </div>
 
-      <!-- Observación -->
       <div class="flex items-center gap-4 mb-4">
         <label for="observacion" class="font-semibold w-3">Observación</label>
         <Textarea
@@ -196,7 +191,7 @@ watch(
           rows="3"
           autocomplete="off"
           maxlength="255"
-        />
+          style="background-color: white; color: #303F2D;" />
       </div>
 
       <div class="flex justify-end gap-2">

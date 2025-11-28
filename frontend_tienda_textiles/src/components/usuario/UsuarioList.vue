@@ -88,7 +88,7 @@ defineExpose({ obtenerLista })
     <!-- Header con búsqueda -->
     <div class="header-acciones">
       <div class="search-bar">
-        <InputGroup>
+        <InputGroup style="margin-top: 5px;">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
           <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre, email o rol" />
         </InputGroup>
@@ -207,7 +207,7 @@ defineExpose({ obtenerLista })
 /* Header */
 .header-acciones {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 16px;
   gap: 16px;

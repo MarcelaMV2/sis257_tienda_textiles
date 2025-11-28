@@ -56,7 +56,7 @@ defineExpose({ obtenerLista })
   <div class="productos-container">
     <div class="header-acciones">
       <div class="search-bar">
-        <InputGroup>
+        <InputGroup style="margin-top: 5px;">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
           <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre o descripción" />
         </InputGroup>

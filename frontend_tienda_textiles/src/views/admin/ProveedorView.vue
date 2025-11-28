@@ -47,5 +47,8 @@ function handleGuardar() {
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #EEEEEE; 
 }
 </style>

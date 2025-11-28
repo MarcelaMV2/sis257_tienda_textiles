@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import UsuarioList from '@/components/usuario/UsuarioList.vue'
 import UsuarioSave from '@/components/usuario/UsuarioSave.vue'
+import type { Usuario } from '@/models/usuarios'
 import { Button } from 'primevue'
 import { ref } from 'vue'
-import type { Usuario } from '@/models/usuario'
+
 
 const mostrarDialog = ref(false)
 const usuarioListRef = ref<typeof UsuarioList | null>(null)
@@ -48,5 +49,8 @@ function handleGuardar() {
   padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #EEEEEE; 
 }
 </style>

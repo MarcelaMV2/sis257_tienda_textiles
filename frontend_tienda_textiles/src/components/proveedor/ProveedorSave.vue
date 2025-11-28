@@ -85,7 +85,7 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar Proveedor' : 'Crear Proveedor'"
-      style="width: 0.28m; background-color: #fabf13"
+      style="width: 0.28m; background-color: #fabf13; color: black"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-3">Nombre</label>
@@ -95,6 +95,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="150"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -106,6 +107,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -117,6 +119,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="150"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -128,6 +131,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="255"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -143,6 +147,7 @@ watch(
           optionLabel="label"
           optionValue="value"
           class="flex-auto"
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
         />
       </div>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Usuario } from '@/models/usuario'
+import type { Usuario } from '@/models/usuarios'
 import http from '@/plugins/axios'
 import { Button, Dialog, InputText, Select } from 'primevue'
 import { computed, ref, watch } from 'vue'
@@ -105,7 +105,7 @@ async function handleSave() {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar usuario' : 'Crear usuario'"
-      style="width: 0.28m; background-color: #fabf13"
+      style="width: 0.28m; background-color: #fabf13; color: black;"
     >
       <!-- Nombre -->
       <div class="flex items-center gap-4 mb-4">
@@ -116,6 +116,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -128,6 +129,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -141,6 +143,7 @@ async function handleSave() {
           autocomplete="off"
           type="email"
           maxlength="100"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -153,6 +156,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="20"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
@@ -166,6 +170,7 @@ async function handleSave() {
           optionLabel="label"
           optionValue="value"
           class="flex-auto"
+          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
         />
       </div>
 
@@ -181,6 +186,7 @@ async function handleSave() {
           autocomplete="new-password"
           type="password"
           maxlength="200"
+          style="background-color: white; color: #303F2D;"
         />
       </div>
 
