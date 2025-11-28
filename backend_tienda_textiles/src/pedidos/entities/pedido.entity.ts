@@ -24,7 +24,7 @@ export class Pedido {
 
   /* @Column('varchar', { length: 100, nullable: true })
   departamento: string; */
-  @Column('int', { name: 'id_departamento' })
+  @Column('int', { name: 'id_departamento', nullable: true })
   idDepartamento: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
