@@ -254,6 +254,7 @@ onUnmounted(() => {
 .social-icons i:hover {
   opacity: 0.8;
 }
+
 .middle-bar {
   background: #faf0e6;
   padding: 0.3rem 0;
@@ -339,7 +340,7 @@ onUnmounted(() => {
 }
 
 .user-icon:hover {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .user-dropdown {
@@ -390,4 +391,21 @@ onUnmounted(() => {
   background: #e2e8f0;
   margin: 8px 0;
 }
+
+/* Ícono del carrito */
+.cart-icon {
+  cursor: pointer;
+}
+
+.cart-icon i {
+  font-size: 1.4rem;
+  color: #353535;
+}
+
+/* Hover sobre el carrito */
+.cart-icon:hover i {
+  opacity: 0.5;
+}
+
+
 </style>
