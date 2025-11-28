@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUsuarioDto {
   @ApiProperty()
@@ -20,6 +20,15 @@ export class CreateUsuarioDto {
   })
   @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
   readonly apellidos: string;
+
+  // 🔑 Campo de contraseña agregado
+  @ApiProperty({ description: 'Contraseña elegida por el usuario' })
+  @IsNotEmpty({ message: 'El campo clave es obligatorio' })
+  @IsString({ message: 'El campo clave debe ser de tipo cadena' })
+  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @MaxLength(100, { message: 'La contraseña no debe exceder 100 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  clave: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'El campo email es obligatorio' })
