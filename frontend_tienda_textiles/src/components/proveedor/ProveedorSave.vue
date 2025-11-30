@@ -95,7 +95,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="150"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -107,7 +107,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -119,7 +119,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="150"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -131,7 +131,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="255"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -147,7 +147,7 @@ watch(
           optionLabel="label"
           optionValue="value"
           class="flex-auto"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 

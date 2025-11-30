@@ -115,13 +115,12 @@ watch(
 
   <!-- 🔒 Modal de login -->
   <Dialog
-  v-model:visible="mostrarModalLogin"
-  modal
-  header="Inicia sesión para continuar"
-  :style="{ width: '400px' }"
-  class="modal-login-productos"
->
-
+    v-model:visible="mostrarModalLogin"
+    modal
+    header="Inicia sesión para continuar"
+    :style="{ width: '400px' }"
+    class="modal-login-productos"
+  >
     <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
     <div class="d-flex justify-content-end gap-2">
       <Button label="Cerrar" class="p-button-text" @click="mostrarModalLogin = false" />
@@ -222,9 +221,6 @@ watch(
 .btn-comprar:hover {
   background-color: #1a365d;
 }
-
-
-
 </style>
 
 <style>
@@ -245,7 +241,7 @@ watch(
   font-size: 0.95rem;
   text-align: center;
   padding: 1.5rem;
-  border-radius: 0 0  8px 8px;
+  border-radius: 0 0 8px 8px;
 }
 
 .modal-login-productos .p-dialog-footer {
@@ -294,10 +290,10 @@ watch(
 @keyframes fadeInScale {
   from {
     opacity: 0;
-  }}
+  }
+}
 
-
-  /* stilos de la X para cerrar el modal */
+/* stilos de la X para cerrar el modal */
 .modal-login-productos .p-dialog-close-button {
   color: #d97706 !important;
   border-radius: 50% !important;
@@ -308,8 +304,6 @@ watch(
 .modal-login-productos .p-dialog-close-button:focus {
   background-color: transparent !important;
   color: #b45309 !important;
-  border-color: #b45309!important;
+  border-color: #b45309 !important;
 }
-
 </style>
-

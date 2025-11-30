@@ -5,7 +5,6 @@ import type { Usuario } from '@/models/usuarios'
 import { Button } from 'primevue'
 import { ref } from 'vue'
 
-
 const mostrarDialog = ref(false)
 const usuarioListRef = ref<typeof UsuarioList | null>(null)
 const usuarioEdit = ref<Usuario | null>(null)
@@ -51,6 +50,6 @@ function handleGuardar() {
   margin: 0 auto;
   width: 100%;
   min-height: 100vh;
-  background-color: #EEEEEE; 
+  background-color: #eeeeee;
 }
 </style>

@@ -2,13 +2,10 @@
   <section class="instagram-gallery py-5 text-center" style="background-color: #b3d7c6">
     <div class="container">
       <h2 class="text-uppercase mb-4">Síguenos en Instagram</h2>
-      
 
       <!-- Botón con flecha indicando -->
       <div class="boton-con-flecha mt-4">
-        <button @click="irAInstagram">
-          Ir a Instagram
-        </button>
+        <button @click="irAInstagram">Ir a Instagram</button>
         <span class="flecha">⬅ Presiona aquí</span>
       </div>
     </div>
@@ -18,7 +15,7 @@
 <script setup lang="ts">
 const irAInstagram = () => {
   // Redirige a la pagina de instagram de Sansa
-  window.location.href = "https://www.instagram.com/sansa.designsbo/"
+  window.location.href = 'https://www.instagram.com/sansa.designsbo/'
 }
 </script>
 
@@ -58,8 +55,12 @@ const irAInstagram = () => {
 
 /* Animación para que la flecha parpadee */
 @keyframes parpadeo {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 </style>
-

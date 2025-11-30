@@ -242,7 +242,7 @@ function fmtBs(n?: number) {
   margin: 0 auto;
   width: 100%;
   min-height: 100vh;
-  background-color: #EEEEEE; 
+  background-color: #eeeeee;
 }
 
 .header {

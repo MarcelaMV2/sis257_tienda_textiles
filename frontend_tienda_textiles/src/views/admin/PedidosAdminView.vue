@@ -104,6 +104,7 @@ function handleCambioEstadoPedido(pedido: Pedido, nuevoEstado: string) {
 }
 
 function handleCambioEstadoPago(pedido: Pedido, nuevoEstado: string) {
+  // Validación inicial
   if (!pedido.pagos?.[0]) {
     alert('Este pedido no tiene registro de pago')
     return
@@ -112,8 +113,11 @@ function handleCambioEstadoPago(pedido: Pedido, nuevoEstado: string) {
   abrirModalConfirm(
     `¿Desea cambiar el estado del pago a "${nuevoEstado.replace('_', ' ')}"?`,
     async () => {
+      // Validación adicional para TypeScript (NO afecta la lógica)
+      const pago = pedido.pagos?.[0]
+      if (!pago) return
+
       try {
-        const pago = pedido.pagos![0]
         await http.patch(`/pagos/${pago.id}`, { estado: nuevoEstado })
         pago.estado = nuevoEstado
 
@@ -452,7 +456,7 @@ function fmtBs(n?: number) {
   margin: 0 auto;
   width: 100%;
   min-height: 100vh;
-  background-color: #EEEEEE; 
+  background-color: #eeeeee;
 }
 
 .header {

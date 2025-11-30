@@ -121,7 +121,7 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar Compra' : 'Registrar Compra'"
-      style="width: 0.28m; background-color: #fabf13; color: black;"
+      style="width: 0.28m; background-color: #fabf13; color: black"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="proveedor" class="font-semibold w-3">Proveedor</label>
@@ -132,7 +132,7 @@ watch(
           optionLabel="nombre"
           optionValue="id"
           class="flex-auto"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 
@@ -145,7 +145,8 @@ watch(
           optionLabel="nombre"
           optionValue="id"
           class="flex-auto"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
+        />
       </div>
 
       <div class="flex items-center gap-4 mb-4">
@@ -156,7 +157,8 @@ watch(
           :min="1"
           class="flex-auto"
           autocomplete="off"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
+        />
       </div>
 
       <div class="flex items-center gap-4 mb-4">
@@ -168,7 +170,8 @@ watch(
           :maxFractionDigits="5"
           class="flex-auto"
           autocomplete="off"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
+        />
       </div>
 
       <div class="flex items-center gap-4 mb-4">
@@ -179,7 +182,8 @@ watch(
           :maxFractionDigits="2"
           class="flex-auto"
           disabled
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }" />
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
+        />
       </div>
 
       <div class="flex items-center gap-4 mb-4">
@@ -191,7 +195,8 @@ watch(
           rows="3"
           autocomplete="off"
           maxlength="255"
-          style="background-color: white; color: #303F2D;" />
+          style="background-color: white; color: #303f2d"
+        />
       </div>
 
       <div class="flex justify-end gap-2">

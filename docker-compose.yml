@@ -1,0 +1,56 @@
+networks:
+  net-tienda-textiles:
+    name: net-tienda-textiles
+    driver: bridge
+
+services:
+  db-tienda-textiles:
+    image: postgres
+    container_name: db-tienda-textiles
+    restart: always
+    ports:
+      - "5434:5432"
+    networks:
+      - net-tienda-textiles
+    environment:
+      POSTGRES_DB: sis257_tienda_textiles
+      POSTGRES_USER: usr_sis257
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./pgdata:/var/lib/postgresql/18/docker
+
+  backend-tienda-textiles:
+    depends_on:
+      - db-tienda-textiles
+    image: be-tienda-textiles
+    container_name: api-tienda-textiles
+    restart: unless-stopped
+    build:
+      context: ./backend_tienda_textiles
+    ports:
+      - 3000:3000
+    networks:
+      - net-tienda-textiles
+    environment:
+      DB_HOST: db-tienda-textiles
+    volumes:
+      - ./backend_tienda_textiles:/usr/src/app
+      - /usr/src/app/node_modules/
+
+  frontend-tienda-textiles:
+    depends_on:
+        - backend-tienda-textiles
+    image: fe-tienda-textiles
+    container_name: app-tienda-textiles
+    restart: unless-stopped
+    build:
+      context: ./frontend_tienda_textiles
+      dockerfile: Dockerfile
+    ports:
+      - 85:85
+    networks:
+      - net-tienda-textiles
+    environment:
+      VITE_BASE_URL_ENDPOINT: backend-tienda-textiles
+    volumes:
+      - /usr/src/app/node_modules/

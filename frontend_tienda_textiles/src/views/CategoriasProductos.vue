@@ -143,6 +143,7 @@ onMounted(async () => {
     modal
     header="Inicia sesión para continuar"
     :style="{ width: '400px' }"
+    class="modal-login-productos"
   >
     <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
     <div class="d-flex justify-content-end gap-2">
@@ -324,5 +325,142 @@ onMounted(async () => {
   text-align: center;
   color: #4a5568;
   margin-top: 2rem;
+}
+
+/* 🌙 Fondo oscuro difuminado */
+.p-dialog-mask.p-component-overlay {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(3px);
+}
+
+/* 🟦 Contenedor del modal */
+.p-dialog {
+  border-radius: 14px !important;
+  overflow: hidden;
+  border: 2px solid #1a365d !important; /* azul oscuro */
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* 🟦 Header */
+.p-dialog .p-dialog-header {
+  background: #1a365d !important; /* azul primario oscuro */
+  color: white !important;
+  font-weight: bold;
+  padding: 1rem 1.4rem;
+  border-bottom: 3px solid #f6c947 !important; /* amarillo */
+}
+
+/* Texto del modal */
+.p-dialog .p-dialog-content {
+  padding: 1.3rem 1.4rem !important;
+  font-size: 1.05rem;
+  color: #1a202c; /* dark gray */
+}
+
+/* 🔘 Botones */
+.p-dialog .p-button {
+  border-radius: 8px !important;
+  font-weight: 600;
+}
+
+/* Botón Cerrar (texto) → gris */
+.p-dialog .p-button-text {
+  color: #1a365d !important;
+}
+.p-dialog .p-button-text:hover {
+  background: rgba(26, 54, 93, 0.1) !important;
+}
+
+/* Botón Login → azul + hover amarillo */
+.p-dialog .p-button:not(.p-button-text) {
+  background: #1a365d !important;
+  border-color: #1a365d !important;
+}
+.p-dialog .p-button:not(.p-button-text):hover {
+  background: #f6c947 !important; /* amarillo */
+  border-color: #f6c947 !important;
+  color: #1a202c !important;
+}
+/*  Modal de login para productos */
+.modal-login-productos .p-dialog-header {
+  background: linear-gradient(to right, #fceabb, #f8b500);
+  color: #1a202c;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-login-productos .p-dialog-content {
+  background-color: #fffaf3;
+  color: #1d3e77;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+
+.modal-login-productos .p-dialog-footer {
+  background-color: #fffaf3;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-top: none;
+}
+
+/* Botón Cerrar */
+.modal-login-productos .p-button-text {
+  color: #a0aec0 !important;
+  border: 2px solid transparent !important;
+  border-radius: 6px !important;
+  transition: border-color 0.2s ease !important;
+}
+.modal-login-productos .p-button-text:hover,
+.modal-login-productos .p-button-text:focus {
+  border-color: #d97706 !important;
+  color: #d97706 !important;
+}
+
+/* Botón Ir al login */
+.modal-login-productos .p-button:not(.p-button-text) {
+  background-color: #d97706 !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease !important;
+  transform: none !important;
+}
+.modal-login-productos .p-button:not(.p-button-text):hover,
+.modal-login-productos .p-button:not(.p-button-text):focus {
+  background-color: #b45309 !important;
+  transform: none !important;
+}
+
+/* Animación */
+.modal-login-productos {
+  animation: fadeInScale 0.3s ease;
+}
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+  }
+}
+
+/* stilos de la X para cerrar el modal */
+.modal-login-productos .p-dialog-close-button {
+  color: #d97706 !important;
+  border-radius: 50% !important;
+  padding: 6px !important;
+}
+
+.modal-login-productos .p-dialog-close-button:hover,
+.modal-login-productos .p-dialog-close-button:focus {
+  background-color: transparent !important;
+  color: #b45309 !important;
+  border-color: #b45309 !important;
 }
 </style>
