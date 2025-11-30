@@ -30,12 +30,18 @@ onMounted(async () => {
     error.value = e?.response?.data?.message || 'No se pudo cargar el perfil'
   }
 })
+
+const scrollTop = ref(0)
+
+window.addEventListener('scroll', () => {
+  scrollTop.value = window.scrollY
+})
 </script>
 
 <template>
   <div class="perfil-container">
     <section class="profile-wrap">
-      <header class="toolbar">
+      <header class="toolbar" :class="{ oculto: scrollTop > 50 }">
         <h2>Mi Perfil</h2>
       </header>
 
@@ -90,7 +96,7 @@ onMounted(async () => {
 
 /* Tarjeta */
 .profile-card {
-  background: #fff;
+  background: #FDE8AB;
   padding: 25px;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
@@ -105,7 +111,7 @@ onMounted(async () => {
   justify-content: space-between;
   font-size: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #1E88E5;
 }
 
 .profile-row strong {
@@ -139,5 +145,11 @@ onMounted(async () => {
   border-radius: 10px;
   border-left: 4px solid #e53935;
   font-weight: 500;
+}
+
+.toolbar.oculto {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
 }
 </style>

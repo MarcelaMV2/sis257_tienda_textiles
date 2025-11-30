@@ -5,8 +5,8 @@ import type { Producto } from '@/models/producto'
 import type { Categoria } from '@/models/categoria'
 import { useRoute, useRouter } from 'vue-router'
 import { usarCarrito } from '@/funciones/UsarCarrito'
-import Dialog from 'primevue/dialog' // ⬅️ nuevo
-import Button from 'primevue/button' // ⬅️ nuevo
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,16 +17,13 @@ const productos = ref<Producto[]>([])
 const categoriaSeleccionada = ref<number | null>(null)
 const cargando = ref(false)
 
-// 🔐 control modal login
 const mostrarModalLogin = ref(false)
+const mostrarSidebarMobile = ref(false)
 
-// 🔐 helper para saber si está logueado
 function estaLogueado(): boolean {
-  // cambia 'token' por la clave real que uses en localStorage
   return !!localStorage.getItem('token')
 }
 
-// 🟦 Obtener todas las categorías
 const obtenerCategorias = async () => {
   try {
     const res = await http.get('categorias')
@@ -36,13 +33,13 @@ const obtenerCategorias = async () => {
   }
 }
 
-// 🟦 Obtener productos por categoría
 const obtenerProductosPorCategoria = async (id: number) => {
   cargando.value = true
   try {
     const res = await http.get(`productos/categoria/${id}`)
     productos.value = res.data
     categoriaSeleccionada.value = id
+    mostrarSidebarMobile.value = false
   } catch (err) {
     console.error('Error al obtener productos:', err)
   } finally {
@@ -50,13 +47,11 @@ const obtenerProductosPorCategoria = async (id: number) => {
   }
 }
 
-// 🟦 Seleccionar categoría
 const seleccionarCategoria = (cat: Categoria) => {
   router.push({ name: 'categoria-productos', params: { id: cat.id } })
   obtenerProductosPorCategoria(cat.id)
 }
 
-// 🟦 Agregar producto al carrito (con validación de login)
 const añadirAlCarrito = (producto: Producto) => {
   if (!estaLogueado()) {
     mostrarModalLogin.value = true
@@ -65,12 +60,10 @@ const añadirAlCarrito = (producto: Producto) => {
   agregarProducto(producto, 1)
 }
 
-// 🟦 Ir al detalle del producto
 const irADetalle = (producto: Producto) => {
   router.push({ name: 'detalle-producto', params: { id: producto.id } })
 }
 
-// 🔐 Ir al login desde el modal
 const irALogin = () => {
   router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
@@ -85,9 +78,19 @@ onMounted(async () => {
 
 <template>
   <div class="catalogo-container">
+    <!-- 🔘 Botón hamburguesa móvil -->
+    <div class="btn-hamburguesa-mobile" @click="mostrarSidebarMobile = !mostrarSidebarMobile">
+      <i class="bi bi-list"></i>
+    </div>
+
     <!-- 🧭 Sidebar de categorías -->
-    <aside class="sidebar">
-      <h5 class="titulo-sidebar">Categorías</h5>
+    <aside :class="['sidebar', { activo: mostrarSidebarMobile }]">
+      <div class="header-sidebar">
+        <h5 class="titulo-sidebar">Categorías</h5>
+        <button v-if="mostrarSidebarMobile" class="btn-cerrar-sidebar" @click="mostrarSidebarMobile = false">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
       <ul class="lista-categorias">
         <li
           v-for="cat in categorias"
@@ -99,6 +102,13 @@ onMounted(async () => {
         </li>
       </ul>
     </aside>
+
+    <!-- 🟫 Overlay para cerrar sidebar en mobile -->
+    <div
+      v-if="mostrarSidebarMobile"
+      class="overlay-sidebar"
+      @click="mostrarSidebarMobile = false"
+    ></div>
 
     <!-- 🛍️ Contenido principal -->
     <main class="contenido">
@@ -142,7 +152,7 @@ onMounted(async () => {
     v-model:visible="mostrarModalLogin"
     modal
     header="Inicia sesión para continuar"
-    :style="{ width: '400px' }"
+    :style="{ width: '90vw', maxWidth: '400px' }"
   >
     <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
     <div class="d-flex justify-content-end gap-2">
@@ -158,6 +168,12 @@ onMounted(async () => {
   gap: 2rem;
   padding: 2rem 4rem;
   background-color: var(--color-bg, #f7f9fc);
+  position: relative;
+}
+
+/* 🔘 Botón hamburguesa */
+.btn-hamburguesa-mobile {
+  display: none;
 }
 
 /* Sidebar */
@@ -172,10 +188,26 @@ onMounted(async () => {
   top: 80px;
 }
 
+.header-sidebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .titulo-sidebar {
   font-weight: 700;
   color: var(--color-dark, #1a202c);
-  margin-bottom: 1rem;
+  margin: 0;
+}
+
+.btn-cerrar-sidebar {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-dark, #1a202c);
 }
 
 .lista-categorias {
@@ -229,8 +261,7 @@ onMounted(async () => {
   transition: 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  border-color: #1a202c;
-  border: 1px solid;
+  border: 1px solid #1a202c;
 }
 
 .card-producto:hover {
@@ -313,6 +344,7 @@ onMounted(async () => {
   font-size: 0.9rem;
   cursor: pointer;
   transition: 0.2s;
+  width: 100%;
 }
 
 .btn-agregar:hover {
@@ -324,5 +356,159 @@ onMounted(async () => {
   text-align: center;
   color: #4a5568;
   margin-top: 2rem;
+}
+
+.overlay-sidebar {
+  display: none;
+}
+
+/* 📱 RESPONSIVE MOBILE */
+@media (max-width: 768px) {
+  .catalogo-container {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0;
+  }
+
+  /* Mostrar botón hamburguesa */
+  .btn-hamburguesa-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background-color: #fabf13;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    color: var(--color-dark, #1a202c);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-hamburguesa-mobile:active {
+    background-color: #e6a500;
+  }
+
+  /* Sidebar móvil */
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: left 0.3s ease;
+    padding-top: 2rem;
+    overflow-y: auto;
+  }
+
+  .sidebar.activo {
+    left: 0;
+  }
+
+  .btn-cerrar-sidebar {
+    display: block;
+  }
+
+  .overlay-sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .contenido {
+    width: 100%;
+  }
+
+  .titulo-categoria {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Grid móvil */
+  .grid-productos {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .imagen-wrapper {
+    height: 180px;
+  }
+
+  .info {
+    padding: 0.75rem;
+  }
+
+  .info h5 {
+    font-size: 0.95rem;
+  }
+
+  .info p {
+    font-size: 0.85rem;
+    height: 32px;
+  }
+
+  .precio {
+    font-size: 1rem;
+  }
+
+  .btn-agregar {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* 📱 Extra pequeño */
+@media (max-width: 480px) {
+  .catalogo-container {
+    padding: 0.75rem;
+  }
+
+  .btn-hamburguesa-mobile {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .grid-productos {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .imagen-wrapper {
+    height: 150px;
+  }
+
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .sidebar.activo {
+    left: 0;
+  }
+
+  .titulo-categoria {
+    font-size: 1.25rem;
+  }
+
+  .info h5 {
+    font-size: 0.9rem;
+  }
+
+  .info p {
+    font-size: 0.8rem;
+    height: 28px;
+  }
 }
 </style>

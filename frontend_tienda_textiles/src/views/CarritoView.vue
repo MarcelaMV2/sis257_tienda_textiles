@@ -182,13 +182,15 @@ async function procederAlPago() {
       v-model:visible="mostrarModalStock"
       modal
       header="Stock insuficiente"
-      :style="{ width: '450px' }"
+      :style="{ width: '450px', background: '#FABF13', color: 'black'}"
+      headerStyle="background:#FABF13; color:black;"
+      contentStyle="background:#FABF13; color:black;"
     >
-      <p class="mb-3">
+      <p class="mb-3" style="color: black">
         Algunos productos no tienen stock suficiente. Ajusta las cantidades en tu carrito:
       </p>
 
-      <ul class="mb-3">
+      <ul class="mb-3" style="color: black">
         <li v-for="(info, id) in erroresStock" :key="id">
           {{
             carrito.find((c) => c.producto.id === Number(id))?.producto.nombre || `Producto #${id}`
@@ -197,7 +199,7 @@ async function procederAlPago() {
       </ul>
 
       <div class="text-end">
-        <Button label="Entendido" @click="mostrarModalStock = false" />
+        <Button label="Entendido" @click="mostrarModalStock = false" class="btn-entendido" />
       </div>
     </Dialog>
   </div>
@@ -237,5 +239,18 @@ button.btn-success:hover {
 .stock-error-text {
   font-size: 0.8rem;
   color: #b91c1c;
+}
+
+/* Botón estilo personalizado */
+.btn-entendido {
+  background: red !important;
+  border: 1px solid red !important;
+  color: white !important;
+}
+
+.btn-entendido:hover {
+  background: gray !important;
+  border-color: gray !important;
+  color: black !important;
 }
 </style>

@@ -29,10 +29,9 @@ onMounted(async () => {
   const token = getTokenFromLocalStorage()
   if (!token) {
     alert('Por favor, inicie sesión para ver sus pedidos.')
-    router.replace('/login') // Redirige a login
+    router.replace('/login')
     return
   }
-  // Continuar con la carga de pedidos si está logueado
   await cargarPedidos()
 })
 
@@ -50,14 +49,13 @@ async function cargarPedidos() {
 }
 
 async function verDetalle(id: number) {
-  // Si ya está abierto, ocultarlo
   if (abierto.value === id) {
     abierto.value = null
     return
   }
 
   try {
-    const { data } = await http.get(`/pedidos/${id}`) // Obtener el detalle del pedido
+    const { data } = await http.get(`/pedidos/${id}`)
     const i = pedidos.value.findIndex((p) => p.id === id)
 
     if (i >= 0) {
@@ -69,7 +67,7 @@ async function verDetalle(id: number) {
       }
     }
 
-    abierto.value = id // Set the 'abierto' id to show details for this order.
+    abierto.value = id
   } catch (error) {
     alert('No se pudo cargar el detalle.')
   }
@@ -94,75 +92,76 @@ function fmtBs(n?: number) {
     <section class="mis-pedidos">
       <div v-if="error" class="alert error">{{ error }}</div>
       <div v-else class="card">
-        <table class="tabla">
-          <thead>
-            <tr>
-              <th>Nro</th>
-              <th>Total (Bs.)</th>
-              <th>Método</th>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Accionesggg</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="p in pedidos" :key="p.id">
+        <div class="tabla-responsive">
+          <table class="tabla">
+            <thead>
               <tr>
-                <td>#{{ p.id }}</td>
-                <td>{{ fmtBs(p.total) }}</td>
-                <td>{{ p.metodoPago }}</td>
-                <td>
-                  <span class="badge" :class="`badge-${p.estado}`">
-                    {{ p.estado }}
-                  </span>
-                </td>
-                <td>{{ fmtFecha(p.fechaCreacion) }}</td>
-                <td>
-                  <button
-                    @click="verDetalle(p.id)"
-                    class="btn-accion"
-                    :class="{ 'btn-activo': abierto === p.id }"
-                  >
-                    {{ abierto === p.id ? 'Ocultar' : 'Ver' }}
-                  </button>
-                </td>
+                <th>Nro</th>
+                <th>Total (Bs.)</th>
+                <th>Método</th>
+                <th>Estado</th>
+                <th>Fecha y Hora</th>
+                <th>Acciones</th>
               </tr>
-              <!-- Fila de detalles expandible -->
-              <tr v-if="abierto === p.id">
-                <td colspan="6" class="detalle-expandido">
-                  <div class="detalle-card">
-                    <h4>Productos</h4>
-                    <div v-if="!p.pedidosProductos?.length" class="empty">Sin productos</div>
-                    <div v-else class="productos-lista">
-                      <div
-                        v-for="producto in p.pedidosProductos"
-                        :key="producto.id"
-                        class="producto-card"
-                      >
-                        <img
-                          :src="producto.producto.imagenUrl"
-                          alt="Producto"
-                          class="producto-imagen"
-                        />
-                        <div class="producto-info">
-                          <h5>{{ producto.producto.nombre }}</h5>
-                          <p class="producto-detalle">
-                            Cantidad: {{ producto.cantidad }} · Precio: Bs.
-                            {{ fmtBs(producto.precioUnitario) }}
-                          </p>
-                          <strong class="subtotal"
-                            >Subtotal: Bs.
-                            {{ fmtBs(producto.cantidad * producto.precioUnitario) }}</strong
-                          >
+            </thead>
+            <tbody>
+              <template v-for="(p, index) in pedidos" :key="p.id">
+                <tr :class="{ 'fila-par': index % 2 === 1 }">
+                  <td data-label="Nro">#{{ p.id }}</td>
+                  <td data-label="Total (Bs.)">{{ fmtBs(p.total) }}</td>
+                  <td data-label="Método">{{ p.metodoPago }}</td>
+                  <td data-label="Estado">
+                    <span class="badge" :class="`badge-${p.estado}`">
+                      {{ p.estado }}
+                    </span>
+                  </td>
+                  <td data-label="Fecha y Hora">{{ fmtFecha(p.fechaCreacion) }}</td>
+                  <td data-label="Acciones">
+                    <button
+                      @click="verDetalle(p.id)"
+                      class="btn-accion"
+                      :class="{ 'btn-activo': abierto === p.id }"
+                    >
+                      {{ abierto === p.id ? 'Ocultar' : 'Ver' }}
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="abierto === p.id" class="detalle-row">
+                  <td colspan="6" class="detalle-expandido">
+                    <div class="detalle-card">
+                      <h4>Productos</h4>
+                      <div v-if="!p.pedidosProductos?.length" class="empty">Sin productos</div>
+                      <div v-else class="productos-lista">
+                        <div
+                          v-for="producto in p.pedidosProductos"
+                          :key="producto.id"
+                          class="producto-card"
+                        >
+                          <img
+                            :src="producto.producto.imagenUrl"
+                            alt="Producto"
+                            class="producto-imagen"
+                          />
+                          <div class="producto-info">
+                            <h5>{{ producto.producto.nombre }}</h5>
+                            <p class="producto-detalle">
+                              Cantidad: {{ producto.cantidad }} · Precio: Bs.
+                              {{ fmtBs(producto.precioUnitario) }}
+                            </p>
+                            <strong class="subtotal"
+                              >Subtotal: Bs.
+                              {{ fmtBs(producto.cantidad * producto.precioUnitario) }}</strong
+                            >
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </div>
@@ -196,6 +195,10 @@ function fmtBs(n?: number) {
   overflow: hidden;
 }
 
+.tabla-responsive {
+  overflow-x: auto;
+}
+
 .tabla {
   width: 100%;
   border-collapse: collapse;
@@ -206,10 +209,11 @@ function fmtBs(n?: number) {
 }
 
 .tabla th {
+  background-color: #278E60;
   padding: 16px;
   text-align: left;
   font-weight: 600;
-  color: #4a5568;
+  color: white;
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -222,8 +226,22 @@ function fmtBs(n?: number) {
   color: #2d3748;
 }
 
-.tabla tbody tr:hover {
-  background: #f8fafc;
+/* Filas intercaladas */
+.tabla tbody tr:not(.detalle-row) {
+  background: white;
+}
+
+.tabla tbody tr.fila-par:not(.detalle-row) {
+  background: #CFE5DB;
+}
+
+.tabla tbody tr:hover:not(.detalle-row) {
+  background: #e8f4ed;
+  transition: background 0.2s ease;
+}
+
+.tabla tbody tr.fila-par:hover:not(.detalle-row) {
+  background: #bfd9ce;
   transition: background 0.2s ease;
 }
 
@@ -336,6 +354,7 @@ function fmtBs(n?: number) {
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
+  flex-shrink: 0;
 }
 
 .producto-info {
@@ -384,6 +403,7 @@ function fmtBs(n?: number) {
 }
 
 .page-container {
+  background-color: #FEF9EC;
   min-height: 60vh;
   padding: 20px;
 }
@@ -394,5 +414,137 @@ function fmtBs(n?: number) {
   font-weight: 600;
   margin-bottom: 24px;
   padding-top: 20px;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .mis-pedidos {
+    padding: 12px;
+    padding-top: 20px;
+  }
+
+  .tabla-responsive {
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+
+  .tabla {
+    min-width: 600px;
+  }
+
+  .tabla th {
+    padding: 12px 8px;
+    font-size: 0.75rem;
+  }
+
+  .tabla td {
+    padding: 12px 8px;
+    font-size: 0.875rem;
+  }
+
+  .btn-accion {
+    padding: 6px 16px;
+    font-size: 0.75rem;
+  }
+
+  .producto-imagen {
+    width: 60px;
+    height: 60px;
+  }
+
+  .producto-card {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .producto-info h5 {
+    font-size: 0.9rem;
+  }
+
+  .producto-detalle {
+    font-size: 0.8rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .detalle-card {
+    padding: 16px;
+  }
+
+  .detalle-card h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 12px;
+  }
+
+  .mis-pedidos {
+    padding: 8px;
+  }
+
+  .card {
+    border-radius: 8px;
+  }
+
+  .tabla {
+    min-width: 500px;
+    font-size: 0.75rem;
+  }
+
+  .tabla th {
+    padding: 10px 6px;
+    font-size: 0.7rem;
+    letter-spacing: 0;
+  }
+
+  .tabla td {
+    padding: 10px 6px;
+  }
+
+  .btn-accion {
+    padding: 5px 12px;
+    font-size: 0.7rem;
+  }
+
+  .producto-imagen {
+    width: 50px;
+    height: 50px;
+  }
+
+  .producto-card {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .producto-info h5 {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+
+  .producto-detalle {
+    font-size: 0.75rem;
+    margin: 2px 0;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+  }
+
+  .detalle-card {
+    padding: 12px;
+  }
+
+  .detalle-card h4 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
 }
 </style>
