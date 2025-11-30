@@ -40,95 +40,141 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="full-screen-container">
-    <div class="container my-5 pt-5">
+  <div class="login-container">
+    <form class="login-form" @submit.prevent="onSubmit">
+      <h1 class="login-title">Iniciar Sesión</h1>
 
-      <form class="form" @submit.prevent="onSubmit">
-        <h1 class="text-center" style="color: white">Iniciar Sesión</h1>
-        <label class="form-label">Email:</label>
-        <input
-          v-model="email"
-          type="text"
-          class="form-input"
-          style="background-color: #c7daf1; color: black; border-radius: 20px"
-          placeholder="Email"
-          autofocus
-        />
+      <label class="form-label">Correo electrónico</label>
+      <input
+        v-model="email"
+        type="email"
+        class="form-input"
+        placeholder="Ingresa tu correo"
+        required
+      />
 
-        <label class="form-label">Contraseña:</label>
-        <input
-          v-model="clave"
-          type="password"
-          class="form-input"
-          style="background-color: #c7daf1; color: black; border-radius: 20px"
-          placeholder="Contraseña"
-        />
+      <label class="form-label">Contraseña</label>
+      <input
+        v-model="clave"
+        type="password"
+        class="form-input"
+        placeholder="Ingresa tu contraseña"
+        required
+      />
 
-        <p v-if="error" class="text-danger">Usuario y/o contraseña incorrectos</p>
-        <input type="submit" class="form-submit" value="Ingresar" />
-      </form>
-      <p class="mt-3 text-center">
+      <p v-if="error" class="error-message">Usuario o contraseña incorrectos</p>
+
+      <button type="submit" class="form-submit">Ingresar</button>
+
+      <p class="register-text">
         ¿No tienes cuenta?
-        <RouterLink to="/register" class="text-primary fw-semibold"> Regístrate aquí </RouterLink>
+        <RouterLink to="/register" class="link-register"> Regístrate aquí </RouterLink>
       </p>
-    </div>
+    </form>
   </div>
 </template>
 
 <style>
-.full-screen-container {
-  /* 1. Imagen de Fondo */
-  background-image: url('@/assets/images/fondologin.jpg');
+/* ===============================
+   LOGIN PAGE — SANSA THEME
+=============================== */
 
-  /* 2. Propiedades de Ajuste */
-  background-size: cover; /* Escala la imagen para cubrir todo el contenedor */
-  background-position: center center; /* Centra la imagen horizontal y verticalmente */
-  background-repeat: no-repeat; /* Evita que la imagen se repita */
-
-  /* Propiedades de altura y ancho que ya tenías */
+.login-container {
   min-height: 100vh;
   width: 100%;
-  padding-top: 30px;
-  /* Opcional: Color de respaldo (se ve si la imagen no carga) */
-  background-color: #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #0b1f3a, #1a3d6b); /* igual al registro */
+  padding: 20px;
 }
 
-.form {
-  margin: 1.5rem auto;
+/* Caja */
+.login-form {
+  width: 350px;
+  background: #ffffffee;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  border: 3px solid #fabf13; /* amarillo SANSA */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 20%;
-  min-width: 350px;
-  max-width: 100%;
-  background: #0b3a66;
-  border-radius: 5px;
-  padding: 50px;
-  box-shadow: 0 4px 10px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Título */
+.login-title {
+  color: #1a365d; /* azul oscuro SANSA */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Etiquetas */
 .form-label {
-  margin-top: 2rem;
-  color: white;
-  margin-bottom: 0.5rem;
+  margin-top: 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748; /* gris profesional */
 }
 
+/* Inputs */
 .form-input {
-  padding: 10px 15px;
-  background: none;
-  background-image: none;
-  border: 1px solid white;
-  color: white;
+  padding: 12px 14px;
+  border: 1.5px solid #d0d7e2;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 0.95rem;
+  color: #1a202c;
+  transition: 0.25s ease;
+  margin-top: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 
+.form-input:focus {
+  border-color: #2b6cb0;
+  box-shadow: 0 0 0 3px rgba(43,108,176,0.15);
+  outline: none;
+}
+
+/* Botón */
 .form-submit {
-  background: #ee5007;
+  margin-top: 2rem;
+  background: #2b6cb0;
   border: none;
-  border-radius: 5rem;
+  border-radius: 10px;
   color: white;
-  margin-top: 3rem;
-  padding: 1rem 0;
+  padding: 0.9rem 0;
+  font-weight: 700;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
+}
+
+.form-submit:hover {
+  background: #1a365d;
+}
+
+/* Error */
+.error-message {
+  margin-top: 10px;
+  color: #e63946;
+  font-weight: 600;
+}
+
+/* Registro */
+.register-text {
+  margin-top: 1rem;
+  text-align: center;
+  color: #2d3748;
+}
+
+.link-register {
+  font-weight: 700;
+  color: #1a365d;
+}
+
+.link-register:hover {
+  color: #2b6cb0;
 }
 </style>

@@ -104,7 +104,7 @@ async function handleSave() {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar categoria' : 'Crear nueva categoría'"
-      style="width: 28rem; background-color: #fabf13; color: black;"
+      style="width: 28rem; background-color: #fabf13; color: black"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-3">Nombre</label>
@@ -115,7 +115,7 @@ async function handleSave() {
           autocomplete="off"
           autofocus
           maxlength="60"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -128,7 +128,7 @@ async function handleSave() {
           rows="3"
           maxlength="200"
           autocomplete="off"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 

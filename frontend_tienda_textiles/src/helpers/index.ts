@@ -22,7 +22,11 @@ export function parseJwt(token?: string): any | null {
     const parts = token.split('.')
     if (parts.length < 2) return null
 
-    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const segment = parts[1]
+    if (!segment) return null
+
+    const base64 = segment.replace(/-/g, '+').replace(/_/g, '/')
+
     const jsonPayload = decodeURIComponent(
       Array.prototype.map
         .call(atob(base64), (c: string) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))

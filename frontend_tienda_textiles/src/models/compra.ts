@@ -9,7 +9,7 @@ export interface Compra {
   precioUnitario: number
   montoTotal: number
   observacion?: string
-  fechaCreacion?: string  
+  fechaCreacion?: string
   proveedor?: Proveedor
   producto?: Producto
 }

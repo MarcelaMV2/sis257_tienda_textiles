@@ -73,6 +73,10 @@ async function procederAlPago() {
   // Todo bien, continuar al checkout
   router.push('/checkout')
 }
+
+function mostrarAlertaStock(stock: number) {
+  alert(`Solo hay ${stock} unidades disponibles`)
+}
 </script>
 
 <template>
@@ -107,8 +111,8 @@ async function procederAlPago() {
               <!-- 🔴 Mensaje de stock insuficiente -->
               <p v-if="erroresStock[item.producto.id]" class="stock-error-text mt-1 mb-0">
                 Stock insuficiente: pediste
-                {{ erroresStock[item.producto.id].solicitado }}, disponibles
-                {{ erroresStock[item.producto.id].disponible }}.
+                {{ erroresStock[item.producto.id]?.solicitado }}, disponibles
+                {{ erroresStock[item.producto.id]?.disponible }}.
               </p>
             </div>
 
@@ -123,18 +127,38 @@ async function procederAlPago() {
                 type="number"
                 min="1"
                 :value="item.cantidad"
-                @input="(e) => {
-                  const valor = parseInt((e.target as HTMLInputElement).value)
-                  if (!isNaN(valor) && valor >= 1) {
+                @input="
+                  async (e) => {
+                    const input = e.target as HTMLInputElement
+                    let valor = parseInt(input.value)
+
+                    if (isNaN(valor) || valor < 1) {
+                      input.value = item.cantidad.toString()
+                      return
+                    }
+
+                    // Obtener stock real del backend
+                    const { data } = await http.get(`/productos/${item.producto.id}`)
+                    const stockReal = data.stock
+
+                    // Si escribe más del stock ➜ no permitirlo
+                    if (valor > stockReal) {
+                      mostrarAlertaStock(stockReal)
+                      valor = stockReal
+                      input.value = stockReal.toString()
+                    }
+
                     actualizarCantidad(item.producto.id, valor)
                   }
-                }"
-                @blur="(e) => {
-                  const valor = parseInt((e.target as HTMLInputElement).value)
-                  if (isNaN(valor) || valor < 1) {
-                    (e.target as HTMLInputElement).value = item.cantidad.toString()
+                "
+                @blur="
+                  (e) => {
+                    const valor = parseInt((e.target as HTMLInputElement).value)
+                    if (isNaN(valor) || valor < 1) {
+                      ;(e.target as HTMLInputElement).value = item.cantidad.toString()
+                    }
                   }
-                }"
+                "
                 class="input-cantidad mx-2 fw-semibold text-center"
               />
               <button

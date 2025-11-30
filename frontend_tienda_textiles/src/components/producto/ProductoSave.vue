@@ -142,7 +142,7 @@ watch(
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar un producto' : 'Crear nuevo producto'"
-      style="width: 0.28m; background-color: #fabf13; color: black;"
+      style="width: 0.28m; background-color: #fabf13; color: black"
     >
       <div class="flex items-center gap-4 mb-4">
         <label for="categoria" class="font-semibold w-3">Categoría</label>
@@ -154,7 +154,7 @@ watch(
           optionValue="id"
           class="flex-auto"
           autofocus
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 
@@ -166,7 +166,7 @@ watch(
           class="flex-auto"
           autocomplete="off"
           maxlength="60"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -179,7 +179,7 @@ watch(
           rows="3"
           maxlength="200"
           autocomplete="off"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -192,18 +192,21 @@ watch(
           :maxFractionDigits="5"
           class="flex-auto"
           autocomplete="off"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 
       <div class="flex items-center gap-4 mb-4">
         <label for="stock" class="font-semibold w-3">Stock</label>
-        <InputText
+        <InputNumber
           id="stock"
           v-model.number="producto.stock"
+          :minFractionDigits="0"
+          :maxFractionDigits="0"
+          :useGrouping="false"
           class="flex-auto"
           autocomplete="off"
-          style="background-color: white; color: #303F2D;"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 

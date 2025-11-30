@@ -21,14 +21,14 @@ export class UsuariosService {
   // Crear usuario con contraseña hasheada y email normalizado
   async create(createUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
     const emailNormalizado = createUsuarioDto.email.trim().toLowerCase();
-  
+
     const usuarioExistente = await this.usuariosRepository.findOneBy({
       email: emailNormalizado,
     });
     if (usuarioExistente) {
       throw new ConflictException('El usuario ya existe');
     }
-  
+
     const usuario = this.usuariosRepository.create({
       nombre: createUsuarioDto.nombre,
       apellidos: createUsuarioDto.apellidos,
@@ -49,8 +49,7 @@ export class UsuariosService {
     });
 
     if (!usuarioOk) throw new NotFoundException('Usuario inexistente');
-    if (emailNormalizado !== usuarioOk.email)
-      throw new UnauthorizedException('Email incorrecto');
+    if (emailNormalizado !== usuarioOk.email) throw new UnauthorizedException('Email incorrecto');
     const esValida = await bcrypt.compare(clave, usuarioOk.clave);
     if (!esValida) throw new UnauthorizedException('Clave incorrecta');
 

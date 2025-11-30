@@ -117,7 +117,11 @@ onUnmounted(() => {
       <div class="container d-flex justify-content-between align-items-center flex-wrap">
         <!-- Botón hamburguesa + Logo -->
         <div class="d-flex align-items-center gap-3">
-          <button class="hamburger-btn" @click="mostrarMenuMovil = !mostrarMenuMovil" aria-label="Toggle menu">
+          <button
+            class="hamburger-btn"
+            @click="mostrarMenuMovil = !mostrarMenuMovil"
+            aria-label="Toggle menu"
+          >
             <i :class="mostrarMenuMovil ? 'pi pi-times' : 'pi pi-bars'"></i>
           </button>
           <RouterLink to="/" class="logo">
@@ -127,7 +131,6 @@ onUnmounted(() => {
 
         <!-- Buscador -->
         <form class="search-box d-flex" @submit.prevent="buscar">
-
           <input
             v-model="terminoBusqueda"
             type="search"
@@ -188,10 +191,11 @@ onUnmounted(() => {
     <!-- 🔹 Navbar principal -->
     <nav class="main-navbar">
       <div class="container">
-
         <ul class="nav justify-content-center" :class="{ 'nav-mobile-open': mostrarMenuMovil }">
           <li class="nav-item">
-            <RouterLink to="/" class="nav-link" @click="mostrarMenuMovil = false">Inicio</RouterLink>
+            <RouterLink to="/" class="nav-link" @click="mostrarMenuMovil = false"
+              >Inicio</RouterLink
+            >
           </li>
 
           <!-- Categorías dinámicas -->
@@ -213,7 +217,11 @@ onUnmounted(() => {
                 No hay categorías
               </li>
               <li v-else v-for="cat in categorias" :key="cat.id">
-                <RouterLink class="dropdown-item" :to="`/categorias/${cat.id}`" @click="mostrarMenuMovil = false">
+                <RouterLink
+                  class="dropdown-item"
+                  :to="`/categorias/${cat.id}`"
+                  @click="mostrarMenuMovil = false"
+                >
                   {{ cat.nombre }}
                 </RouterLink>
               </li>
@@ -221,13 +229,19 @@ onUnmounted(() => {
           </li>
 
           <li class="nav-item">
-            <RouterLink to="/productos" class="nav-link" @click="mostrarMenuMovil = false">Productos</RouterLink>
+            <RouterLink to="/productos" class="nav-link" @click="mostrarMenuMovil = false"
+              >Productos</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <RouterLink to="/carrito" class="nav-link" @click="mostrarMenuMovil = false">Carrito</RouterLink>
+            <RouterLink to="/carrito" class="nav-link" @click="mostrarMenuMovil = false"
+              >Carrito</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <RouterLink to="/perfil" class="nav-link" @click="mostrarMenuMovil = false">Mi cuenta</RouterLink>
+            <RouterLink to="/perfil" class="nav-link" @click="mostrarMenuMovil = false"
+              >Mi cuenta</RouterLink
+            >
           </li>
         </ul>
       </div>
@@ -550,6 +564,4 @@ onUnmounted(() => {
     z-index: -1;
   }
 }
-
-
 </style>
