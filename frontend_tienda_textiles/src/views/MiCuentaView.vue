@@ -1,6 +1,6 @@
 <script lang="ts">
-const { data } = await http.get('/pedidos/mios')
-misPedidos.value = data
+/* const { data } = await http.get('/pedidos/mios')
+misPedidos.value = data */
 </script>
 <template>
   <!DOCTYPE html>

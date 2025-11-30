@@ -64,6 +64,14 @@ export function usarCarrito() {
   const totalCarrito = () =>
     carrito.value.reduce((total, item) => total + item.producto.precio * item.cantidad, 0)
 
+  // 🔄 Actualizar cantidad directamente (para inputs)
+  const actualizarCantidad = (id: number, cantidad: number) => {
+    const item = carrito.value.find((p) => p.producto.id === id)
+    if (item) {
+      item.cantidad = cantidad
+    }
+  }
+
   return {
     carrito,
     agregarProducto,
@@ -72,5 +80,6 @@ export function usarCarrito() {
     totalCarrito,
     incrementarCantidad,
     disminuirCantidad,
+    actualizarCantidad,
   }
 }

@@ -73,7 +73,7 @@ defineExpose({ obtenerLista })
     <!-- Header con búsqueda -->
     <div class="header-acciones">
       <div class="search-bar">
-        <InputGroup style="margin-top: 5px;">
+        <InputGroup style="margin-top: 5px">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
           <InputText
             v-model="busqueda"

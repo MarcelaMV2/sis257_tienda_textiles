@@ -9,8 +9,8 @@ const ENDPOINT = 'usuarios'
 const props = defineProps({
   mostrar: Boolean,
   usuario: {
-    type: Object as () => Usuario,
-    default: () => ({}) as Usuario,
+    type: Object as () => Usuario | null,
+    default: null,
   },
   modoEdicion: Boolean,
 })
@@ -25,7 +25,24 @@ const dialogVisible = computed({
 })
 
 // Modelo local
-const usuario = ref<Usuario>({ ...props.usuario })
+/* const usuario = ref<Usuario>({ ...props.usuario }) */
+const usuario = ref<Usuario>(
+  props.usuario && props.usuario.id
+    ? { ...props.usuario }
+    : {
+        id: 0,
+        nombre: '',
+        apellidos: '',
+        email: '',
+        telefono: '',
+        rol: 'cliente',
+        // campos requeridos por la interfaz, aunque no se envíen al backend
+        fechaCreacion: '',
+        fechaModificacion: '',
+        fechaEliminacion: null
+      }
+)
+
 
 // Password separado para no tocar siempre la clave
 const password = ref<string>('')
@@ -40,9 +57,22 @@ const roles = ref([
 watch(
   () => props.usuario,
   (u) => {
-    usuario.value = { ...u }
+    usuario.value = u && u.id
+      ? { ...u }
+      : {
+          id: 0,
+          nombre: '',
+          apellidos: '',
+          email: '',
+          telefono: '',
+          rol: 'cliente',
+          fechaCreacion: '',
+          fechaModificacion: '',
+          fechaEliminacion: null
+        }
+
     password.value = ''
-  },
+  }
 )
 
 // Cuando se abre el diálogo, inicializar datos
@@ -105,7 +135,7 @@ async function handleSave() {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar usuario' : 'Crear usuario'"
-      style="width: 0.28m; background-color: #fabf13; color: black;"
+      style="width: 0.28m; background-color: #fabf13; color: black"
     >
       <!-- Nombre -->
       <div class="flex items-center gap-4 mb-4">
@@ -116,7 +146,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -129,7 +159,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="50"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -143,7 +173,7 @@ async function handleSave() {
           autocomplete="off"
           type="email"
           maxlength="100"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -156,7 +186,7 @@ async function handleSave() {
           class="flex-auto"
           autocomplete="off"
           maxlength="20"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 
@@ -170,7 +200,7 @@ async function handleSave() {
           optionLabel="label"
           optionValue="value"
           class="flex-auto"
-          :inputStyle="{ 'background-color': 'white', 'color': '#303F2D' }"
+          :inputStyle="{ 'background-color': 'white', color: '#303F2D' }"
         />
       </div>
 
@@ -186,7 +216,7 @@ async function handleSave() {
           autocomplete="new-password"
           type="password"
           maxlength="200"
-          style="background-color: white; color: #303F2D;"
+          style="background-color: white; color: #303f2d"
         />
       </div>
 

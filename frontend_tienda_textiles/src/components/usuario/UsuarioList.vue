@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Usuario } from '@/models/usuario'
+import type { Usuario } from '@/models/usuarios'
 import http from '@/plugins/axios'
 import { Button, Dialog, InputGroup, InputGroupAddon, InputText } from 'primevue'
 import { computed, onMounted, ref } from 'vue'
@@ -88,7 +88,7 @@ defineExpose({ obtenerLista })
     <!-- Header con búsqueda -->
     <div class="header-acciones">
       <div class="search-bar">
-        <InputGroup style="margin-top: 5px;">
+        <InputGroup style="margin-top: 5px">
           <InputGroupAddon><i class="pi pi-search"></i></InputGroupAddon>
           <InputText v-model="busqueda" type="text" placeholder="Buscar por nombre, email o rol" />
         </InputGroup>

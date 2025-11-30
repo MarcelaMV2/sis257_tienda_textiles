@@ -18,6 +18,7 @@ const router = useRouter()
 const mostrarMenuUsuario = ref(false)
 const usuarioLogueado = ref(false)
 const emailUsuario = ref('')
+const mostrarMenuMovil = ref(false)
 
 const carritoCount = computed(() => carrito.value.reduce((s, item) => s + item.cantidad, 0))
 
@@ -284,7 +285,7 @@ const mostrarBuscadorMovil = ref(false)
 <style scoped>
 .top-bar {
   background-color: #fabf13;
-  color: white;
+  color: black;
   font-size: 0.9rem;
   padding: 0.5rem 0;
 }
