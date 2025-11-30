@@ -18,6 +18,7 @@ const router = useRouter()
 const mostrarMenuUsuario = ref(false)
 const usuarioLogueado = ref(false)
 const emailUsuario = ref('')
+const mostrarMenuMovil = ref(false)
 
 // contador dinámico
 const carritoCount = computed(() => carrito.value.reduce((s, item) => s + item.cantidad, 0))
@@ -114,14 +115,19 @@ onUnmounted(() => {
     <!-- 🔹 Middle bar -->
     <div class="middle-bar">
       <div class="container d-flex justify-content-between align-items-center flex-wrap">
-        <!-- Logo -->
-        <RouterLink to="/" class="logo">
-          <img src="@/assets/images/logoSansa.png" alt="MiniStore" />
-        </RouterLink>
+        <!-- Botón hamburguesa + Logo -->
+        <div class="d-flex align-items-center gap-3">
+          <button class="hamburger-btn" @click="mostrarMenuMovil = !mostrarMenuMovil" aria-label="Toggle menu">
+            <i :class="mostrarMenuMovil ? 'pi pi-times' : 'pi pi-bars'"></i>
+          </button>
+          <RouterLink to="/" class="logo">
+            <img src="@/assets/images/logoSansa.png" alt="MiniStore" />
+          </RouterLink>
+        </div>
 
         <!-- Buscador -->
         <form class="search-box d-flex" @submit.prevent="buscar">
-           
+
           <input
             v-model="terminoBusqueda"
             type="search"
@@ -182,9 +188,10 @@ onUnmounted(() => {
     <!-- 🔹 Navbar principal -->
     <nav class="main-navbar">
       <div class="container">
-        <ul class="nav justify-content-center">
+
+        <ul class="nav justify-content-center" :class="{ 'nav-mobile-open': mostrarMenuMovil }">
           <li class="nav-item">
-            <RouterLink to="/" class="nav-link">Inicio</RouterLink>
+            <RouterLink to="/" class="nav-link" @click="mostrarMenuMovil = false">Inicio</RouterLink>
           </li>
 
           <!-- Categorías dinámicas -->
@@ -206,7 +213,7 @@ onUnmounted(() => {
                 No hay categorías
               </li>
               <li v-else v-for="cat in categorias" :key="cat.id">
-                <RouterLink class="dropdown-item" :to="`/categorias/${cat.id}`">
+                <RouterLink class="dropdown-item" :to="`/categorias/${cat.id}`" @click="mostrarMenuMovil = false">
                   {{ cat.nombre }}
                 </RouterLink>
               </li>
@@ -214,13 +221,13 @@ onUnmounted(() => {
           </li>
 
           <li class="nav-item">
-            <RouterLink to="/productos" class="nav-link">Productos</RouterLink>
+            <RouterLink to="/productos" class="nav-link" @click="mostrarMenuMovil = false">Productos</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink to="/carrito" class="nav-link">Carrito</RouterLink>
+            <RouterLink to="/carrito" class="nav-link" @click="mostrarMenuMovil = false">Carrito</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink to="/perfil" class="nav-link">Mi cuenta</RouterLink>
+            <RouterLink to="/perfil" class="nav-link" @click="mostrarMenuMovil = false">Mi cuenta</RouterLink>
           </li>
         </ul>
       </div>
@@ -232,7 +239,7 @@ onUnmounted(() => {
 /* (mismo CSS que antes) */
 .top-bar {
   background-color: #fabf13;
-  color: white;
+  color: black;
   font-size: 0.9rem;
   padding: 0.5rem 0;
 }
@@ -405,6 +412,143 @@ onUnmounted(() => {
 /* Hover sobre el carrito */
 .cart-icon:hover i {
   opacity: 0.5;
+}
+
+/* Botón hamburguesa - oculto por defecto en desktop */
+.hamburger-btn {
+  display: none;
+  background: #faf0e6;
+  border: 2px solid #1a202c;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  color: #1a202c;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hamburger-btn:hover {
+  background: #1a202c;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Estilos responsivos para móvil */
+@media (max-width: 768px) {
+  /* Mostrar botón hamburguesa en móvil */
+  .hamburger-btn {
+    display: block;
+  }
+
+  /* Ajustar el contenedor del navbar */
+  .main-navbar .container {
+    position: relative;
+  }
+
+  /* Ocultar el menú por defecto en móvil */
+  .main-navbar .nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background-color: #fabf13;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 60px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+
+  /* Mostrar el menú cuando está abierto */
+  .main-navbar .nav.nav-mobile-open {
+    display: flex;
+  }
+
+  /* Estilos de los items del menú en móvil */
+  .main-navbar .nav-item {
+    width: 100%;
+    border-bottom: 1px solid rgba(26, 32, 44, 0.1);
+  }
+
+  .main-navbar .nav-link {
+    margin: 0;
+    padding: 1rem 1.5rem;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* Dropdown en móvil */
+  .main-navbar .nav-item.dropdown .dropdown-menu {
+    position: static;
+    float: none;
+    width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background-color: #e6ab0f;
+  }
+
+  .main-navbar .nav-item.dropdown .dropdown-item {
+    padding: 0.75rem 2rem;
+    color: #1a202c;
+    font-weight: 500;
+  }
+
+  /* Ajustar la barra superior en móvil */
+  .top-bar .container {
+    flex-direction: row;
+    gap: 0.5rem;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .social-icons i {
+    margin: 0 0.25rem;
+  }
+
+  .brand-logo img {
+    max-height: 20px;
+  }
+
+  /* Ajustar la barra media en móvil */
+  .middle-bar .container {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .logo img {
+    height: 60px;
+  }
+
+  .search-box {
+    max-width: 100%;
+    width: 100%;
+    order: 3;
+  }
+
+  .user-cart {
+    gap: 1.5rem;
+  }
+}
+
+/* Overlay para cerrar el menú al hacer click fuera */
+@media (max-width: 768px) {
+  .main-navbar .nav.nav-mobile-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 280px;
+    width: calc(100vw - 280px);
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
 }
 
 

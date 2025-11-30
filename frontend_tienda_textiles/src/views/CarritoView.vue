@@ -13,6 +13,7 @@ const {
   totalCarrito,
   incrementarCantidad,
   disminuirCantidad,
+  actualizarCantidad,
 } = usarCarrito()
 const router = useRouter()
 
@@ -118,7 +119,24 @@ async function procederAlPago() {
               >
                 −
               </button>
-              <span class="mx-2 fw-semibold">{{ item.cantidad }}</span>
+              <input
+                type="number"
+                min="1"
+                :value="item.cantidad"
+                @input="(e) => {
+                  const valor = parseInt((e.target as HTMLInputElement).value)
+                  if (!isNaN(valor) && valor >= 1) {
+                    actualizarCantidad(item.producto.id, valor)
+                  }
+                }"
+                @blur="(e) => {
+                  const valor = parseInt((e.target as HTMLInputElement).value)
+                  if (isNaN(valor) || valor < 1) {
+                    (e.target as HTMLInputElement).value = item.cantidad.toString()
+                  }
+                }"
+                class="input-cantidad mx-2 fw-semibold text-center"
+              />
               <button
                 class="btn btn-sm btn-outline-secondary"
                 @click="incrementarCantidad(item.producto.id)"
@@ -237,5 +255,154 @@ button.btn-success:hover {
 .stock-error-text {
   font-size: 0.8rem;
   color: #b91c1c;
+}
+
+/* 📱 Estilos responsivos para móvil */
+@media (max-width: 768px) {
+  .contenedor-carrito {
+    padding: 1rem !important;
+  }
+
+  /* Título principal */
+  .contenedor-carrito h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Tarjeta de producto en móvil */
+  .tarjeta-producto {
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding: 1rem !important;
+  }
+
+  .img-producto {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 0.75rem;
+    margin-right: 0 !important;
+  }
+
+  .tarjeta-producto .flex-grow-1 {
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+
+  .tarjeta-producto h6 {
+    font-size: 1rem;
+  }
+
+  .tarjeta-producto .text-muted {
+    font-size: 0.85rem;
+  }
+
+  /* Controles de cantidad en móvil */
+  .tarjeta-producto .d-flex.align-items-center {
+    width: 100%;
+    justify-content: space-between;
+    margin-right: 0 !important;
+    margin-bottom: 0.75rem;
+  }
+
+  .tarjeta-producto .d-flex.align-items-center button {
+    padding: 0.25rem 0.75rem;
+  }
+
+  /* Precio total del item */
+  .tarjeta-producto .fw-bold.me-4 {
+    width: 100%;
+    text-align: center;
+    margin-right: 0 !important;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  /* Botón eliminar */
+  .tarjeta-producto .btn-danger {
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  /* Botón vaciar carrito */
+  .lista-productos .btn-outline-danger {
+    width: 100%;
+  }
+
+  /* Resumen de compra en móvil */
+  .resumen-compra {
+    margin-top: 1.5rem;
+  }
+
+  .resumen-compra h5 {
+    font-size: 1.1rem;
+  }
+
+  .resumen-compra .d-flex {
+    font-size: 0.9rem;
+  }
+
+  .resumen-compra h6,
+  .resumen-compra h5.text-primary {
+    font-size: 1rem;
+  }
+
+  /* Modal en móvil */
+  :deep(.p-dialog) {
+    width: 90% !important;
+    max-width: 400px !important;
+  }
+
+  :deep(.p-dialog-header) {
+    font-size: 1rem;
+  }
+
+  :deep(.p-dialog-content) {
+    font-size: 0.9rem;
+  }
+
+  /* Mensaje de stock insuficiente */
+  .stock-error-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* 📱 Estilos para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .contenedor-carrito {
+    padding: 0.5rem !important;
+  }
+
+  .contenedor-carrito h3 {
+    font-size: 1.1rem;
+  }
+
+  .tarjeta-producto {
+    padding: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .img-producto {
+    height: 120px;
+  }
+
+  .tarjeta-producto h6 {
+    font-size: 0.95rem;
+  }
+
+  .tarjeta-producto .text-muted {
+    font-size: 0.8rem;
+  }
+
+  .resumen-compra {
+    padding: 1rem !important;
+  }
+
+  .resumen-compra h5 {
+    font-size: 1rem;
+  }
+
+  .resumen-compra .d-flex {
+    font-size: 0.85rem;
+  }
 }
 </style>
