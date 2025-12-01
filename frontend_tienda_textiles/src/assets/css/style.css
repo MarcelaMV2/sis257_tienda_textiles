@@ -1,0 +1,339 @@
+/* =========================
+   VARIABLES + BASE
+   ========================= */
+:root {
+  --brand: #2b6cb0; /* primario (azul andino) */
+  --brand-600: #1e4e91;
+  --brand-200: #a9c3e8;
+  --ink: #1a202c; /* texto principal */
+  --muted: #6b7280; /* texto secundario */
+  --bg: #f7fafc; /* fondo app */
+  --white: #fff;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    'Jost',
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Apple Color Emoji',
+    'Segoe UI Emoji';
+}
+
+/* Evitar que el contenido quede debajo del header fijo */
+/* @media (min-width: 992px){
+  body{padding-top:72px;}
+}
+@media (max-width: 991.98px){
+  body{padding-top:64px;}
+} */
+
+/* Contenedores Bootstrap: aseguran ancho full en desktop */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: 1320px;
+  width: 100%;
+}
+
+/* Links generales */
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--brand-600);
+}
+
+/* =========================
+   HEADER (navbar)
+   ========================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: var(--white);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Marca */
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--ink) !important;
+}
+.navbar-brand .dot {
+  color: var(--brand);
+}
+
+/* Toggler */
+.navbar-toggler {
+  border: 0;
+  outline: 0;
+  padding: 0.25rem 0.5rem;
+}
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* Items */
+.navbar-nav {
+  gap: 0.5rem;
+}
+.navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--brand);
+  background: rgba(43, 108, 176, 0.08);
+}
+.navbar-nav .nav-link.router-link-active,
+.navbar-nav .nav-link.router-link-exact-active {
+  color: #fff;
+  background: var(--brand);
+}
+
+/* Dropdowns (si los usas) */
+.dropdown-menu {
+  border-radius: 0.75rem;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+.dropdown-item {
+  font-weight: 500;
+}
+.dropdown-item:hover {
+  background: rgba(43, 108, 176, 0.08);
+  color: var(--brand);
+}
+
+/* Barra derecha (iconos / botones) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.header-actions .btn {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 0.6rem;
+}
+
+/* Estados pegajosos opcionales (si luego añades JS para scroll) */
+.site-header.scrolled {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  border-color: transparent;
+}
+
+/*************PROMO BANNER*************/
+.ofertas-swiper {
+  padding-bottom: 1.5rem;
+}
+.card-oferta {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.card-oferta:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+.imagen-wrapper {
+  position: relative;
+  height: 200px;
+}
+.imagen-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.info-box {
+  padding: 1rem;
+  text-align: center;
+}
+.info-box h5 {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #1a202c;
+}
+.descripcion {
+  font-size: 0.9rem;
+  color: #6b7280;
+  height: 36px;
+  overflow: hidden;
+}
+.precios {
+  margin: 0.5rem 0;
+}
+.precio-oferta {
+  color: #2b6cb0;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.btn-comprar {
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+.btn-comprar:hover {
+  background-color: #1a365d;
+}
+
+.btn-ver {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn-ver:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* === Tarjetas con icono de vista previa (solo HomeView) === */
+.imagen-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.imagen-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Efecto zoom al pasar el mouse */
+.card-oferta:hover img {
+  transform: scale(1.05);
+}
+
+/* Overlay con el icono de ojo */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(43, 108, 176, 0.45); /* azul semitransparente */
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.overlay i {
+  font-size: 2rem;
+  color: white;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+/* Al pasar el mouse sobre la tarjeta */
+.card-oferta:hover .overlay {
+  opacity: 1;
+}
+
+.card-oferta:hover .overlay i {
+  transform: scale(1.1);
+}
+
+/****************PRODUCTO DETALLE***************/
+:root {
+  --color-primary: #2b2d42;
+  --color-accent: #e76f51;
+  --color-bg: #f8f9fa;
+  --color-gray: #6b7280;
+  --color-highlight: #00a896;
+}
+
+.producto-detalle {
+  background: var(--color-bg);
+  border-radius: 14px;
+}
+
+.main-img {
+  max-height: 450px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background-color: #2b2d42;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #e76f51;
+}
+
+.card-rel {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.card-rel:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+.related-img {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+.text-primary {
+  color: var(--color-accent) !important;
+}

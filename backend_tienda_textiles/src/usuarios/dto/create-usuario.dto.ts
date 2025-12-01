@@ -1,0 +1,56 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+
+export class CreateUsuarioDto {
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo nombre es obligatorio' })
+  @IsString({ message: 'El campo nombre debe ser de tipo cadena' })
+  @MaxLength(50, {
+    message: 'El campo nombre no debe ser mayor a 50 caracteres',
+  })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly nombre: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo apellidos es obligatorio' })
+  @IsString({ message: 'El campo apellidos debe ser de tipo cadena' })
+  @MaxLength(50, {
+    message: 'El campo apellidos no debe ser mayor a 50 caracteres',
+  })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly apellidos: string;
+
+  // 🔑 Campo de contraseña agregado
+  @ApiProperty({ description: 'Contraseña elegida por el usuario' })
+  @IsNotEmpty({ message: 'El campo clave es obligatorio' })
+  @IsString({ message: 'El campo clave debe ser de tipo cadena' })
+  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @MaxLength(100, { message: 'La contraseña no debe exceder 100 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  clave: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo email es obligatorio' })
+  @IsString({ message: 'El campo email debe ser de tipo cadena' })
+  @MaxLength(100, {
+    message: 'El campo email no debe ser mayor a 100 caracteres',
+  })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly email: string;
+
+  @ApiProperty({ description: 'Teléfono de contacto', example: '+59170000000' })
+  @IsString({ message: 'El campo telefono debe ser una cadena' })
+  @MaxLength(20, { message: 'El campo telefono no debe exceder 20 caracteres' })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  telefono: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'El campo rol es obligatorio' })
+  @IsString({ message: 'El campo rol debe ser de tipo cadena' })
+  @MaxLength(20, {
+    message: 'El campo rol no debe ser mayor a 20 caracteres',
+  })
+  @Transform(({ value }): string | undefined => (typeof value === 'string' ? value.trim() : value))
+  readonly rol: string;
+}

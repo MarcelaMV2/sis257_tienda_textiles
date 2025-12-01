@@ -3,10 +3,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductosModule } from './productos/productos.module';
+import { CategoriasModule } from './categorias/categorias.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { PedidosModule } from './pedidos/pedidos.module';
+import { PedidoProductosModule } from './pedido_productos/pedido_productos.module';
+import { PagosModule } from './pagos/pagos.module';
+import { CarritosModule } from './carritos/carritos.module';
+import { CarritoProductosModule } from './carrito-productos/carrito-productos.module';
+import { UploadsModule } from './uploads/uploads.module';
+import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
+import { DepartamentosModule } from './departamentos/departamentos.module';
+import { ProveedoresModule } from './proveedores/proveedores.module';
+import { ComprasModule } from './compras/compras.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -17,7 +31,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       entities: [__dirname + '*/**/entities/*.{ts|js}'],
       synchronize: true,
       autoLoadEntities: true,
-    }),],
+    }),
+    ProductosModule,
+    CategoriasModule,
+    UsuariosModule,
+    PedidosModule,
+    PedidoProductosModule,
+    PagosModule,
+    CarritosModule,
+    CarritoProductosModule,
+    UploadsModule,
+    MailModule,
+    AuthModule,
+    DepartamentosModule,
+    ProveedoresModule,
+    ComprasModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
