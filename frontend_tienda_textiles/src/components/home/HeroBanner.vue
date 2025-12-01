@@ -38,9 +38,9 @@ const slides = ref([
                 {{ slide.titulo }}
               </h1>
               <p class="lead mb-4" style="color: white; font-size: 36px">{{ slide.texto }}</p>
-              <RouterLink to="/shop" class="btn btn-primary text-uppercase rounded-pill">
+              <!--<RouterLink to="/shop" class="btn btn-primary text-uppercase rounded-pill">
                 Comprar ahora
-              </RouterLink>
+              </RouterLink>-->
             </div>
             <div class="col-md-6">
               <img :src="slide.imagen" alt="banner" class="img-fluid rounded-3 shadow" />

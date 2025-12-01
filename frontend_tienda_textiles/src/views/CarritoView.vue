@@ -224,13 +224,15 @@ function mostrarAlertaStock(stock: number) {
       v-model:visible="mostrarModalStock"
       modal
       header="Stock insuficiente"
-      :style="{ width: '450px' }"
+      :style="{ width: '450px', background: '#FABF13', color: 'black'}"
+      headerStyle="background:#FABF13; color:black;"
+      contentStyle="background:#FABF13; color:black;"
     >
-      <p class="mb-3">
+      <p class="mb-3" style="color: black">
         Algunos productos no tienen stock suficiente. Ajusta las cantidades en tu carrito:
       </p>
 
-      <ul class="mb-3">
+      <ul class="mb-3" style="color: black">
         <li v-for="(info, id) in erroresStock" :key="id">
           {{
             carrito.find((c) => c.producto.id === Number(id))?.producto.nombre || `Producto #${id}`
@@ -239,7 +241,7 @@ function mostrarAlertaStock(stock: number) {
       </ul>
 
       <div class="text-end">
-        <Button label="Entendido" @click="mostrarModalStock = false" />
+        <Button label="Entendido" @click="mostrarModalStock = false" class="btn-entendido" />
       </div>
     </Dialog>
   </div>
@@ -281,152 +283,16 @@ button.btn-success:hover {
   color: #b91c1c;
 }
 
-/* 📱 Estilos responsivos para móvil */
-@media (max-width: 768px) {
-  .contenedor-carrito {
-    padding: 1rem !important;
-  }
-
-  /* Título principal */
-  .contenedor-carrito h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem !important;
-  }
-
-  /* Tarjeta de producto en móvil */
-  .tarjeta-producto {
-    flex-direction: column;
-    align-items: flex-start !important;
-    padding: 1rem !important;
-  }
-
-  .img-producto {
-    width: 100%;
-    height: 150px;
-    margin-bottom: 0.75rem;
-    margin-right: 0 !important;
-  }
-
-  .tarjeta-producto .flex-grow-1 {
-    width: 100%;
-    margin-bottom: 0.75rem;
-  }
-
-  .tarjeta-producto h6 {
-    font-size: 1rem;
-  }
-
-  .tarjeta-producto .text-muted {
-    font-size: 0.85rem;
-  }
-
-  /* Controles de cantidad en móvil */
-  .tarjeta-producto .d-flex.align-items-center {
-    width: 100%;
-    justify-content: space-between;
-    margin-right: 0 !important;
-    margin-bottom: 0.75rem;
-  }
-
-  .tarjeta-producto .d-flex.align-items-center button {
-    padding: 0.25rem 0.75rem;
-  }
-
-  /* Precio total del item */
-  .tarjeta-producto .fw-bold.me-4 {
-    width: 100%;
-    text-align: center;
-    margin-right: 0 !important;
-    margin-bottom: 0.75rem;
-    font-size: 1.1rem;
-  }
-
-  /* Botón eliminar */
-  .tarjeta-producto .btn-danger {
-    width: 100%;
-    padding: 0.5rem;
-  }
-
-  /* Botón vaciar carrito */
-  .lista-productos .btn-outline-danger {
-    width: 100%;
-  }
-
-  /* Resumen de compra en móvil */
-  .resumen-compra {
-    margin-top: 1.5rem;
-  }
-
-  .resumen-compra h5 {
-    font-size: 1.1rem;
-  }
-
-  .resumen-compra .d-flex {
-    font-size: 0.9rem;
-  }
-
-  .resumen-compra h6,
-  .resumen-compra h5.text-primary {
-    font-size: 1rem;
-  }
-
-  /* Modal en móvil */
-  :deep(.p-dialog) {
-    width: 90% !important;
-    max-width: 400px !important;
-  }
-
-  :deep(.p-dialog-header) {
-    font-size: 1rem;
-  }
-
-  :deep(.p-dialog-content) {
-    font-size: 0.9rem;
-  }
-
-  /* Mensaje de stock insuficiente */
-  .stock-error-text {
-    font-size: 0.75rem;
-  }
+/* Botón estilo personalizado */
+.btn-entendido {
+  background: red !important;
+  border: 1px solid red !important;
+  color: white !important;
 }
 
-/* 📱 Estilos para pantallas muy pequeñas */
-@media (max-width: 480px) {
-  .contenedor-carrito {
-    padding: 0.5rem !important;
-  }
-
-  .contenedor-carrito h3 {
-    font-size: 1.1rem;
-  }
-
-  .tarjeta-producto {
-    padding: 0.75rem !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .img-producto {
-    height: 120px;
-  }
-
-  .tarjeta-producto h6 {
-    font-size: 0.95rem;
-  }
-
-  .tarjeta-producto .text-muted {
-    font-size: 0.8rem;
-  }
-
-  .resumen-compra {
-    padding: 1rem !important;
-  }
-
-  .resumen-compra h5 {
-    font-size: 1rem;
-  }
-
-  .resumen-compra .d-flex {
-    font-size: 0.85rem;
-  }
+.btn-entendido:hover {
+  background: gray !important;
+  border-color: gray !important;
+  color: black !important;
 }
 </style>

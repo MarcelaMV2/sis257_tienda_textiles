@@ -5,8 +5,8 @@ import type { Producto } from '@/models/producto'
 import type { Categoria } from '@/models/categoria'
 import { useRoute, useRouter } from 'vue-router'
 import { usarCarrito } from '@/funciones/UsarCarrito'
-import Dialog from 'primevue/dialog' // ⬅️ nuevo
-import Button from 'primevue/button' // ⬅️ nuevo
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,16 +17,13 @@ const productos = ref<Producto[]>([])
 const categoriaSeleccionada = ref<number | null>(null)
 const cargando = ref(false)
 
-// 🔐 control modal login
 const mostrarModalLogin = ref(false)
+const mostrarSidebarMobile = ref(false)
 
-// 🔐 helper para saber si está logueado
 function estaLogueado(): boolean {
-  // cambia 'token' por la clave real que uses en localStorage
   return !!localStorage.getItem('token')
 }
 
-// 🟦 Obtener todas las categorías
 const obtenerCategorias = async () => {
   try {
     const res = await http.get('categorias')
@@ -36,13 +33,13 @@ const obtenerCategorias = async () => {
   }
 }
 
-// 🟦 Obtener productos por categoría
 const obtenerProductosPorCategoria = async (id: number) => {
   cargando.value = true
   try {
     const res = await http.get(`productos/categoria/${id}`)
     productos.value = res.data
     categoriaSeleccionada.value = id
+    mostrarSidebarMobile.value = false
   } catch (err) {
     console.error('Error al obtener productos:', err)
   } finally {
@@ -50,13 +47,11 @@ const obtenerProductosPorCategoria = async (id: number) => {
   }
 }
 
-// 🟦 Seleccionar categoría
 const seleccionarCategoria = (cat: Categoria) => {
   router.push({ name: 'categoria-productos', params: { id: cat.id } })
   obtenerProductosPorCategoria(cat.id)
 }
 
-// 🟦 Agregar producto al carrito (con validación de login)
 const añadirAlCarrito = (producto: Producto) => {
   if (!estaLogueado()) {
     mostrarModalLogin.value = true
@@ -65,12 +60,10 @@ const añadirAlCarrito = (producto: Producto) => {
   agregarProducto(producto, 1)
 }
 
-// 🟦 Ir al detalle del producto
 const irADetalle = (producto: Producto) => {
   router.push({ name: 'detalle-producto', params: { id: producto.id } })
 }
 
-// 🔐 Ir al login desde el modal
 const irALogin = () => {
   router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
 }
@@ -85,9 +78,19 @@ onMounted(async () => {
 
 <template>
   <div class="catalogo-container">
+    <!-- 🔘 Botón hamburguesa móvil -->
+    <div class="btn-hamburguesa-mobile" @click="mostrarSidebarMobile = !mostrarSidebarMobile">
+      <i class="bi bi-list"></i>
+    </div>
+
     <!-- 🧭 Sidebar de categorías -->
-    <aside class="sidebar">
-      <h5 class="titulo-sidebar">Categorías</h5>
+    <aside :class="['sidebar', { activo: mostrarSidebarMobile }]">
+      <div class="header-sidebar">
+        <h5 class="titulo-sidebar">Categorías</h5>
+        <button v-if="mostrarSidebarMobile" class="btn-cerrar-sidebar" @click="mostrarSidebarMobile = false">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
       <ul class="lista-categorias">
         <li
           v-for="cat in categorias"
@@ -99,6 +102,13 @@ onMounted(async () => {
         </li>
       </ul>
     </aside>
+
+    <!-- 🟫 Overlay para cerrar sidebar en mobile -->
+    <div
+      v-if="mostrarSidebarMobile"
+      class="overlay-sidebar"
+      @click="mostrarSidebarMobile = false"
+    ></div>
 
     <!-- 🛍️ Contenido principal -->
     <main class="contenido">
@@ -142,8 +152,7 @@ onMounted(async () => {
     v-model:visible="mostrarModalLogin"
     modal
     header="Inicia sesión para continuar"
-    :style="{ width: '400px' }"
-    class="modal-login-productos"
+    :style="{ width: '90vw', maxWidth: '400px' }"
   >
     <p class="mb-4">Debes iniciar sesión para agregar productos al carrito.</p>
     <div class="d-flex justify-content-end gap-2">
@@ -159,6 +168,12 @@ onMounted(async () => {
   gap: 2rem;
   padding: 2rem 4rem;
   background-color: var(--color-bg, #f7f9fc);
+  position: relative;
+}
+
+/* 🔘 Botón hamburguesa */
+.btn-hamburguesa-mobile {
+  display: none;
 }
 
 /* Sidebar */
@@ -173,10 +188,26 @@ onMounted(async () => {
   top: 80px;
 }
 
+.header-sidebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .titulo-sidebar {
   font-weight: 700;
   color: var(--color-dark, #1a202c);
-  margin-bottom: 1rem;
+  margin: 0;
+}
+
+.btn-cerrar-sidebar {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-dark, #1a202c);
 }
 
 .lista-categorias {
@@ -230,8 +261,7 @@ onMounted(async () => {
   transition: 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  border-color: #1a202c;
-  border: 1px solid;
+  border: 1px solid #1a202c;
 }
 
 .card-producto:hover {
@@ -314,6 +344,7 @@ onMounted(async () => {
   font-size: 0.9rem;
   cursor: pointer;
   transition: 0.2s;
+  width: 100%;
 }
 
 .btn-agregar:hover {
@@ -327,140 +358,157 @@ onMounted(async () => {
   margin-top: 2rem;
 }
 
-/* 🌙 Fondo oscuro difuminado */
-.p-dialog-mask.p-component-overlay {
-  background-color: rgba(0, 0, 0, 0.55) !important;
-  backdrop-filter: blur(3px);
+.overlay-sidebar {
+  display: none;
 }
 
-/* 🟦 Contenedor del modal */
-.p-dialog {
-  border-radius: 14px !important;
-  overflow: hidden;
-  border: 2px solid #1a365d !important; /* azul oscuro */
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
-}
+/* 📱 RESPONSIVE MOBILE */
+@media (max-width: 768px) {
+  .catalogo-container {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0;
+  }
 
-/* 🟦 Header */
-.p-dialog .p-dialog-header {
-  background: #1a365d !important; /* azul primario oscuro */
-  color: white !important;
-  font-weight: bold;
-  padding: 1rem 1.4rem;
-  border-bottom: 3px solid #f6c947 !important; /* amarillo */
-}
+  /* Mostrar botón hamburguesa */
+  .btn-hamburguesa-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background-color: #fabf13;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    color: var(--color-dark, #1a202c);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
-/* Texto del modal */
-.p-dialog .p-dialog-content {
-  padding: 1.3rem 1.4rem !important;
-  font-size: 1.05rem;
-  color: #1a202c; /* dark gray */
-}
+  .btn-hamburguesa-mobile:active {
+    background-color: #e6a500;
+  }
 
-/* 🔘 Botones */
-.p-dialog .p-button {
-  border-radius: 8px !important;
-  font-weight: 600;
-}
+  /* Sidebar móvil */
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: left 0.3s ease;
+    padding-top: 2rem;
+    overflow-y: auto;
+  }
 
-/* Botón Cerrar (texto) → gris */
-.p-dialog .p-button-text {
-  color: #1a365d !important;
-}
-.p-dialog .p-button-text:hover {
-  background: rgba(26, 54, 93, 0.1) !important;
-}
+  .sidebar.activo {
+    left: 0;
+  }
 
-/* Botón Login → azul + hover amarillo */
-.p-dialog .p-button:not(.p-button-text) {
-  background: #1a365d !important;
-  border-color: #1a365d !important;
-}
-.p-dialog .p-button:not(.p-button-text):hover {
-  background: #f6c947 !important; /* amarillo */
-  border-color: #f6c947 !important;
-  color: #1a202c !important;
-}
-/*  Modal de login para productos */
-.modal-login-productos .p-dialog-header {
-  background: linear-gradient(to right, #fceabb, #f8b500);
-  color: #1a202c;
-  font-weight: bold;
-  font-size: 1.1rem;
-  border-bottom: none;
-  padding: 1rem 1.5rem;
-  border-radius: 8px 8px 0 0;
-}
+  .btn-cerrar-sidebar {
+    display: block;
+  }
 
-.modal-login-productos .p-dialog-content {
-  background-color: #fffaf3;
-  color: #1d3e77;
-  font-size: 0.95rem;
-  text-align: center;
-  padding: 1.5rem;
-  border-radius: 0 0 8px 8px;
-}
+  .overlay-sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
 
-.modal-login-productos .p-dialog-footer {
-  background-color: #fffaf3;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  border-top: none;
-}
+  .contenido {
+    width: 100%;
+  }
 
-/* Botón Cerrar */
-.modal-login-productos .p-button-text {
-  color: #a0aec0 !important;
-  border: 2px solid transparent !important;
-  border-radius: 6px !important;
-  transition: border-color 0.2s ease !important;
-}
-.modal-login-productos .p-button-text:hover,
-.modal-login-productos .p-button-text:focus {
-  border-color: #d97706 !important;
-  color: #d97706 !important;
-}
+  .titulo-categoria {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
 
-/* Botón Ir al login */
-.modal-login-productos .p-button:not(.p-button-text) {
-  background-color: #d97706 !important;
-  border: none !important;
-  color: white !important;
-  border-radius: 6px !important;
-  padding: 6px 14px !important;
-  font-weight: 600 !important;
-  transition: background-color 0.2s ease !important;
-  transform: none !important;
-}
-.modal-login-productos .p-button:not(.p-button-text):hover,
-.modal-login-productos .p-button:not(.p-button-text):focus {
-  background-color: #b45309 !important;
-  transform: none !important;
-}
+  /* Grid móvil */
+  .grid-productos {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
 
-/* Animación */
-.modal-login-productos {
-  animation: fadeInScale 0.3s ease;
-}
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
+  .imagen-wrapper {
+    height: 180px;
+  }
+
+  .info {
+    padding: 0.75rem;
+  }
+
+  .info h5 {
+    font-size: 0.95rem;
+  }
+
+  .info p {
+    font-size: 0.85rem;
+    height: 32px;
+  }
+
+  .precio {
+    font-size: 1rem;
+  }
+
+  .btn-agregar {
+    padding: 8px 10px;
+    font-size: 0.85rem;
   }
 }
 
-/* stilos de la X para cerrar el modal */
-.modal-login-productos .p-dialog-close-button {
-  color: #d97706 !important;
-  border-radius: 50% !important;
-  padding: 6px !important;
-}
+/* 📱 Extra pequeño */
+@media (max-width: 480px) {
+  .catalogo-container {
+    padding: 0.75rem;
+  }
 
-.modal-login-productos .p-dialog-close-button:hover,
-.modal-login-productos .p-dialog-close-button:focus {
-  background-color: transparent !important;
-  color: #b45309 !important;
-  border-color: #b45309 !important;
+  .btn-hamburguesa-mobile {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .grid-productos {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .imagen-wrapper {
+    height: 150px;
+  }
+
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .sidebar.activo {
+    left: 0;
+  }
+
+  .titulo-categoria {
+    font-size: 1.25rem;
+  }
+
+  .info h5 {
+    font-size: 0.9rem;
+  }
+
+  .info p {
+    font-size: 0.8rem;
+    height: 28px;
+  }
 }
 </style>
