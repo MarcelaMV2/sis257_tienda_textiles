@@ -81,52 +81,62 @@ defineExpose({ obtenerLista })
 
     <!-- Tabla -->
     <div class="tabla-card">
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>Nro</th>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(producto, index) in productosPaginados" :key="producto.id">
-            <td>{{ (paginaActual - 1) * itemsPorPagina + index + 1 }}</td>
-            <td>
-              <div class="producto-info">
-                <img :src="producto.imagenUrl" alt="foto" class="producto-img" />
-                <span class="producto-nombre">{{ producto.nombre }}</span>
-              </div>
-            </td>
-            <td>
-              <span class="badge">{{ producto.categoria?.nombre || '—' }}</span>
-            </td>
-            <td class="precio">Bs. {{ producto.precio.toFixed(2) }}</td>
-            <td>
-              <span class="badge" :class="producto.stock <= 10 ? 'badge-stock-bajo' : ''">
-                {{ producto.stock }}
-              </span>
-            </td>
-            <td>
-              <div class="acciones">
-                <Button icon="pi pi-pencil" severity="info" text @click="emitirEdicion(producto)" />
-                <Button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  text
-                  @click="mostrarEliminarConfirm(producto)"
-                />
-              </div>
-            </td>
-          </tr>
-          <tr v-if="productosPaginados.length === 0">
-            <td colspan="6" class="empty">No se encontraron productos.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nro</th>
+              <th>Producto</th>
+              <th class="hide-mobile">Categoría</th>
+              <th>Precio</th>
+              <th class="hide-mobile">Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(producto, index) in productosPaginados" :key="producto.id">
+              <td>{{ (paginaActual - 1) * itemsPorPagina + index + 1 }}</td>
+              <td>
+                <div class="producto-info">
+                  <img :src="producto.imagenUrl" alt="foto" class="producto-img" />
+                  <div class="producto-detalles">
+                    <span class="producto-nombre">{{ producto.nombre }}</span>
+                    <span class="producto-mobile-info show-mobile">
+                      <span class="badge-mobile">{{ producto.categoria?.nombre || '—' }}</span>
+                      <span class="stock-mobile" :class="producto.stock <= 10 ? 'badge-stock-bajo' : ''">
+                        Stock: {{ producto.stock }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="hide-mobile">
+                <span class="badge">{{ producto.categoria?.nombre || '—' }}</span>
+              </td>
+              <td class="precio">Bs. {{ producto.precio.toFixed(2) }}</td>
+              <td class="hide-mobile">
+                <span class="badge" :class="producto.stock <= 10 ? 'badge-stock-bajo' : ''">
+                  {{ producto.stock }}
+                </span>
+              </td>
+              <td>
+                <div class="acciones">
+                  <Button icon="pi pi-pencil" severity="info" text @click="emitirEdicion(producto)" />
+                  <Button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    text
+                    @click="mostrarEliminarConfirm(producto)"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr v-if="productosPaginados.length === 0">
+              <td colspan="6" class="empty">No se encontraron productos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Paginación -->
       <div v-if="totalPaginas > 1" class="paginacion">
@@ -254,6 +264,10 @@ defineExpose({ obtenerLista })
   overflow: hidden;
 }
 
+.tabla-wrapper {
+  overflow-x: auto;
+}
+
 .tabla {
   width: 100%;
   border-collapse: collapse;
@@ -271,6 +285,7 @@ defineExpose({ obtenerLista })
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .tabla td {
@@ -290,20 +305,45 @@ defineExpose({ obtenerLista })
   gap: 12px;
 }
 
+.producto-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .producto-img {
   width: 50px;
   height: 50px;
   object-fit: cover;
   border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .producto-nombre {
   color: #1f2937;
+  font-weight: 500;
+}
+
+.producto-mobile-info {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.75rem;
+}
+
+.badge-mobile {
+  color: #6b7280;
+}
+
+.stock-mobile {
+  color: #4b5563;
+  font-weight: 500;
 }
 
 .precio {
   font-weight: 600;
   color: #374151;
+  white-space: nowrap;
 }
 
 /* Categoría y stock sin fondos de color */
@@ -313,7 +353,7 @@ defineExpose({ obtenerLista })
 }
 
 .badge-stock-bajo {
-  color: #dc2626;
+  color: #dc2626 !important;
   font-weight: 600;
 }
 
@@ -358,11 +398,14 @@ defineExpose({ obtenerLista })
   gap: 8px;
   padding: 16px;
   border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
 }
 
 .paginas {
   display: flex;
   gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .btn-pag,
@@ -412,26 +455,196 @@ defineExpose({ obtenerLista })
   color: #1a202c;
 }
 
-/* Responsive */
+/* Clases auxiliares */
+.hide-mobile {
+  display: table-cell;
+}
+
+.show-mobile {
+  display: none;
+}
+
+/* 📱 RESPONSIVE PARA MÓVIL */
 @media (max-width: 768px) {
+  .productos-container {
+    padding: 0;
+  }
+
   .header-acciones {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 12px;
+    gap: 12px;
   }
 
   .search-bar {
     max-width: 100%;
   }
 
+  .search-bar :deep(.p-inputtext) {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Ocultar columnas en móvil */
+  .hide-mobile {
+    display: none;
+  }
+
+  .show-mobile {
+    display: flex;
+  }
+
+  .tabla-card {
+    border-radius: 8px;
+  }
+
   .tabla th,
   .tabla td {
-    padding: 10px 12px;
-    font-size: 0.813rem;
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+
+  .tabla th {
+    font-size: 0.75rem;
+  }
+
+  .producto-info {
+    gap: 8px;
+  }
+
+  .producto-img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .producto-nombre {
+    font-size: 0.85rem;
+  }
+
+  .precio {
+    font-size: 0.85rem;
+  }
+
+  .acciones {
+    gap: 4px;
+    flex-direction: column;
+  }
+
+  .acciones :deep(.p-button) {
+    padding: 4px;
+  }
+
+  /* Paginación más compacta */
+  .paginacion {
+    padding: 12px 8px;
+    gap: 6px;
+  }
+
+  .btn-pag,
+  .btn-num {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .paginas {
+    gap: 3px;
+  }
+
+  /* Dialog más pequeño */
+  :deep(.p-dialog) {
+    width: 90% !important;
+    max-width: 350px !important;
+  }
+
+  .confirm-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  .confirm-content i {
+    font-size: 1.5rem !important;
+  }
+
+  .confirm-content p {
+    font-size: 0.85rem;
+  }
+
+  :deep(.p-dialog-footer) {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  :deep(.p-dialog-footer .p-button) {
+    width: 100%;
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .tabla th,
+  .tabla td {
+    padding: 8px 6px;
+  }
+
+  .tabla th:first-child,
+  .tabla td:first-child {
+    padding-left: 8px;
   }
 
   .producto-img {
     width: 40px;
     height: 40px;
+  }
+
+  .producto-nombre {
+    font-size: 0.8rem;
+  }
+
+  .precio {
+    font-size: 0.8rem;
+  }
+
+  .badge-mobile,
+  .stock-mobile {
+    font-size: 0.7rem;
+  }
+
+  /* Limitar número de páginas visibles */
+  .paginas {
+    max-width: 200px;
+    overflow-x: auto;
+  }
+
+  .btn-pag,
+  .btn-num {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Ajustes extra para pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .tabla th,
+  .tabla td {
+    padding: 6px 4px;
+    font-size: 0.75rem;
+  }
+
+  .producto-img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .acciones :deep(.p-button) {
+    padding: 3px;
+  }
+
+  .acciones :deep(.p-button .pi) {
+    font-size: 0.9rem;
   }
 }
 </style>

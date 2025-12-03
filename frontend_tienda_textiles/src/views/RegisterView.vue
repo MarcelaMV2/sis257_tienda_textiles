@@ -172,30 +172,30 @@ const irAlInicio = () => {
 
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* NO SE TOCA */
+  align-items: flex-start;
   padding-top: 60px;
 }
 
 /* FORMULARIO */
 .form {
-  margin: 1.5rem auto;         /* ESTO ES LO QUE TE CENTRA */
+  margin: 1.5rem auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  width: 25%;                  /* NO SE TOCA */
-  min-width: 500px;            /* NO SE TOCA */
+  width: 25%;
+  min-width: 500px;
   max-width: 100%;
 
   background: #ffffffee;
   border-radius: 15px;
   padding: 40px;
 
-  border: 3px solid #fabf13;   /* Amarillito elegante */
+  border: 3px solid #fabf13;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 .form h1 {
-  color: #1a365d !important; /* azul oscuro */
+  color: #1a365d !important;
   padding: 10px 20px;
   border-radius: 12px;
   text-align: center;
@@ -208,7 +208,7 @@ const irAlInicio = () => {
   margin-bottom: 6px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #2d3748; /* gris oscuro profesional */
+  color: #2d3748;
 }
 
 /* INPUT elegante */
@@ -284,6 +284,117 @@ const irAlInicio = () => {
 p a:hover {
   color: #1a365d;
 }
+
+/* 📱 RESPONSIVE PARA MÓVIL */
+@media (max-width: 768px) {
+  .full-screen-container {
+    padding-top: 40px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .form {
+    width: 100%;
+    min-width: auto;
+    padding: 30px 20px;
+    margin: 1rem auto;
+  }
+
+  .form h1 {
+    font-size: 1.5rem;
+    padding: 8px 16px;
+  }
+
+  /* Campos en columna en móvil */
+  .campos-doble {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .campo {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .form-submit {
+    padding: 0.9rem 0;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .textooo {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .full-screen-container {
+    padding-top: 30px;
+  }
+
+  .form {
+    padding: 25px 15px;
+    border-width: 2px;
+  }
+
+  .form h1 {
+    font-size: 1.3rem;
+    padding: 6px 12px;
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+
+  .form-input {
+    padding: 9px 10px;
+    font-size: 0.85rem;
+  }
+
+  .form-submit {
+    padding: 0.8rem 0;
+    font-size: 0.95rem;
+  }
+
+  .text-danger {
+    font-size: 0.85rem;
+  }
+}
+
+/* Modal responsive */
+@media (max-width: 576px) {
+  .modal-exito-registro {
+    width: 90% !important;
+    max-width: 350px !important;
+  }
+
+  .modal-exito-registro h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .modal-exito-registro p {
+    font-size: 0.85rem !important;
+  }
+
+  .btn-exito {
+    padding: 0.7rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+</style>
+
+<style>
 /* ===============================
    MODAL DE ÉXITO — SANSA THEME
    (Totalmente aislado)
@@ -336,14 +447,11 @@ p a:hover {
   background-color: #e4b93b !important;
 }
 
-/* Cerrar “X” (si algún día agregas closable=true) */
+/* Cerrar "X" (si algún día agregas closable=true) */
 .modal-exito-registro .p-dialog-close-button {
   color: #f6c947 !important;
 }
 
-</style>
-
-<style>
 /* ===========================================
    FIX DEFINITIVO PARA FONDO NEGRO PRIMEVUE
 =========================================== */
@@ -373,5 +481,16 @@ p a:hover {
 .modal-exito-registro .p-dialog-content * {
   color: #1a202c !important;
 }
-</style>
 
+/* 📱 RESPONSIVE PARA MODAL EN MÓVIL */
+@media (max-width: 576px) {
+  .modal-exito-registro .p-dialog-header {
+    font-size: 1rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .modal-exito-registro .p-dialog-content {
+    padding: 1.2rem !important;
+  }
+}
+</style>
