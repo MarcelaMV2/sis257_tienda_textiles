@@ -103,9 +103,9 @@ function mostrarAlertaStock(stock: number) {
               class="img-producto me-3"
             />
 
-            <div class="flex-grow-1">
+            <div class="flex-grow-1 producto-info">
               <h6 class="fw-semibold mb-1">{{ item.producto.nombre }}</h6>
-              <p class="text-muted small mb-1">{{ item.producto.descripcion }}</p>
+              <p class="text-muted small mb-1 descripcion-producto">{{ item.producto.descripcion }}</p>
               <span class="fw-bold text-primary"> Bs. {{ item.producto.precio.toFixed(2) }} </span>
 
               <!-- 🔴 Mensaje de stock insuficiente -->
@@ -116,7 +116,7 @@ function mostrarAlertaStock(stock: number) {
               </p>
             </div>
 
-            <div class="d-flex align-items-center me-3">
+            <div class="controles-cantidad d-flex align-items-center me-3">
               <button
                 class="btn btn-sm btn-outline-secondary"
                 @click="disminuirCantidad(item.producto.id)"
@@ -169,11 +169,11 @@ function mostrarAlertaStock(stock: number) {
               </button>
             </div>
 
-            <div class="fw-bold me-4">
+            <div class="precio-total fw-bold me-3">
               Bs. {{ (item.producto.precio * item.cantidad).toFixed(2) }}
             </div>
 
-            <button class="btn btn-sm btn-danger" @click="eliminarProducto(item.producto.id)">
+            <button class="btn btn-sm btn-danger btn-eliminar" @click="eliminarProducto(item.producto.id)">
               <i class="bi bi-trash"></i>
             </button>
           </div>
@@ -294,5 +294,134 @@ button.btn-success:hover {
   background: gray !important;
   border-color: gray !important;
   color: black !important;
+}
+
+/* 📱 ESTILOS RESPONSIVE PARA MÓVIL */
+@media (max-width: 768px) {
+  /* Título principal más pequeño */
+  h3.fw-bold {
+    font-size: 1.5rem;
+  }
+
+  /* Tarjeta de producto en columna */
+  .tarjeta-producto {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 15px;
+  }
+
+  /* Imagen del producto */
+  .img-producto {
+    width: 100%;
+    height: 150px;
+    margin: 0 !important;
+  }
+
+  /* Info del producto ocupa todo el ancho */
+  .producto-info {
+    width: 100%;
+  }
+
+  .descripcion-producto {
+    display: none; /* Ocultar descripción en móvil para ahorrar espacio */
+  }
+
+  /* Controles de cantidad centrados */
+  .controles-cantidad {
+    width: 100%;
+    justify-content: center;
+    margin: 0 !important;
+  }
+
+  .input-cantidad {
+    width: 60px;
+  }
+
+  /* Precio total y botón eliminar en una fila */
+  .precio-total {
+    margin: 0 !important;
+    flex: 1;
+    text-align: left;
+  }
+
+  .btn-eliminar {
+    margin-left: auto;
+  }
+
+  /* Contenedor de precio y eliminar */
+  .tarjeta-producto > div:last-child,
+  .tarjeta-producto > button:last-child {
+    display: inline-block;
+  }
+
+  /* Crear un contenedor flex para precio y botón */
+  .tarjeta-producto {
+    position: relative;
+  }
+
+  .precio-total {
+    display: inline-block;
+  }
+
+  .btn-eliminar {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+
+  /* Resumen del pedido sticky en móvil */
+  .resumen-compra {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    margin-top: 20px;
+  }
+
+  /* Ajustar padding del contenedor */
+  .contenedor-carrito {
+    padding: 1rem !important;
+  }
+
+  /* Modal más pequeño en móvil */
+  :deep(.p-dialog) {
+    width: 90% !important;
+    max-width: 400px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Títulos aún más pequeños en pantallas muy pequeñas */
+  h3.fw-bold {
+    font-size: 1.3rem;
+  }
+
+  h5.fw-bold {
+    font-size: 1.1rem;
+  }
+
+  /* Imagen más pequeña */
+  .img-producto {
+    height: 120px;
+  }
+
+  /* Botones más compactos */
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .input-cantidad {
+    width: 50px;
+    font-size: 0.9rem;
+  }
+
+  /* Padding reducido en tarjetas */
+  .tarjeta-producto {
+    padding: 1rem !important;
+  }
+
+  .resumen-compra {
+    padding: 1rem !important;
+  }
 }
 </style>
