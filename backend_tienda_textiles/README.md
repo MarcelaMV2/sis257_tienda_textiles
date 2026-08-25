@@ -1,98 +1,366 @@
+# 🧵 Sansa Designs - Backend API
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://img.shields.io/badge/NestJS-Backend-E0234E?style=for-the-badge&logo=nestjs" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript" />
+  <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker" />
+  <img src="https://img.shields.io/badge/Nginx-Reverse%20Proxy-009639?style=for-the-badge&logo=nginx" />
+  <img src="https://img.shields.io/badge/JWT-Authentication-black?style=for-the-badge&logo=jsonwebtokens" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# 📌 Descripción del proyecto
 
-## Description
+**Sansa Designs - Backend API** es el servicio backend desarrollado para el sistema integral de gestión y venta de productos textiles artesanales.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este proyecto proporciona una API REST encargada de administrar la lógica de negocio, autenticación, seguridad y comunicación con la base de datos para la plataforma **Sansa Designs**.
 
-## Project setup
+El backend fue desarrollado utilizando **NestJS con TypeScript**, implementando una arquitectura modular, segura y escalable.
 
-```bash
-$ npm install
+
+---
+
+# 🎯 Objetivo del backend
+
+Proporcionar una infraestructura backend capaz de gestionar:
+
+- Usuarios y autenticación.
+- Roles y permisos.
+- Productos.
+- Categorías.
+- Inventario.
+- Proveedores.
+- Pedidos.
+- Pagos.
+- Reportes administrativos.
+
+
+---
+
+# 🏗️ Arquitectura del sistema
+
+El backend sigue una arquitectura basada en servicios:
+
+```
+Cliente Web
+     |
+     |
+     ↓
+Nginx
+(Reverse Proxy)
+     |
+     |
+     ↓
+NestJS API
+     |
+     |
+     ↓
+Base de Datos
 ```
 
-## Compile and run the project
+### Componentes principales:
 
-```bash
-# development
-$ npm run start
+| Componente | Función |
+|-|-|
+| NestJS | Framework backend principal |
+| JWT | Sistema de autenticación y autorización |
+| Docker | Contenerización del servicio |
+| Nginx | Proxy inverso y gestión del tráfico |
+| Base de datos | Persistencia de información |
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
+---
+
+# 🔐 Seguridad y autenticación
+
+El sistema implementa autenticación basada en **JSON Web Token (JWT)**.
+
+Características:
+
+- Inicio de sesión seguro.
+- Generación de tokens de acceso.
+- Protección de rutas privadas.
+- Control de acceso mediante roles.
+- Validación de usuarios.
+
+
+Flujo de autenticación:
+
+```
+Usuario
+  |
+  ↓
+Login
+  |
+  ↓
+Validación de credenciales
+  |
+  ↓
+Generación JWT
+  |
+  ↓
+Acceso a recursos protegidos
 ```
 
-## Run tests
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+# 🚀 Funcionalidades principales
 
-# test coverage
-$ npm run test:cov
+
+## 👥 Usuarios
+
+Gestión de usuarios del sistema:
+
+- Registro.
+- Autenticación.
+- Roles.
+- Administración de perfiles.
+
+
+## 🛍️ Productos
+
+Administración del catálogo:
+
+- Crear productos.
+- Actualizar información.
+- Gestionar categorías.
+- Controlar disponibilidad.
+
+
+## 📦 Inventario
+
+Control de:
+
+- Productos disponibles.
+- Materiales.
+- Existencias.
+
+
+## 🚚 Proveedores
+
+Registro y administración de proveedores relacionados con materiales e insumos.
+
+
+## 🛒 Pedidos
+
+Gestión de compras:
+
+- Registro de pedidos.
+- Estado del pedido.
+- Productos asociados.
+
+
+## 💳 Pagos
+
+Administración de información relacionada con transacciones.
+
+
+## 📊 Reportes
+
+Generación de información administrativa para análisis del negocio.
+
+
+---
+
+# 🛠️ Tecnologías utilizadas
+
+| Tecnología | Uso |
+|-|-|
+| NestJS | Framework backend |
+| TypeScript | Lenguaje principal |
+| Node.js | Entorno de ejecución |
+| JWT | Autenticación |
+| Docker | Contenedores |
+| Docker Compose | Orquestación de servicios |
+| Nginx | Proxy inverso |
+| PostgreSQL | Base de datos |
+
+
+---
+
+# 📂 Estructura del proyecto
+
+Ejemplo de organización:
+
+```
+src/
+
+├── auth/
+│   └── Autenticación JWT
+│
+├── users/
+│   └── Gestión de usuarios
+│
+├── products/
+│   └── Gestión de productos
+│
+├── categories/
+│   └── Categorías
+│
+├── inventory/
+│   └── Control de inventario
+│
+├── orders/
+│   └── Gestión de pedidos
+│
+├── payments/
+│   └── Procesamiento de pagos
+│
+├── reports/
+│   └── Reportes
+│
+└── main.ts
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+# ⚙️ Instalación local
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+## Requisitos
+
+Antes de ejecutar el proyecto es necesario tener instalado:
+
+- Node.js
+- Docker
+- Docker Compose
+
+
+---
+
+## Instalación de dependencias
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+# 🔧 Variables de entorno
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Crear archivo:
 
-## Support
+```
+.env
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Ejemplo:
 
-## Stay in touch
+```env
+PORT=3000
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+DATABASE_URL=
 
-## License
+JWT_SECRET=
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+JWT_EXPIRES_IN=
+```
+
+*(Las variables pueden variar según la configuración del proyecto.)*
+
+
+---
+
+# ▶️ Ejecución del proyecto
+
+
+## Desarrollo local
+
+```bash
+npm run start:dev
+```
+
+
+## Producción
+
+```bash
+npm run start:prod
+```
+
+
+---
+
+# 🐳 Ejecución mediante Docker
+
+
+Construir imágenes:
+
+```bash
+docker compose build
+```
+
+
+Levantar servicios:
+
+```bash
+docker compose up
+```
+
+
+Ejecutar en segundo plano:
+
+```bash
+docker compose up -d
+```
+
+
+Detener servicios:
+
+```bash
+docker compose down
+```
+
+
+---
+
+# 🌐 Nginx
+
+Nginx funciona como punto de entrada del sistema permitiendo:
+
+- Administración de solicitudes HTTP.
+- Redirección hacia la API NestJS.
+- Separación entre cliente y servidor.
+- Preparación para despliegue en producción.
+
+
+---
+
+# 🔗 Integración con Frontend
+
+Este backend proporciona los servicios consumidos por:
+
+📌 **Sansa Designs Frontend**
+
+Repositorio relacionado:
+
+```
+frontend_tienda_textiles
+```
+
+
+---
+
+# 📌 Estado del proyecto
+
+🚧 Proyecto académico en desarrollo.
+
+
+Desarrollado como proyecto final para:
+
+**SIS257 - Ingeniería de Software**
+
+
+---
+
+# 👨‍💻 Autor
+
+Proyecto desarrollado para la implementación de una plataforma web orientada a la digitalización de procesos comerciales.
+
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines académicos.
