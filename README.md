@@ -284,24 +284,6 @@ Base de Datos
 ```
 
 
----
-
-# 📸 Capturas del sistema
-
-
-*(Agregar capturas de pantalla cuando estén disponibles)*
-
-
-Ejemplo:
-
-```
-screenshots/
-
-├── login.png
-├── catalogo.png
-├── carrito.png
-├── dashboard.png
-└── reportes.png
 ```
 
 
