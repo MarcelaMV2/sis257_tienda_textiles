@@ -1,85 +1,242 @@
-# frontend_tienda_textiles
-# Frontend Tienda Textiles
+# 🧵 Sansa Designs - Frontend
 
-Este proyecto es el **frontend** del sistema de gestión y venta de productos textiles desarrollado con **Vue 3**, **TypeScript** y **Vite**.  
-Forma parte del proyecto general **Tienda Textiles**, que busca ofrecer una plataforma moderna y rápida para la visualización, compra y administración de productos artesanales.
+<p align="center">
+  <img src="https://img.shields.io/badge/Vue-3-42b883?style=for-the-badge&logo=vuedotjs" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript" />
+  <img src="https://img.shields.io/badge/Vite-Latest-purple?style=for-the-badge&logo=vite" />
+</p>
 
-## Características principales
+## 📌 Descripción del proyecto
 
-- Interfaz desarrollada con **Vue 3 + Vite** para un rendimiento óptimo.
-- Estructura modular con **componentes reutilizables**.
-- Gestión de estado mediante **Pinia**.
-- Ruteo con **Vue Router**.
-- Comunicación con API backend mediante **Axios**.
-- Estilos adaptables y personalizables con **CSS moderno / Bootstrap / Tailwind** *(según tu caso)*.
+**Sansa Designs - Frontend** es la aplicación web cliente desarrollada para el sistema integral de gestión y venta de productos textiles artesanales.
 
----
+El proyecto pertenece al emprendimiento **Sansa Designs**, ubicado en Sucre - Bolivia, dedicado a la elaboración y comercialización de productos textiles como:
 
-## Contexto del Proyecto
+- 👜 Carteras
+- 👛 Billeteras
+- 🎒 Bolsos
+- 🛋️ Cojines
+- Productos artesanales elaborados con materiales naturales como lino, lana y yute.
 
-La aplicación permite a los usuarios:
-- Navegar por diferentes categorías de productos textiles.
-- Visualizar detalles, precios y disponibilidad.
-- Realizar pedidos y gestionar el carrito de compras.
-- Acceder a una interfaz intuitiva tanto para clientes como para administradores.
+Este repositorio contiene la interfaz gráfica del sistema, encargada de proporcionar una experiencia moderna, rápida e intuitiva para clientes y administradores.
 
 ---
 
-## Configuración del Proyecto
+# 🎯 Objetivo del frontend
 
-## Instalar dependencias
+Desarrollar una plataforma web amigable que permita:
+
+- Mostrar el catálogo de productos textiles.
+- Facilitar la navegación de los usuarios.
+- Gestionar productos mediante una interfaz administrativa.
+- Permitir la interacción con el carrito de compras.
+- Consumir servicios proporcionados por la API backend.
+- Mejorar la gestión comercial mediante herramientas digitales.
+
+---
+
+# ✨ Características principales
+
+## 👥 Gestión de usuarios
+
+- Inicio de sesión.
+- Manejo de roles de usuario.
+- Acceso diferenciado para clientes y administradores.
+
+## 🛍️ Catálogo de productos
+
+- Visualización de productos disponibles.
+- Organización por categorías.
+- Consulta de información detallada.
+- Visualización de precios e imágenes.
+
+## 🛒 Carrito de compras
+
+- Selección de productos.
+- Control de cantidades.
+- Preparación de pedidos.
+
+## 📦 Administración
+
+- Gestión de productos.
+- Control de información del inventario.
+- Administración de categorías.
+- Visualización de información del sistema.
+
+## 🔌 Comunicación con Backend
+
+El frontend consume una API REST desarrollada con NestJS mediante solicitudes HTTP utilizando Axios.
+
+---
+
+# 🛠️ Tecnologías utilizadas
+
+| Tecnología | Descripción |
+|---|---|
+| Vue 3 | Framework principal para construcción de interfaces |
+| TypeScript | Lenguaje con tipado estático |
+| Vite | Herramienta de desarrollo y compilación |
+| Pinia | Gestión global del estado |
+| Vue Router | Manejo de navegación entre vistas |
+| Axios | Comunicación con servicios backend |
+| CSS / Bootstrap / Tailwind | Diseño y estilos visuales |
+
+---
+
+# 🏗️ Estructura del proyecto
+
+La organización principal del frontend sigue una estructura modular:
+
+```
+src/
+│
+├── assets/
+│   └── Recursos estáticos
+│
+├── components/
+│   └── Componentes reutilizables
+│
+├── views/
+│   └── Vistas principales del sistema
+│
+├── router/
+│   └── Configuración de rutas
+│
+├── stores/
+│   └── Estados globales mediante Pinia
+│
+├── services/
+│   └── Consumo de API mediante Axios
+│
+└── App.vue
+```
+
+---
+
+# ⚙️ Instalación y configuración
+
+## 1. Clonar el repositorio
+
+```bash
+git clone URL_DEL_REPOSITORIO
+```
+
+Ingresar al proyecto:
+
+```bash
+cd frontend_tienda_textiles
+```
+
+---
+
+## 2. Instalar dependencias
+
 ```bash
 npm install
 ```
 
-## Compilar y recargar en modo desarrollo
-```sh
+---
+
+## 3. Configurar variables de entorno
+
+Crear un archivo:
+
+```
+.env
+```
+
+Agregar las variables necesarias para la conexión con el backend:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+*(Modificar según la configuración del backend.)*
+
+---
+
+# 🚀 Ejecución del proyecto
+
+## Modo desarrollo
+
+```bash
 npm run dev
 ```
 
-This template should help get you started developing with Vue 3 in Vite.
+La aplicación estará disponible en:
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+http://localhost:5173
 ```
 
-### Compile and Hot-Reload for Development
+---
 
-```sh
-npm run dev
-```
+## Compilación para producción
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+```bash
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+---
 
-```sh
-npm run lint
+## Vista previa de producción
+
+```bash
+npm run preview
 ```
+
+---
+
+# 🔗 Integración con Backend
+
+Este frontend funciona en conjunto con el repositorio:
+
+📌 **Backend API - Sansa Designs**
+
+Tecnologías utilizadas:
+
+- NestJS
+- TypeScript
+- Node.js
+- Base de datos relacional
+
+La comunicación entre ambos módulos se realiza mediante servicios REST.
+
+---
+
+# 📸 Capturas del sistema
+
+*(Agregar imágenes del sistema cuando estén disponibles)*
+
+Ejemplo:
+
+```
+screenshots/
+
+├── login.png
+├── productos.png
+├── carrito.png
+└── dashboard.png
+```
+
+---
+
+# 📌 Estado del proyecto
+
+🚧 Proyecto académico en desarrollo.
+
+Desarrollado como proyecto final para la asignatura:
+
+**SIS257 - Ingeniería de Software**
+
+---
+
+# 👨‍💻 Autor
+
+Proyecto desarrollado para la implementación de una solución informática orientada a la digitalización de procesos comerciales.
+
+---
+
+# 📄 Licencia
+
+Este proyecto fue desarrollado con fines académicos.
